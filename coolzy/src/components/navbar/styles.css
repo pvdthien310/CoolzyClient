@@ -1,0 +1,32 @@
+.navbar__container {
+    display: flex;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1;
+    padding: 45px 70px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar__container img {
+    height: 35px;
+    width: 35px;
+}
+
+.navbar__tab_bar__container {
+    display: flex;
+    background-color: aliceblue;
+    padding: 6px;
+    border-radius: 25px;
+}
+
+.navbar__tab_bar__container p {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.navbar__icon_bar__container {
+    display: flex;
+}

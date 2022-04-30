@@ -1,0 +1,74 @@
+.slide__container {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.slide__item {
+    width: 100%;
+    height: 50rem;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+}
+
+.slide__item__contain {
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login__color__gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    /* ff 3.6+ */
+    background: -moz-linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 0, 0, 0) 99%);
+    /* safari 5.1+,chrome 10+ */
+    background: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 0, 0, 0) 99%);
+    /* opera 11.10+ */
+    background: -o-linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 0, 0, 0) 99%);
+    /* ie 6-9 */
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#FF0000', endColorstr='#FFFFFF', GradientType=1);
+    /* ie 10+ */
+    background: -ms-linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 0, 0, 0) 99%);
+    /* global 94%+ browsers support */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 0, 0, 0) 99%);
+}
+
+.slider__item__content__poster {
+    display: flex;
+    height: 30rem;
+    width: auto;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+    box-shadow: 1px 1px 10px rgb(70, 70, 70);
+    margin-right: 150px;
+}
+
+.slide__item__content__info {
+    margin-right: 30px;
+    font-family: var(--font-family);
+    color: #272727;
+    width: 50%;
+    margin-left: 100px;
+    z-index: 1;
+    max-width: 500px;
+}
+
+.slide__item__content__info h2 {
+    font-size: 60px;
+    color: #272727;
+    margin-bottom: 10px;
+    margin-top: 180px;
+}
