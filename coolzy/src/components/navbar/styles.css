@@ -30,3 +30,8 @@
 .navbar__icon_bar__container {
     display: flex;
 }
+
+.navbar__login_bar__container {
+    display: flex;
+    align-items: center;
+}
