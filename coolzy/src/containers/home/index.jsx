@@ -2,6 +2,7 @@ import { React } from 'react';
 import Navbar from '../../components/navbar';
 import Slider from './../../components/slider/index';
 import Footer from './../../components/footer/index';
+import ProductHomeSlider from './../../components/productHomeSlider/index'
 
 const Home = () => {
 
@@ -10,6 +11,7 @@ const Home = () => {
 
             <Slider />
             <Navbar />
+            <ProductHomeSlider category="Pants"/>
             <Footer />
         </div>
     )
