@@ -11,7 +11,13 @@ const Home = () => {
 
             <Slider />
             <Navbar />
-            <ProductHomeSlider category="Pants"/>
+            
+            <div>
+                <ProductHomeSlider category="T-shirt" />
+                <ProductHomeSlider category="Pants" />
+                <ProductHomeSlider category="Backpack" />
+            </div>
+
             <Footer />
         </div>
     )
