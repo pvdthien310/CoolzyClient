@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import './styles.css'
 import logo_png from '../../assets/logo_png.png'
+import mFunction from "../../function";
+
+import { decode } from 'base-64'
+import { encode } from 'base-64'
+
+import accountApi from '../../api/accountAPI'
+import JWTApi from "../../api/jwtAPI";
 
 import { AiOutlineGoogle } from 'react-icons/ai'
 import { FaFacebookF } from 'react-icons/fa'
@@ -18,7 +25,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red, grey } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import { styled } from '@mui/material/styles';
 
 import { useNavigate, Link } from 'react-router-dom';
@@ -72,9 +79,96 @@ const Login = () => {
         event.preventDefault();
     };
 
-    const loginHandle = () => {
+    const loginHandle = async () => {
+        checkInfo().then(res => {
+            if (res) {
+                setValues({ ...values, isLoading: true })
+                JWTApi.login(values.email, values.password)
+                    .then(res => {
+                        setValues({ ...values, isLoading: false })
+                        if (res.data == "Email not exist") {
+                            setEmailWarningVisible(true)
+                            setPasswordErrVisible(false)
+                            return
+                        }
+                        else if (res.data == "Password incorrect") {
+                            setEmailWarningVisible(false)
+                            setPasswordErrVisible(true)
+                            return
+                        }
+                        else {
+                            setEmailWarningVisible(false)
+                            setPasswordErrVisible(false)
+
+                            localStorage.setItem("logged", true)
+                            if (!values.rememberAccount) {
+                                localStorage.setItem("rememberAccount", false)
+                                localStorage.setItem(encode("rememberEmail"), encode(values.email))
+                            }
+                            else {
+                                localStorage.setItem("rememberAccount", true)
+                                localStorage.setItem(encode("rememberEmail"), encode(values.email))
+                                localStorage.setItem(encode("rememberPassword"), encode(values.password))
+                            }
+
+                            dispatch(userSlice.actions.update(res.data))
+                            navigate('/')
+                            return
+                        }
+                    }).catch(err => console.log(err))
+            }
+        })
 
     }
+
+    const checkInfo = async () => {
+
+        if (!mFunction.validateEmail(values.email)) {
+            setEmailErrVisible(true)
+            return false
+        }
+        else {
+            setEmailErrVisible(false)
+        }
+
+        if (!mFunction.validatePassword(values.password)) {
+            setPasswordErrVisible(true)
+            return false
+
+        }
+        else {
+            setPasswordErrVisible(false)
+        }
+
+        return true
+
+    }
+
+    const getAccount = () => {
+        if (localStorage.getItem('logged') == 'true') {
+            navigate('/')
+            return
+        }
+
+        if (localStorage.getItem('rememberAccount') == 'true') {
+            setValues({
+                ...values,
+                rememberAccount: true,
+                email: decode(localStorage.getItem(encode('rememberEmail'))),
+                password: decode(localStorage.getItem(encode('rememberPassword')))
+            })
+        }
+        else {
+            setValues({
+                ...values,
+                rememberAccount: false,
+                email: '',
+                password: ''
+            })
+
+        }
+    }
+    // useEffect(getAccount, [])
 
     return (
         <div className="login__container" style={{ backgroundImage: `url(${backgroundLink})` }}        >
@@ -171,6 +265,7 @@ const Login = () => {
 
                 </div>
             </div>
+            {values.isLoading && <Loading />}
         </div>
     )
 }
