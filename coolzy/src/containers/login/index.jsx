@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import './styles.css'
 import logo_png from '../../assets/logo_png.png'
 import mFunction from "../../function";
+import { accountSlice } from "../../redux/slices/accountSlices";
 
 import { decode } from 'base-64'
 import { encode } from 'base-64'
@@ -83,15 +84,15 @@ const Login = () => {
         checkInfo().then(res => {
             if (res) {
                 setValues({ ...values, isLoading: true })
-                JWTApi.login(values.email, values.password)
+                JWTApi.login(values.email.trim(), values.password)
                     .then(res => {
                         setValues({ ...values, isLoading: false })
-                        if (res.data == "Email not exist") {
+                        if (res == "Email not exist") {
                             setEmailWarningVisible(true)
                             setPasswordErrVisible(false)
                             return
                         }
-                        else if (res.data == "Password incorrect") {
+                        else if (res == "Password incorrect") {
                             setEmailWarningVisible(false)
                             setPasswordErrVisible(true)
                             return
@@ -111,7 +112,6 @@ const Login = () => {
                                 localStorage.setItem(encode("rememberPassword"), encode(values.password))
                             }
 
-                            dispatch(userSlice.actions.update(res.data))
                             navigate('/')
                             return
                         }
@@ -122,8 +122,8 @@ const Login = () => {
     }
 
     const checkInfo = async () => {
-
-        if (!mFunction.validateEmail(values.email)) {
+        setEmailWarningVisible(false)
+        if (!mFunction.validateEmail(values.email.trim())) {
             setEmailErrVisible(true)
             return false
         }
@@ -131,7 +131,7 @@ const Login = () => {
             setEmailErrVisible(false)
         }
 
-        if (!mFunction.validatePassword(values.password)) {
+        if (!mFunction.validatePassword(values.password.trim())) {
             setPasswordErrVisible(true)
             return false
 
@@ -168,7 +168,7 @@ const Login = () => {
 
         }
     }
-    // useEffect(getAccount, [])
+    useEffect(getAccount, [])
 
     return (
         <div className="login__container" style={{ backgroundImage: `url(${backgroundLink})` }}        >
@@ -259,7 +259,7 @@ const Login = () => {
 
                     <div className="login__form__register">
                         <p>You don't have account? </p>
-                        <a ><Link to="/register">Register</Link></a>
+                        <p ><Link to="/register">Register</Link></p>
 
                     </div>
 
