@@ -37,9 +37,8 @@ export const ProfileManage = () => {
 
         //     <Footer />
         // </div>
-        <div className="profile__container"
-            style={{ backgroundImage: "https://images.unsplash.com/photo-1556139943-4bdca53adf1e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80" }}
-        >
+        <div className="profile__container">
+            <Navbar />
             <Helmet>
                 <title>Profile</title>
             </Helmet>
