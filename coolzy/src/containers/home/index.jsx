@@ -5,6 +5,10 @@ import Footer from './../../components/footer/index';
 import ProductHomeSlider from './../../components/productHomeSlider/index'
 import { useState } from 'react';
 import categoryApi from './../../api/categoryAPI';
+import { React } from 'react';
+
+import Brand from '../../components/brand';
+import Product from '../../components/product';
 
 const Home = () => {
     const [listCategoriesId, setListCategoriesId] = useState([])
@@ -39,6 +43,8 @@ const Home = () => {
                 }
             </div>
 
+            <Brand />
+            <Product />
             <Footer />
         </div>
     )

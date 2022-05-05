@@ -30,3 +30,15 @@
 .navbar__icon_bar__container {
     display: flex;
 }
+
+.navbar__login_bar__container {
+    display: flex;
+    align-items: center;
+}
+
+.navbar__menu {
+    position: absolute;
+    top: 80px;
+    right: 50px;
+    width: 250px;
+}

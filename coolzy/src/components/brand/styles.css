@@ -1,0 +1,44 @@
+.branch__container {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.branch__item__container {
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.branch__item__content__poster {
+    display: flex;
+    height: 30rem;
+    width: auto;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-left: 40px;
+}
+
+.branch__item__content__info {
+    font-family: var(--font-family);
+    width: 50%;
+    z-index: 1;
+    max-width: 600px;
+}
+
+.branch__item__content__info h2 {
+    color: #272727;
+}
+
+.branch__item__content__info p {
+    color: #a6a6a6;
+    margin-top: 30px;
+}
+
+.branch__item__content__info li {
+    margin-top: 20px;
+}
