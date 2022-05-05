@@ -15,49 +15,56 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 
 import './style.css'
+import categoryApi from './../../api/categoryAPI';
 const ProductHomeSlider = props => {
 
     const [productItems, setProductItems] = useState([]);
-    const [productType, setProductType] = useState(props.category);
+    const [productCategory, setProductCategory] = useState({});
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState();
     const [viewMoreVisible, setViewMoreVisible] = useState(true)
+    const categoryId = props.categoryId
 
+    console.log(categoryId)
 
     useEffect(() => {
-        const getProductsType = () => {
-            setProductType(props.category)
+        
+        const getProductsCategory = async() => {
+            await categoryApi.getById(categoryId)
+            .then(res=>{
+                setProductCategory(res.data)
+               /// console.log(productCategory)
+            })
+            .catch(err => console.log(err))
         }
 
-        getProductsType();
-
-        console.log(productType)
+        getProductsCategory();
 
         const getProducts = async () => {
-            await clothesApi.getByCategory(productType)
+            await clothesApi.getByCategoryId(productCategory._id)
                 .then(res => {
                     setProductItems(res.data)
-
+                   // console.log(productItems)
                 })
                 .catch(err => console.log(err))
 
-                if (productItems.length > 5) {
-                    setProductItems(productItems.slice(0, 4))
-                }
+                // if (productItems.length > 5) {
+                //     setProductItems(productItems.slice(0, 4))
+                // }
         }
 
         getProducts();
-        console.log(productItems);
 
 
-    }, [props]);
+    }, []);
 
     return (
-        <div className="product-slider__container" id={props.typeFilm}>
+        productItems &&
+        <div className="product-slider__container">
 
             <div className="product-slider__container__header">
                 <h3 className="product-slider__container__header__title">
-                    {productType}
+                    {productCategory.name}
                 </h3>
 
 
@@ -67,7 +74,9 @@ const ProductHomeSlider = props => {
             <div className="product-slider__container__content">
                 {viewMoreVisible &&
                     <Box textAlign="right" sx={{marginRight: 5}} > 
-                        <ViewMoreButton typeFilm={props.typeFilm}></ViewMoreButton>
+                        <ViewMoreButton 
+                        ///typeFilm={props.typeFilm}
+                        ></ViewMoreButton>
                     </Box>
                 }
                 <Swiper className="product-slider__container__content__swiper"
@@ -76,7 +85,7 @@ const ProductHomeSlider = props => {
                     freeMode
                     modules={[Pagination, Navigation, FreeMode]}
                 >
-                    {
+                    { productItems.length !=0 &&
                         productItems.map((item, i) => (
                             <SwiperSlide key={i}>
                                 <SlideItem item={item} />
@@ -93,7 +102,6 @@ const ProductHomeSlider = props => {
 const SlideItem = props => {
     const item = props.item;
     const background = item.images[0]
-    console.log(background)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
@@ -103,7 +111,7 @@ const SlideItem = props => {
     }
 
     const GoToDetails = () => {
-        navigate(`/productDetail/${props.item.category}/${props.item._id}`);
+        navigate(`/productDetail/${props.item._categoryId}/${props.item._id}`);
     }
     return (
         <div className="product-slider__item__container" >
@@ -138,7 +146,7 @@ export const ViewMoreButton = (props) => {
     const navigate = useNavigate();
 
     const onClick = () => {
-        navigate(`/productDetails//${props.category}}`);
+        navigate(`/productDetails//${props.categoryId}}`);
     }
 
     const btnStyles = {

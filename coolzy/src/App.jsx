@@ -13,7 +13,7 @@ function App() {
                 </div>
             } />
 
-            <Route path="/productDetail/:category/:id" element={
+            <Route path="/productDetail/:categoryId/:id" element={
                 <div>
                     <ProductDetail />
                 </div>

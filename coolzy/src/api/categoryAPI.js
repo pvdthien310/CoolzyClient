@@ -1,8 +1,8 @@
 import DatabaseClient from './baseAPI.js'
 
-const baseURL = 'clothes'
+const baseURL = 'category'
 
-const clothesApi = {
+const categoryApi = {
     getAll: async() => {
         const res = DatabaseClient.get('/' + baseURL)
             .catch(err => { return err.response })
@@ -28,11 +28,12 @@ const clothesApi = {
         return res;
     },
 
-    getByCategoryId: async(categoryId) => {
-        const res = DatabaseClient.get('/' + baseURL + '/category/' + categoryId)
+    getAllId: async() => {
+        const res = DatabaseClient.get('/' + baseURL + '/getAll/Id')
             .catch(err => { return err.response })
+
         return res;
     }
 }
 
-export default clothesApi
+export default categoryApi

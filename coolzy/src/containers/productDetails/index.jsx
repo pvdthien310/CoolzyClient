@@ -35,8 +35,8 @@ const ProductDetail = () => {
 
     getItem()
 
-    console.log(item)
-    console.log(item.size)
+   /// console.log(item)
+    console.log(item.images)
 
   }, [id])
 
@@ -53,8 +53,8 @@ const ProductDetail = () => {
   };
 
   const QuantityButton = () => {
-    console.log(quantityValue)
-    console.log(sizeValue.quantity)
+    // console.log(quantityValue)
+    // console.log(sizeValue.quantity)
 
     useEffect(() => {
 
@@ -142,8 +142,7 @@ const ProductDetail = () => {
                   <div className="product-details__container__size-text">size</div>
                   <Select
                     id="demo-simple-select"
-                  ///  value={sizeValue}
-                    defaultValue={item.size[0]}
+                    value={sizeValue}
                     label="Size"
                     sx={{
                       height: 40,
@@ -157,7 +156,7 @@ const ProductDetail = () => {
                   >
                     {item.size &&
                       item.size.map((size, key) => (
-                        <MenuItem key={key} value={size}>{size.name}</MenuItem>
+                        <MenuItem key={key} value={size}>{size.size}</MenuItem>
                       ))
                     }
                   </Select>
@@ -211,7 +210,9 @@ const ProductDetail = () => {
             </Grid>
 
             <Grid sx={6}>
-
+              <Box sx={{marginTop: 8}}>
+                 <ProductPhotoSwiper images = {item.images}/> 
+              </Box>
             </Grid>
 
           </Grid>
@@ -219,7 +220,7 @@ const ProductDetail = () => {
         </Box>
       </div>
 
-      {/* <ProductPhotoSwiper/> */}
+      
       <Footer />
 
     </div>
