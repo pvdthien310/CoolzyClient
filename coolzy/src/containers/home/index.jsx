@@ -1,7 +1,10 @@
 import { React } from 'react';
+
 import Navbar from '../../components/navbar';
 import Slider from './../../components/slider/index';
 import Footer from './../../components/footer/index';
+import Brand from '../../components/brand';
+import Product from '../../components/product';
 
 const Home = () => {
 
@@ -10,6 +13,8 @@ const Home = () => {
 
             <Slider />
             <Navbar />
+            <Brand />
+            <Product />
             <Footer />
         </div>
     )
