@@ -4,6 +4,8 @@ import logo_png from '../../assets/logo_png.png'
 
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { IconButton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -30,10 +32,19 @@ const TabBar = () => {
 
 const IconBar = () => {
 
+    const navigate = useNavigate()
+
+    const accountClick = () => {
+       navigate('/manageProfile')
+    }
     return (
         <div className='navbar__icon_bar__container'>
-            <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
-            <AccountCircleOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            <IconButton>
+                <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            </IconButton>
+            <IconButton onClick={accountClick}>
+                <AccountCircleOutlinedIcon  sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            </IconButton>
         </div>
     )
 }
