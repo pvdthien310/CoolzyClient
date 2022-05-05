@@ -15,14 +15,16 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { Grid, Box, Paper, Stack, Select } from '@mui/material'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './style.css'
+import ProductPhotoSwiper from '../../components/productPhotoSwiper';
 
 const ProductDetail = () => {
   const { id } = useParams()
   const [item, setItem] = useState({})
   const [sizeValue, setSizeValue] = useState('')
-  const [quantityValue, setQuantityValue] = useState(2)
+  const [quantityValue, setQuantityValue] = useState(0)
 
   useEffect(() => {
     const getItem = () => {
@@ -54,6 +56,10 @@ const ProductDetail = () => {
     console.log(quantityValue)
     console.log(sizeValue.quantity)
 
+    useEffect(() => {
+
+    },[quantityValue])
+
     const style = {
       width: 10,
       height: 30,
@@ -69,23 +75,44 @@ const ProductDetail = () => {
           sx={{ marginLeft: 2, marginTop: 0.5 }}>
           {
             quantityValue == 1 ?
-              <Button variant="contained" onClick={handleDecrementQuantity} sx={style} disable > - </Button>
+              <ThemeProvider theme={btnTheme}>
+                <Button variant="contained" onClick={handleDecrementQuantity} sx={style} disable > - </Button>
+              </ThemeProvider>
               :
-              <Button variant="contained" onClick={handleDecrementQuantity} sx={style}> - </Button>
+              <ThemeProvider theme={btnTheme}>
+                <Button variant="contained" onClick={handleDecrementQuantity} sx={style}> - </Button>
+              </ThemeProvider>
           }
 
           <div className="quantity__button-text">{quantityValue}</div>
 
           {
             quantityValue == sizeValue.quantity ?
-              <Button variant="contained" onClick={handleIncrementQuantity} sx={style} disable> + </Button>
+              <ThemeProvider theme={btnTheme}>
+                <Button variant="contained" onClick={handleIncrementQuantity} sx={style} disable> + </Button>
+              </ThemeProvider>
               :
-              <Button variant="contained" onClick={handleIncrementQuantity} sx={style}> + </Button>
+              <ThemeProvider theme={btnTheme}>
+                <Button variant="contained" onClick={handleIncrementQuantity} sx={style}> + </Button>
+              </ThemeProvider>
           }
         </ButtonGroup>
       </>
     )
   }
+
+  const btnTheme = createTheme({
+    shape: {
+      borderRadius: 20
+    },
+    palette: {
+      primary: {
+        main: '#000',
+        outline: '#000',
+      }
+    },
+  })
+
 
   return (
     <div >
@@ -115,7 +142,8 @@ const ProductDetail = () => {
                   <div className="product-details__container__size-text">size</div>
                   <Select
                     id="demo-simple-select"
-                    value={sizeValue}
+                  ///  value={sizeValue}
+                    defaultValue={item.size[0]}
                     label="Size"
                     sx={{
                       height: 40,
@@ -147,7 +175,7 @@ const ProductDetail = () => {
 
                 <Divider orientation="horizontal" flexItem
                   sx={{
-                    marginTop: 3, 
+                    marginTop: 3,
                     marginLeft: 4,
                     marginRight: 3
                   }} />
@@ -158,20 +186,24 @@ const ProductDetail = () => {
                   sx={{
                     marginTop: 3,
                   }}>
-                  <Button variant="outlined" sx={{
-                    width: 160,
-                    color: "#000",
-                    borderColor: "#000",
-                    fontWeight: "bold",
+                  <ThemeProvider theme={btnTheme}>
+                    <Button variant="outlined" sx={{
+                      width: 160,
+                      color: "#000",
+                      borderColor: "#000",
+                      fontWeight: "bold",
 
-                  }}>Add to cart</Button>
+                    }}>Add to cart</Button>
+                  </ThemeProvider>
 
-                  <Button variant="contained" sx={{
-                    width: 160,
-                    color: "#fff",
-                    background: '#000',
-                    fontWeight: "bold",
-                  }}>Buy now</Button>
+                  <ThemeProvider theme={btnTheme}>
+                    <Button variant="contained" sx={{
+                      width: 160,
+                      color: "#fff",
+                      background: '#000',
+                      fontWeight: "bold",
+                    }}>Buy now</Button>
+                  </ThemeProvider>
                 </Stack>
               </Box>
 
@@ -187,6 +219,7 @@ const ProductDetail = () => {
         </Box>
       </div>
 
+      {/* <ProductPhotoSwiper/> */}
       <Footer />
 
     </div>
