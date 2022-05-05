@@ -6,7 +6,7 @@ const accountApi = {
     getAccountbyEmail: async (email) => {
         const res = await DatabaseClient.get('/' + baseURL + '/email/' + email)
             .catch(err => { return err.response })
-        return res.data;
+        return res;
     },
     register: async (dataForReg) => {
         const res = DatabaseClient.post('/' + baseURL, dataForReg)
