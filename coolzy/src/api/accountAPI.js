@@ -43,7 +43,7 @@ const accountApi = {
         return res
     },
     updateAccount: async (data) => {
-        const res = DatabaseClient.put("/" + baseURL + "/" + data._id, data)
+        const res = DatabaseClient.post("/" + baseURL + "/" + data._id, data)
             .catch(err => { return err.response })
         return res
     },
