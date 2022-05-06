@@ -12,14 +12,7 @@ import { FreeMode, Navigation, Thumbs } from "swiper";
 
 const ProductPhotoSwiper = (props) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
- // const listImg = props.images;
- const [listImg, setListImg] = useState([]);
-
-  useEffect(() =>{
-    console.log("hhhhhhhhhhhh")
-    setListImg(props.images)
-    console.log(listImg);
-  },[props])
+  const [listImg, setListImg] = useState(props.images);
 
   // const listImg = [
   //   // "https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg",
@@ -29,7 +22,6 @@ const ProductPhotoSwiper = (props) => {
   //   "https://swiperjs.com/demos/images/nature-7.jpg"
   // ]
 
-  
 
   return (
 
@@ -46,14 +38,15 @@ const ProductPhotoSwiper = (props) => {
         className="mySwiper2"
       >
         {
-        listImg && listImg.map((item, i) => (
-          //console.log(item)
-          <SwiperSlide>
-            <img scr={item} />
-          </SwiperSlide>
-        ))
+          listImg.map((item, i) => (
+            // <SwiperSlide key={i}>
+            //   <img scr={item} />
+            // </SwiperSlide>
 
-      }
+             item && <div>{item}</div>
+          ))
+        }
+
 
         {/* <SwiperSlide>
           <img src="https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg" />
@@ -74,13 +67,14 @@ const ProductPhotoSwiper = (props) => {
         className="mySwiper"
       >
         {
-        listImg && listImg.map((item, i) => (
-          <SwiperSlide key={i}>
-            <img scr={item} />
-          </SwiperSlide>
-        ))
+          listImg && listImg.map((item, i) => (
+            item && <SwiperSlide key={i}>
+              <img scr={item} />
+            </SwiperSlide>
+            // item&&<div>{item}</div>
+          ))
 
-      }
+        }
 
         {/* <SwiperSlide>
           <img src="https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg" />

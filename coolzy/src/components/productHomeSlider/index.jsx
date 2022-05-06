@@ -18,39 +18,32 @@ import './style.css'
 import categoryApi from './../../api/categoryAPI';
 const ProductHomeSlider = props => {
 
-    const [productItems, setProductItems] = useState([]);
+    const [productItems, setProductItems] = useState(props.products);
     const [productCategory, setProductCategory] = useState({});
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState();
     const [viewMoreVisible, setViewMoreVisible] = useState(true)
     const categoryId = props.categoryId
 
-    console.log(categoryId)
-
     useEffect(() => {
-        
-        const getProductsCategory = async() => {
+
+        const getProductsCategory = async () => {
             await categoryApi.getById(categoryId)
-            .then(res=>{
-                setProductCategory(res.data)
-               /// console.log(productCategory)
-            })
-            .catch(err => console.log(err))
+                .then(res => {
+                    setProductCategory(res.data)
+                    /// console.log(productCategory)
+                })
+                .catch(err => console.log(err))
         }
 
         getProductsCategory();
 
         const getProducts = async () => {
-            await clothesApi.getByCategoryId(productCategory._id)
-                .then(res => {
-                    setProductItems(res.data)
-                   // console.log(productItems)
-                })
-                .catch(err => console.log(err))
-
-                // if (productItems.length > 5) {
-                //     setProductItems(productItems.slice(0, 4))
-                // }
+            setProductItems(productItems.filter(
+                (productItem) => {
+                    return (productItem._categoryId == categoryId)
+                }
+            ));
         }
 
         getProducts();
@@ -73,8 +66,8 @@ const ProductHomeSlider = props => {
 
             <div className="product-slider__container__content">
                 {viewMoreVisible &&
-                    <Box textAlign="right" sx={{marginRight: 5}} > 
-                        <ViewMoreButton 
+                    <Box textAlign="right" sx={{ marginRight: 5 }} >
+                        <ViewMoreButton
                         ///typeFilm={props.typeFilm}
                         ></ViewMoreButton>
                     </Box>
@@ -82,10 +75,10 @@ const ProductHomeSlider = props => {
                 <Swiper className="product-slider__container__content__swiper"
                     slidesPerView={5}
                     centeredSlides={true}
-                    freeMode
+                    ///freeMode
                     modules={[Pagination, Navigation, FreeMode]}
                 >
-                    { productItems.length !=0 &&
+                    {productItems.length != 0 &&
                         productItems.map((item, i) => (
                             <SwiperSlide key={i}>
                                 <SlideItem item={item} />
@@ -150,9 +143,9 @@ export const ViewMoreButton = (props) => {
     }
 
     const btnStyles = {
-        paddingX: 5, 
-        paddingY: 0.8 ,
-        '&:hover':{
+        paddingX: 5,
+        paddingY: 0.8,
+        '&:hover': {
             fontWeight: 'bold',
         }
     }

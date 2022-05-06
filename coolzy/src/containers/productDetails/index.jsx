@@ -38,7 +38,7 @@ const ProductDetail = () => {
    /// console.log(item)
     console.log(item.images)
 
-  }, [id])
+  }, [])
 
   const handleChangeSize = (event) => {
     setSizeValue(event.target.value);
@@ -129,7 +129,7 @@ const ProductDetail = () => {
       <div className="product-detail__container">
         <Box sx={{ height: 'auto', marginTop: 20, marginBottom: 15 }}>
           <Grid container spacing={2}>
-            <Grid xs={6}>
+            <Grid sx={6}>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
                 <div className="product-details__container__price">{item.price}</div>
