@@ -1,10 +1,6 @@
-import { React, useEffect } from 'react';
-import Navbar from '../../components/navbar';
-import Slider from './../../components/slider/index';
-import Footer from './../../components/footer/index';
+import { React } from 'react';
 
-import Brand from '../../components/brand';
-import Product from '../../components/product';
+import { Navbar, Slider, Footer, Brand, Product } from '../../components/index';
 
 const Home = () => {
    
