@@ -14,14 +14,9 @@ const ProductPhotoSwiper = (props) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [listImg, setListImg] = useState(props.images);
 
-  // const listImg = [
-  //   // "https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg",
-  //   // "https://product.hstatic.net/1000378196/product/z2596904682306_9aae9bca908ae414669d93acf4c06b0b_79ff477757e348fcbcae5c10cf43d7d8_master.jpg",
-
-  //   "https://swiperjs.com/demos/images/nature-6.jpg",
-  //   "https://swiperjs.com/demos/images/nature-7.jpg"
-  // ]
-
+  useEffect(() => {
+    setListImg(props.images)
+  }, [props.images])
 
   return (
 
@@ -38,22 +33,17 @@ const ProductPhotoSwiper = (props) => {
         className="mySwiper2"
       >
         {
-          listImg.map((item, i) => (
-            // <SwiperSlide key={i}>
-            //   <img scr={item} />
-            // </SwiperSlide>
-
-             item && <div>{item}</div>
-          ))
+          listImg && listImg.map((item, i) => 
+            
+                <SwiperSlide key={i}>
+                  <div>
+                    <img src={item} alt="" />
+                    </div>
+                
+            </SwiperSlide> 
+             
+          )
         }
-
-
-        {/* <SwiperSlide>
-          <img src="https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://product.hstatic.net/1000378196/product/z2596904682306_9aae9bca908ae414669d93acf4c06b0b_79ff477757e348fcbcae5c10cf43d7d8_master.jpg" />
-        </SwiperSlide> */}
 
       </Swiper>
 
@@ -68,20 +58,12 @@ const ProductPhotoSwiper = (props) => {
       >
         {
           listImg && listImg.map((item, i) => (
-            item && <SwiperSlide key={i}>
-              <img scr={item} />
+            <SwiperSlide key={i}>
+              <img src={item} alt="" />
             </SwiperSlide>
-            // item&&<div>{item}</div>
           ))
 
         }
-
-        {/* <SwiperSlide>
-          <img src="https://product.hstatic.net/1000378196/product/z2596904679410_73e6183a9a600f41fe77b43495827be9_a7d0ee80f42241259712fd4aa4d61659_master.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://product.hstatic.net/1000378196/product/z2596904682306_9aae9bca908ae414669d93acf4c06b0b_79ff477757e348fcbcae5c10cf43d7d8_master.jpg" />
-        </SwiperSlide> */}
 
       </Swiper>
     </div>

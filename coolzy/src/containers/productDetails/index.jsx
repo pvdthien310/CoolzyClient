@@ -24,49 +24,78 @@ const ProductDetail = () => {
   const { id } = useParams()
   const [item, setItem] = useState({})
   const [sizeValue, setSizeValue] = useState('')
-  const [quantityValue, setQuantityValue] = useState(0)
+  const [quantityValue, setQuantityValue] = useState(1)
 
-  useEffect(() => {
-    const getItem = () => {
-      clothesApi.getById(id)
+  const [quantityButtonEnable, setQuantityButtonEnable] = useState({
+    increase: true,
+    decrease: true
+  })
+
+  useEffect(async () => {
+    const getItem = async () => {
+      await clothesApi.getById(id)
         .then(res => setItem(res.data))
         .catch(err => console.log(err))
     }
 
-    getItem()
-
-   /// console.log(item)
-    console.log(item.images)
+    await getItem()
 
   }, [])
+
+  // useEffect(() => {
+  //   console.log(item.images)
+  // }, [item])
+
+  useEffect(() => {
+    console.log(quantityButtonEnable)
+    console.log(sizeValue.quantity)
+  }, [quantityButtonEnable])
 
   const handleChangeSize = (event) => {
     setSizeValue(event.target.value);
   };
 
   const handleIncrementQuantity = () => {
-    setQuantityValue(quantityValue + 1);
+    if (quantityValue < sizeValue.quantity) {
+      setQuantityButtonEnable({ ...quantityButtonEnable, increase: true });
+      setQuantityValue(quantityValue + 1);
+      console.log(quantityValue)
+    }
+    else if (quantityValue == sizeValue.quantity) {
+      setQuantityButtonEnable({ ...quantityButtonEnable, increase: false });
+    }
+
   };
 
   const handleDecrementQuantity = () => {
-    setQuantityValue(quantityValue - 1);
+    if (quantityValue > 1) {
+      setQuantityButtonEnable({ ...quantityButtonEnable, decrease: true })
+      setQuantityValue(quantityValue - 1);
+    }
+    else if (quantityValue == 1) {
+      setQuantityButtonEnable({ ...quantityButtonEnable, decrease: false })
+    }
   };
 
   const QuantityButton = () => {
-    // console.log(quantityValue)
-    // console.log(sizeValue.quantity)
-
-    useEffect(() => {
-
-    },[quantityValue])
-
     const style = {
-      width: 10,
-      height: 30,
-      background: '#000',
-      color: '#fff',
-      fontWeight: 'bold',
-      borderRadius: 10,
+      enable: {
+        width: 10,
+        height: 30,
+        background: '#000',
+        color: '#fff',
+        fontWeight: 'bold',
+        borderRadius: 10,
+      }
+      // ,
+      // disable: {
+      //   width: 10,
+      //   height: 30,
+      //   background: '#fff',
+      //   color: '#000',
+      //   fontWeight: 'bold',
+      //   borderRadius: 10,
+      // }
     }
 
     return (
@@ -74,26 +103,26 @@ const ProductDetail = () => {
         <ButtonGroup aria-label="small outlined button group"
           sx={{ marginLeft: 2, marginTop: 0.5 }}>
           {
-            quantityValue == 1 ?
+            quantityButtonEnable.decrease == false ?
               <ThemeProvider theme={btnTheme}>
-                <Button variant="contained" onClick={handleDecrementQuantity} sx={style} disable > - </Button>
+                <Button variant="contained" onClick={handleDecrementQuantity} sx={style.enable} disable > - </Button>
               </ThemeProvider>
               :
               <ThemeProvider theme={btnTheme}>
-                <Button variant="contained" onClick={handleDecrementQuantity} sx={style}> - </Button>
+                <Button variant="contained" onClick={handleDecrementQuantity} sx={style.enable}> - </Button>
               </ThemeProvider>
           }
 
           <div className="quantity__button-text">{quantityValue}</div>
 
           {
-            quantityValue == sizeValue.quantity ?
+            quantityButtonEnable.increase == false ? 
               <ThemeProvider theme={btnTheme}>
-                <Button variant="contained" onClick={handleIncrementQuantity} sx={style} disable> + </Button>
+                <Button variant="contained" onClick={handleIncrementQuantity} sx={style.enable} disable> + </Button>
               </ThemeProvider>
               :
               <ThemeProvider theme={btnTheme}>
-                <Button variant="contained" onClick={handleIncrementQuantity} sx={style}> + </Button>
+                <Button variant="contained" onClick={handleIncrementQuantity} sx={style.enable}> + </Button>
               </ThemeProvider>
           }
         </ButtonGroup>
@@ -129,7 +158,7 @@ const ProductDetail = () => {
       <div className="product-detail__container">
         <Box sx={{ height: 'auto', marginTop: 20, marginBottom: 15 }}>
           <Grid container spacing={2}>
-            <Grid sx={6}>
+            <Grid xs={6}>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
                 <div className="product-details__container__price">{item.price}</div>
@@ -209,9 +238,12 @@ const ProductDetail = () => {
 
             </Grid>
 
-            <Grid sx={6}>
-              <Box sx={{marginTop: 8}}>
-                 <ProductPhotoSwiper images = {item.images}/> 
+            <Grid xs={6}>
+              <Box xs={{ marginTop: 8 }}>
+                {
+                  item == null ? null :
+                    <ProductPhotoSwiper images={item.images} />
+                }
               </Box>
             </Grid>
 
@@ -220,7 +252,7 @@ const ProductDetail = () => {
         </Box>
       </div>
 
-      
+
       <Footer />
 
     </div>

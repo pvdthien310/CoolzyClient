@@ -48,6 +48,8 @@ div {
     padding-right: 1rem;
     font-weight: bold;
     padding-top: 0.3rem;
+    width: 3rem;
+    text-align: center;
 }
 
 .product-details__container__remains {
