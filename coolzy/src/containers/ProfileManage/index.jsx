@@ -256,31 +256,34 @@ export const ProfileManage = () => {
     }
 
     const changePassword = async () => {
-        setValues({
+        const temp = {
             ...values,
             password: encode(passwords.repeatNew)
-        })
-
-        console.log(values)
-        // if (validatePassword()) {
-        //     setIsLoading(true)
-        //     try {
-        //         const resultAction = await dispatch(updateAccount(values))
-        //         const originalPromiseResult = unwrapResult(resultAction)
-        //         setIsLoading(false)
-        //         setUpdateSucceeded({
-        //             status: true,
-        //             message: 'Update your password successfully!'
-        //         })
-        //     } catch (rejectedValueOrSerializedError) {
-        //         if (rejectedValueOrSerializedError != null) {
-        //             setUpdateSucceeded({
-        //                 status: true,
-        //                 message: 'Sorry! There are something wrong with your request'
-        //             })
-        //         }
-        //     }
-        // }
+        }
+        console.log(temp)
+        if (validatePassword()) {
+            setIsLoading(true)
+            try {
+                const resultAction = await dispatch(updateAccount(temp))
+                const originalPromiseResult = unwrapResult(resultAction)
+                setIsLoading(false)
+                setUpdateSucceeded({
+                    status: true,
+                    message: 'Update your password successfully!'
+                })
+                setValues({
+                    ...values,
+                    password: encode(passwords.repeatNew)
+                })
+            } catch (rejectedValueOrSerializedError) {
+                if (rejectedValueOrSerializedError != null) {
+                    setUpdateSucceeded({
+                        status: true,
+                        message: 'Sorry! There are something wrong with your request'
+                    })
+                }
+            }
+        }
     }
 
     const validateInformation = () => {
@@ -363,6 +366,7 @@ export const ProfileManage = () => {
 
     return (
         <div className="profile__container">
+            <Navbar />
             <Helmet>
                 <title>Profile</title>
             </Helmet>
@@ -606,7 +610,5 @@ export const ProfileManage = () => {
             {isLoading && <Loading />}
             <Success message={updateSucceeded.message} status={updateSucceeded.status} />
         </div>
-        //  : <Loading />
-        //         }
     )
 }

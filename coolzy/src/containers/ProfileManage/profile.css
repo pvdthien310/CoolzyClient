@@ -9,7 +9,7 @@ div {
 
 .line {
   height: 1px;
-  background-color: red;
+  background-color: #9ba7bf;
   margin-top: 5px;
   margin-bottom: 30px;
 }
@@ -57,7 +57,7 @@ div {
 
 .profile-information__title,
 .password-information__title {
-  color: red;
+  color: #c4d4f2;
   font-size: 1.5rem;
   font-weight: bold;
 }
