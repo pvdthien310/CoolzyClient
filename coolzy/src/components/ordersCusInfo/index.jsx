@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit';
-// import { getAccountWithID } from '../../redux/slices/accountSlice';
+import { getAccountWithEmail } from '../../redux/slices/accountSlices';
 import CircularProgress from '@mui/material/CircularProgress';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -12,26 +12,27 @@ import Typography from '@mui/material/Typography';
 const CusInfo = (props) => {
     const [customer, setCustomer] = React.useState([]);
 
-    const { userID } = props
+    const { email } = props
 
     const dispatch = useDispatch()
 
-    // React.useEffect(async () => {
-    //     if (customer.length === 0) {
-    //         try {
-    //             const resultAction = await dispatch(getAccountWithID(userID))
-    //             const originalPromiseResult = unwrapResult(resultAction)
-    //             // handle result here
-    //             setCustomer([...customer, originalPromiseResult])
-    //         } catch (rejectedValueOrSerializedError) {
-    //             // handle error here
-    //             console.log(rejectedValueOrSerializedError.message);
-    //         }
-    //     }
-    //     return () => {
-    //         setCustomer({});
-    //     };
-    // }, [])
+    React.useEffect(async () => {
+        if (customer.length === 0) {
+            try {
+                const resultAction = await dispatch(getAccountWithEmail(email))
+                const originalPromiseResult = unwrapResult(resultAction)
+                // handle result here
+                setCustomer([...customer, originalPromiseResult])
+                console.log(originalPromiseResult);
+            } catch (rejectedValueOrSerializedError) {
+                // handle error here
+                console.log(rejectedValueOrSerializedError.message);
+            }
+        }
+        return () => {
+            setCustomer({});
+        };
+    }, [])
 
     React.useEffect(() => {
         if (customer.length != 0) {
@@ -49,20 +50,20 @@ const CusInfo = (props) => {
                     display: 'flex',
                     flexDirection: 'row',
                 }}>
-                    <Avatar alt="" src={customer[0].avatar} sx={{ width: 100, height: 100 }} />
+                    {/* <Avatar alt="" src={customer[0].avatar} sx={{ width: 100, height: 100 }} /> */}
                     <div style={{ display: 'flex', flexDirection: 'column', padding: '15px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>Email:</Typography>
+                            <Typography style={{ fontWeight: 'bold', color: 'green' }}>Email:</Typography>
                             <Typography style={{ marginLeft: '5px', color: '#404040', fontWeight: 'italic', textDecoration: 'underline' }}>{customer[0].email}</Typography>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>Name:</Typography>
+                            <Typography style={{ fontWeight: 'bold', color: 'green' }}>Name:</Typography>
                             <Typography style={{ marginLeft: '5px', color: '#404040' }}>{customer[0].name}</Typography>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>Contact:</Typography>
+                            <Typography style={{ fontWeight: 'bold', color: 'green' }}>Contact:</Typography>
                             <Typography style={{ marginLeft: '5px', color: '#404040' }}>{customer[0].phoneNumber}</Typography>
                         </div>
                     </div>

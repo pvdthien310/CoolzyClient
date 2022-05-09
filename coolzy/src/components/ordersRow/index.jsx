@@ -36,10 +36,11 @@ import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import { Modal } from '@mui/material';
 import { Stack } from '@mui/material';
-import TableInvoiceItem from '../InvoiceTableInvoiceItem';
+import TableOrderItem from '../ordersTableItem';
 import { userSelector } from '../../redux/selectors';
 import ProdInfo from './../ordersProdInfo/index';
 import IOSSwitch from './../ordersIOSSwitch/index';
+import { updateOrder } from '../../redux/slices/orderSlice';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -94,15 +95,13 @@ const Row = (props) => {
     const [disablePaid, setDisablePaid] = React.useState(false)
     const [disableCheck, setDisableCheck] = React.useState(false)
 
-    const [isChecked, setIsChecked] = React.useState(row.isChecked)
-    const [isPaid, setIsPaid] = React.useState(row.isPaid)
+    // const [isChecked, setIsChecked] = React.useState(row.isChecked)
+    const [status, setStatus] = React.useState(row.status)
 
     const [dataForUpdate, setDataForUpdate] = React.useState({
-        invoiceID: row.invoiceID,
-        moneyReceived: row.moneyReceived,
+        _id: row._id,
         total: row.total,
-        isChecked: row.isChecked,
-        isPaid: row.isPaid
+        status: row.status
     })
 
     //for snackbar
@@ -127,119 +126,72 @@ const Row = (props) => {
     }, [updating])
 
     const handleClickPaidInvoice = async () => {
-        if (isPaid === true) {
+        if (status === "shipped") {
+            setUpdating(true)
+            try {
+                const temp = {
+                    ...dataForUpdate,
+                    status: "shipping",
+                    total: Total()
+                }
+                const resultAction = await dispatch(updateOrder(temp))
+                const originalPromiseResult = unwrapResult(resultAction)
+                console.log(originalPromiseResult)
+                // setDataForUpdate(temp)
+                setStatus("shipping");
+                setUpdating(false)
+                setOpenSnackbar(true)
+                setDisablePaid(false)
+            } catch (rejectedValueOrSerializedError) {
+                // handle error here
+                console.log(rejectedValueOrSerializedError.message);
+            }
+        } else {
             setUpdating(true)
             const temp = {
                 ...dataForUpdate,
-                isPaid: false,
-                moneyReceived: '0'
+                status: "shipped",
             }
             try {
-                const resultAction = await dispatch(updateInvoice(temp))
+                const resultAction = await dispatch(updateOrder(temp))
                 const originalPromiseResult = unwrapResult(resultAction)
                 // handle result here
             } catch (rejectedValueOrSerializedError) {
                 // handle error here
                 console.log(rejectedValueOrSerializedError.message);
             }
-            setDataForUpdate(temp)
-            setIsPaid(false);
             setUpdating(false)
             setOpenSnackbar(true)
-            setDisablePaid(false)
-        } else {
-            if (isChecked === false) {
-                console.log("Have to check invoice first");
-            } else {
-                setUpdating(true)
-                const temp = {
-                    ...dataForUpdate,
-                    isPaid: true,
-                    moneyReceived: invoiceTotal
-                }
-                try {
-                    const resultAction = await dispatch(updateInvoice(temp))
-                    const originalPromiseResult = unwrapResult(resultAction)
-                    // handle result here
-                } catch (rejectedValueOrSerializedError) {
-                    // handle error here
-                    console.log(rejectedValueOrSerializedError.message);
-                }
-                setUpdating(false)
-                setOpenSnackbar(true)
-                setDataForUpdate(temp)
-                setIsPaid(true)
-                setDisablePaid(true)
-                setDisableCheck(true)
-            }
+            setDataForUpdate(temp)
+            setStatus("shipped")
+            setDisablePaid(true)
+            setDisableCheck(true)
         }
     }
 
     function Total() {
         let total = 0;
-        for (let i = 0; i < row.invoiceitem.length; i++) {
-            total = total + Number(row.invoiceitem[i].total)
+        for (let i = 0; i < row.items.length; i++) {
+            total = total + Number(row.items[i].total)
         }
         return total;
     }
 
-    const [invoiceTotal, setInvoiceTotal] = React.useState(0)
+    const [orderTotal, setOrderTotal] = React.useState(0)
 
     React.useEffect(() => {
-        if (invoiceTotal === null) {
-            setInvoiceTotal(Total())
+        if (orderTotal === 0) {
+            setOrderTotal(Total())
         }
     }, [])
 
-    const handleClickCheckInvoice = async () => {
-        if (isChecked === true) {
-            if (isPaid === true) {
-                alert("Can not accept this action")
-            } else {
-                setUpdating(true)
-                const temp = {
-                    ...dataForUpdate,
-                    isChecked: false,
-                }
-                try {
-                    const resultAction = await dispatch(updateInvoice(temp))
-                    const originalPromiseResult = unwrapResult(resultAction)
-                    // handle result here
-                } catch (rejectedValueOrSerializedError) {
-                    // handle error here
-                    console.log(rejectedValueOrSerializedError.message);
-                }
-                setUpdating(false)
-                setOpenSnackbar(true)
-                setIsChecked(false)
-                setDisablePaid(true)
-            }
-        } else {
-            setUpdating(true)
-            const temp = {
-                ...dataForUpdate,
-                isChecked: true,
-            }
-            try {
-                const resultAction = await dispatch(updateInvoice(temp))
-                const originalPromiseResult = unwrapResult(resultAction)
-                // handle result here
-            } catch (rejectedValueOrSerializedError) {
-                // handle error here
-                console.log(rejectedValueOrSerializedError.message);
-            }
-            setUpdating(false)
-            setOpenSnackbar(true)
-            setIsChecked(true)
-            setDisablePaid(false)
-        }
-    }
     const [openModalBill, setOpenModalBill] = React.useState(false)
     const closeModalBill = () => {
         setOpenModalBill(false)
     }
 
     return (
+
         <React.Fragment >
             <TableRow sx={{ '& > *': { borderBottom: 'set', backgroundColor: '#384D59' } }}>
                 <TableCell>
@@ -254,7 +206,7 @@ const Row = (props) => {
                 </TableCell>
                 <TableCell scope="row">
                     <Box>
-                        <Typography style={{ color: '#52BF04', fontWeight: 'bold' }}>{row.invoiceID}</Typography>
+                        <Typography style={{ color: '#52BF04', fontWeight: 'bold' }}>{row._id}</Typography>
                     </Box>
                 </TableCell>
                 <TableCell align="center">
@@ -262,7 +214,7 @@ const Row = (props) => {
                         aria-describedby={id}
                         onClick={handleClick}
                     >
-                        {row.account.userid}
+                        {row.email}
                     </Button>
                     <Popover
                         id={id}
@@ -274,41 +226,29 @@ const Row = (props) => {
                             horizontal: 'right',
                         }}
                     >
-                        <CusInfo userID={row.account.userid} />
+                        <CusInfo email={row.email} />
                     </Popover>
                 </TableCell>
                 <TableCell align="center" style={{ color: '#F2EFE9' }}>{row.date}</TableCell>
-                <TableCell align="center" style={{ color: '#F2EFE9', fontWeight: 'bold' }}>{invoiceTotal}</TableCell>
+                <TableCell align="center" style={{ color: '#F2EFE9', fontWeight: 'bold' }}>{orderTotal}</TableCell>
                 <TableCell align="center">
                     <FormGroup>
                         <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={isChecked} />}
+                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={row.status} />}
                             label=""
-                            checked={isChecked}
-                            disabled={disableCheck}
-                            onClick={handleClickCheckInvoice}
-                        />
-                    </FormGroup>
-                </TableCell>
-                <TableCell align="center" style={{ fontWeight: 'bold', color: '#F2EFE9' }}>{dataForUpdate.moneyReceived}</TableCell>
-                <TableCell align="center">
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={row.isPaid} />}
-                            label=""
-                            checked={isPaid}
+                            checked={status}
                             disabled={disablePaid}
                             onClick={handleClickPaidInvoice}
                         />
                     </FormGroup>
                 </TableCell>
-                {isPaid ? (
+                {status === "shipped" ? (
                     <TableCell align="center">
                         <Button onClick={() => setOpenModalBill(true)}>Print</Button>
                     </TableCell>
                 ) : (
                     <TableCell align="center">
-                        <Typography>Paying...</Typography>
+                        <Typography>Shipping & Paying...</Typography>
                     </TableCell>
                 )}
             </TableRow>
@@ -324,20 +264,20 @@ const Row = (props) => {
                                     <TableRow>
                                         <TableCell style={{ fontWeight: 'bold', color: '#F2EFE9' }}>Product ID</TableCell>
                                         <TableCell align="center" style={{ color: '#F2EFE9' }}>Amount</TableCell>
-                                        <TableCell align="center" style={{ color: '#F2EFE9' }}>Total price (USD)</TableCell>
+                                        <TableCell align="center" style={{ color: '#F2EFE9' }}>Total price (VND)</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.invoiceitem.map((detailsRow) => (
-                                        detailsRow.productid != null ? (
-                                            <TableRow key={detailsRow.productid}>
+                                    {row.items.map((detailsRow) => (
+                                        detailsRow._itemid != null ? (
+                                            <TableRow key={detailsRow._itemid}>
                                                 <TableCell component="th" scope="row">
                                                     <Button
                                                         aria-describedby={id}
                                                         onClick={handleProductPopoverOpen}
                                                         style={{ fontWeight: 'bold', color: '#52BF04', fontStyle: 'italic' }}
                                                     >
-                                                        {detailsRow.productid}
+                                                        {detailsRow._itemid}
                                                     </Button>
                                                     <Popover
                                                         id={id}
@@ -350,10 +290,10 @@ const Row = (props) => {
                                                         onClose={handleProductPopoverClose}
                                                     // disableRestoreFocus
                                                     >
-                                                        <ProdInfo productID={detailsRow.productid} />
+                                                        <ProdInfo productID={detailsRow._itemid} />
                                                     </Popover>
                                                 </TableCell>
-                                                <TableCell align="center">{detailsRow.amount}</TableCell>
+                                                <TableCell align="center">{detailsRow.quantity}</TableCell>
                                                 <TableCell align="center" style={{ fontWeight: 'bold', color: 'black' }}>{detailsRow.total}</TableCell>
                                             </TableRow>
                                         ) : (
@@ -433,19 +373,19 @@ const Row = (props) => {
                         <Stack direction="row" width="100%" sx={{ marginRight: '2rem', marginTop: '1.5rem', backgroundColor: 'grey' }}>
                             <Stack width="50%">
                                 <ClientDetails
-                                    clientName={row.account.name}
-                                    clientAddress={row.account.address}
+                                    clientName={row.name}
+                                    clientAddress={row.address}
                                 />
                             </Stack>
                             <Stack>
-                                <MainDetails contact={_currentUser.phoneNumber} name={"Printed by " + _currentUser.name}
+                                <MainDetails contact={_currentUser.phone} name={"Printed by " + _currentUser.name}
                                     address={"ComeBuy Store"} />
                             </Stack>
                         </Stack>
 
-                        <TableInvoiceItem
-                            list={row.invoiceitem}
-                            total={invoiceTotal}
+                        <TableOrderItem
+                            list={row.items}
+                            total={orderTotal}
                         />
                         <Notes notes="Online" />
                         <div style={{ marginLeft: '2rem', marginRight: '2rem', height: '1px', backgroundColor: 'grey' }}></div>
@@ -453,7 +393,7 @@ const Row = (props) => {
                             name={"Printed by " + _currentUser.name}
                             address={"ComeBuy Store"}
                             email={"Printer Email: " + _currentUser.email}
-                            phone={"Printer phone: " + _currentUser.phoneNumber}
+                            phone={"Printer phone: " + _currentUser.phone}
                         />
                     </Stack>
                     <ReactToPrint

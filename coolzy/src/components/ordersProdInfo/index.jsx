@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit';
-import { getProductWithID } from '../../redux/slices/productSlice';
+// import { getProductWithID } from '../../redux/slices/productSlice';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -16,22 +16,22 @@ const ProdInfo = (props) => {
 
     const dispatch = useDispatch()
 
-    React.useEffect(async () => {
-        if (product.length === 0) {
-            try {
-                const resultAction = await dispatch(getProductWithID(productID))
-                const originalPromiseResult = unwrapResult(resultAction)
-                // handle result here
-                setProduct([...product, originalPromiseResult])
-            } catch (rejectedValueOrSerializedError) {
-                // handle error here
-                console.log(rejectedValueOrSerializedError.message);
-            }
-        }
-        return () => {
-            setProduct({});
-        };
-    }, [])
+    // React.useEffect(async () => {
+    //     if (product.length === 0) {
+    //         try {
+    //             const resultAction = await dispatch(getProductWithID(productID))
+    //             const originalPromiseResult = unwrapResult(resultAction)
+    //             // handle result here
+    //             setProduct([...product, originalPromiseResult])
+    //         } catch (rejectedValueOrSerializedError) {
+    //             // handle error here
+    //             console.log(rejectedValueOrSerializedError.message);
+    //         }
+    //     }
+    //     return () => {
+    //         setProduct({});
+    //     };
+    // }, [])
 
     return (
         <div>

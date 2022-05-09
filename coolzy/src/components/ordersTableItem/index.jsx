@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { unwrapResult } from "@reduxjs/toolkit"
-import { getProductWithID } from "../../redux/slices/productSlice"
+// import { getProductWithID } from "../../redux/slices/productSlice"
 
-export default function TableInvoiceItem({ list, total }) {
+export default function TableOrderItem({ list, total }) {
 
     const [listProduct, setListProduct] = useState([])
 
@@ -20,10 +20,10 @@ export default function TableInvoiceItem({ list, total }) {
                 }
                 listTemp = [...listTemp, temp]
             } else {
-                const resultAction = await dispatch(getProductWithID(list[i].productid))
-                const originalPromiseResult = unwrapResult(resultAction)
-                // handle result here
-                listTemp = [...listTemp, originalPromiseResult]
+                // const resultAction = await dispatch(getProductWithID(list[i].productid))
+                // const originalPromiseResult = unwrapResult(resultAction)
+                // // handle result here
+                // listTemp = [...listTemp, originalPromiseResult]
             }
         }
 

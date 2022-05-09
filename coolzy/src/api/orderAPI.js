@@ -9,7 +9,7 @@ const invoiceAPI = {
         return res.data;
     },
     updateOrder: async (data) => {
-        const res = await DatabaseClient.put('/' + baseURL + '/' + data._id, data)
+        const res = await DatabaseClient.post('/' + baseURL + '/' + data._id, data)
             .catch(err => { return err.response })
         return res.data;
     },

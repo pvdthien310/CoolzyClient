@@ -100,10 +100,10 @@ const OrdersManagement = () => {
                             <TableCell style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Invoice ID</TableCell>
                             <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Customer ID</TableCell>
                             <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Date</TableCell>
-                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Total&nbsp;(USD)</TableCell>
-                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Is Checked ?</TableCell>
-                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Recieved&nbsp;(USD)</TableCell>
-                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Is Paid ?</TableCell>
+                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Total (VND)</TableCell>
+                            {/* <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Is Checked ?</TableCell> */}
+                            {/* <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Recieved&nbsp;(USD)</TableCell> */}
+                            <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Status</TableCell>
                             <TableCell align="center" style={{ color: '#0D0D0D', fontWeight: 'bold' }}>Print out</TableCell>
                         </TableRow>
                     </TableHead>

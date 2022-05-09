@@ -49,7 +49,7 @@ export const getAccountWithID = createAsyncThunk(
 export const getAccountWithEmail = createAsyncThunk(
     'account/findOneWithEmail',
     async (data, { rejectedWithValue }) => {
-        const response = await accountApi.getAccountbyEmail(data)
+        const response = await accountApi.getAccountByEmail(data)
         if (!response) {
             return false
         } else {

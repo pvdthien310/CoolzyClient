@@ -19,7 +19,7 @@ export const updateOrder = createAsyncThunk(
     async (data, { rejectedWithValue }) => {
         const response = await orderAPI.updateOrder(data)
         if (!response) {
-            return rejectedWithValue("Updated failed !")
+            return rejectedWithValue(false)
         } else {
             return response
         }
