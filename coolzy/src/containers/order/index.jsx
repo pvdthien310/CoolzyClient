@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
 
-const Order = () => {
+const OrderManager = () => {
     return (
         <Typography>Order Page</Typography>
     )
 }
 
-export default Order;
+export default OrderManager;

@@ -4,9 +4,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Product from '../product';
-import Staff from '../../containers/staff';
-import Order from '../../containers/order';
+import StaffManager from '../../containers/staff';
+import OrderManager from '../../containers/order';
+import ProductManager from '../../containers/product';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -43,7 +43,6 @@ function a11yProps(index) {
 
 export default function ManagerTabs(props) {
     const [value, setValue] = React.useState(0);
-    console.log(props.role)
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -52,6 +51,7 @@ export default function ManagerTabs(props) {
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tab label="Order" {...a11yProps(0)} />
                     {
                         props.role == 'Admin' &&
                         <Tab label="Product" {...a11yProps(1)} />
@@ -60,24 +60,25 @@ export default function ManagerTabs(props) {
                         props.role == 'Admin' &&
                         <Tab label="Staff" {...a11yProps(2)} />
                     }
-                    <Tab label="Order" {...a11yProps(0)} />
+
                 </Tabs>
             </Box>
+            <TabPanel value={value} index={0}>
+                <OrderManager />
+            </TabPanel>
             {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={1}>
-                    <Product />
+                    <ProductManager />
                 </TabPanel>
             }
             {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={2}>
-                    <Staff />
+                    <StaffManager />
                 </TabPanel>
             }
-            <TabPanel value={value} index={0}>
-                <Order />
-            </TabPanel>
+
         </Box>
     );
 }

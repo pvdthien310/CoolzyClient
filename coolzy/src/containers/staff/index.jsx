@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
 
-const Staff = () => {
+const StaffManager = () => {
     return (
         <Typography>Staff Page</Typography>
     )
 }
 
-export default Staff;
+export default StaffManager;
