@@ -85,7 +85,7 @@ const Login = () => {
             if (res) {
                 setValues({ ...values, isLoading: true })
                 JWTApi.login(values.email.trim(), values.password)
-                    .then(res => {
+                    .then(async res => {
                         setValues({ ...values, isLoading: false })
                         if (res == "Email not exist") {
                             setEmailWarningVisible(true)
@@ -111,8 +111,11 @@ const Login = () => {
                                 localStorage.setItem(encode("rememberEmail"), encode(values.email))
                                 localStorage.setItem(encode("rememberPassword"), encode(values.password))
                             }
-
-                            navigate('/')
+                            await accountApi.getAccountByEmail(values.email).then(res2 => {
+                                dispatch(accountSlice.actions.update(res2.data))
+                                navigate('/')
+                            }).catch(err => console.log(err))
+                           
                             return
                         }
                     }).catch(err => console.log(err))
