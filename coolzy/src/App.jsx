@@ -6,12 +6,14 @@ import { ProfileManage } from './containers/ProfileManage';
 
 import Login from './containers/login';
 import Register from './containers/register/index';
+import OrdersManagement from './containers/ordersManagement/index';
 
 function App() {
 
     return (
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
+            <Route path="/ordersManagement" element={<OrdersManagement />} />
             <Route path="/" element={
                 <Home />
             } />

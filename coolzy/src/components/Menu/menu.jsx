@@ -30,7 +30,8 @@ const CustomMenu = ({ accountToggleHandle }) => {
     return (
         <div className='menu' >
             <div className='menu__item'>
-                <p onClick={() => { navigate('/manageProfile') }}>Profile</p>
+                {/* <p onClick={() => { navigate('/manageProfile') }}>Profile</p> */}
+                <p onClick={() => { navigate('/ordersManagement') }}>Profile</p>
                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
             </div>
 
