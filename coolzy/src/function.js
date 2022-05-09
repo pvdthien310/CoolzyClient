@@ -33,5 +33,8 @@ const mFunction = {
         return result;
     },
 
+    removeDuplicates: (array) => {
+        return Array.from(new Set(array))
+    }
 }
 module.exports = mFunction;

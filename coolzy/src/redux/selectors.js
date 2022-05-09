@@ -1,1 +1,1 @@
-export const userSelector = (state) => state.account.user
+export const currentUser = (state) => state.account.user
