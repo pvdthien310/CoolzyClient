@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit';
-// import { getProductWithID } from '../../redux/slices/productSlice';
+import { getClothesWithID } from '../../redux/slices/clothSlice';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -16,22 +16,23 @@ const ProdInfo = (props) => {
 
     const dispatch = useDispatch()
 
-    // React.useEffect(async () => {
-    //     if (product.length === 0) {
-    //         try {
-    //             const resultAction = await dispatch(getProductWithID(productID))
-    //             const originalPromiseResult = unwrapResult(resultAction)
-    //             // handle result here
-    //             setProduct([...product, originalPromiseResult])
-    //         } catch (rejectedValueOrSerializedError) {
-    //             // handle error here
-    //             console.log(rejectedValueOrSerializedError.message);
-    //         }
-    //     }
-    //     return () => {
-    //         setProduct({});
-    //     };
-    // }, [])
+    React.useEffect(async () => {
+        if (product.length === 0) {
+            try {
+                const resultAction = await dispatch(getClothesWithID(productID))
+                const originalPromiseResult = unwrapResult(resultAction)
+                // handle result here
+                setProduct([...product, originalPromiseResult])
+                //console.log(originalPromiseResult)
+            } catch (rejectedValueOrSerializedError) {
+                // handle error here
+                alert(rejectedValueOrSerializedError.message);
+            }
+        }
+        return () => {
+            setProduct({});
+        };
+    }, [])
 
     return (
         <div>
@@ -44,7 +45,7 @@ const ProdInfo = (props) => {
                     display: 'flex',
                     flexDirection: 'row',
                 }}>
-                    <img alt="" src={product[0].productimage[0].imageURL} style={{ width: 'auto', maxWidth: 200 }} />
+                    <img alt="" src={product[0].images[0]} style={{ width: 'auto', maxWidth: 200 }} />
                     <div style={{ display: 'flex', flexDirection: 'column', padding: '15px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <Typography style={{ fontWeight: 'bold' }}>Brand:</Typography>
@@ -59,16 +60,6 @@ const ProdInfo = (props) => {
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <Typography style={{ fontWeight: 'bold' }}>Price:</Typography>
                             <Typography style={{ marginLeft: '5px' }}>${product[0].price}</Typography>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>RAM/GPU/CPU:</Typography>
-                            <Typography style={{ marginLeft: '5px' }}>{`${product[0].ram} GB / ${product[0].gpu} / ${product[0].cpu}`}</Typography>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>ROM/Weight/External IO Port:</Typography>
-                            <Typography style={{ marginLeft: '5px' }}>{`${product[0].memory} GB / ${product[0].weight} kg / ${product[0].externalIOPort}`}</Typography>
                         </div>
                     </div>
                 </div>

@@ -13,13 +13,13 @@ import './profile.css'
 import Footer from '../../components/footer'
 import Navbar from '../../components/navbar'
 import { useSelector, useDispatch } from 'react-redux';
-import { userSelector } from '../../redux/selectors';
 import accountApi from '../../api/accountAPI';
 import { accountSlice, updateAccount } from '../../redux/slices/accountSlices';
 import Message from '../../components/Message';
 import Loading from './../../components/Loading/loading';
 import { Success } from '../../components/alert/alert';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { currentUser } from './../../redux/selectors';
 
 export const ProfileManage = () => {
     const TextFieldTheme = createTheme({
@@ -40,7 +40,7 @@ export const ProfileManage = () => {
         },
     })
 
-    const currentUser = useSelector(userSelector)
+    const currentUser = useSelector(currentUser)
     const dispatch = useDispatch()
 
     const [isLoading, setIsLoading] = useState(false)

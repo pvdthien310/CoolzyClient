@@ -37,7 +37,7 @@ import Button from '@mui/material/Button';
 import { Modal } from '@mui/material';
 import { Stack } from '@mui/material';
 import TableOrderItem from '../ordersTableItem';
-import { userSelector } from '../../redux/selectors';
+import { currentUser } from '../../redux/selectors';
 import ProdInfo from './../ordersProdInfo/index';
 import IOSSwitch from './../ordersIOSSwitch/index';
 import { updateOrder } from '../../redux/slices/orderSlice';
@@ -51,7 +51,7 @@ const Row = (props) => {
     const handlePrint = () => {
         window.print()
     }
-    const _currentUser = useSelector(userSelector)
+    const _currentUser = useSelector(currentUser)
 
     const { row } = props;
     const [open, setOpen] = React.useState(false);
@@ -93,9 +93,7 @@ const Row = (props) => {
 
     //Execute process of managing invoice
     const [disablePaid, setDisablePaid] = React.useState(false)
-    const [disableCheck, setDisableCheck] = React.useState(false)
 
-    // const [isChecked, setIsChecked] = React.useState(row.isChecked)
     const [status, setStatus] = React.useState(row.status)
 
     const [dataForUpdate, setDataForUpdate] = React.useState({
@@ -164,8 +162,6 @@ const Row = (props) => {
             setOpenSnackbar(true)
             setDataForUpdate(temp)
             setStatus("shipped")
-            setDisablePaid(true)
-            setDisableCheck(true)
         }
     }
 
@@ -234,10 +230,9 @@ const Row = (props) => {
                 <TableCell align="center">
                     <FormGroup>
                         <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={row.status} />}
+                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={status === "shipping" ? false : true} />}
                             label=""
-                            checked={status}
-                            disabled={disablePaid}
+                            checked={status === "shipping" ? false : true}
                             onClick={handleClickPaidInvoice}
                         />
                     </FormGroup>
@@ -352,21 +347,12 @@ const Row = (props) => {
                                         fontSize: '30px',
                                         fontWeight: 'bold',
                                         letterSpacing: '0.1rem',
-                                        marginTop: '1.2rem'
+
+                                        color: 'black'
                                     }}
                                 >
-                                    ComeBuy
+                                    Coolzy
                                 </h1>
-                                <Typography
-                                    sx={{
-                                        marginTop: '-7%',
-                                        fontSize: '13px',
-                                        color: 'grey',
-                                        marginLeft: '2rem'
-                                    }}
-                                >
-                                    invoice at branch
-                                </Typography>
                             </Stack>
                         </Stack>
                         {/* <div style={{ height: '0.5px', backgroundColor: 'grey', marginLeft: '3rem', marginRight: '3rem' }}> </div> */}
@@ -378,8 +364,8 @@ const Row = (props) => {
                                 />
                             </Stack>
                             <Stack>
-                                <MainDetails contact={_currentUser.phone} name={"Printed by " + _currentUser.name}
-                                    address={"ComeBuy Store"} />
+                                <MainDetails contact={_currentUser.phoneNumber} name={"Printed by " + _currentUser.name}
+                                    address={"Coolzy Store"} />
                             </Stack>
                         </Stack>
 
@@ -388,12 +374,11 @@ const Row = (props) => {
                             total={orderTotal}
                         />
                         <Notes notes="Online" />
-                        <div style={{ marginLeft: '2rem', marginRight: '2rem', height: '1px', backgroundColor: 'grey' }}></div>
+                        <div style={{ marginLeft: '2rem', marginRight: '2rem', height: '1px', backgroundColor: 'gray' }}></div>
                         <Footer
                             name={"Printed by " + _currentUser.name}
-                            address={"ComeBuy Store"}
                             email={"Printer Email: " + _currentUser.email}
-                            phone={"Printer phone: " + _currentUser.phone}
+                            phone={"Printer phone: " + _currentUser.phoneNumber}
                         />
                     </Stack>
                     <ReactToPrint

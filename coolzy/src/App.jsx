@@ -15,6 +15,7 @@ import accountApi from './api/accountAPI';
 import JWTApi from './api/jwtAPI';
 import { decode, encode } from 'base-64';
 import { accountSlice } from './redux/slices/accountSlices';
+import { ProfileManage } from './containers/ProfileManage';
 
 function App() {
     const _currentUser = useSelector(currentUser)

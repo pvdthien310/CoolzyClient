@@ -3,8 +3,9 @@ const Header = ({ handlePrint }) => {
     <>
       <h1 style={{
         fontWeight: 'bold',
-        fontSize: '30px',
-        marginLeft: '3rem'
+        fontSize: '26px',
+        marginLeft: '3rem',
+        color: 'black'
       }}>
         INVOICE
       </h1>

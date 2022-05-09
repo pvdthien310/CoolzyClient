@@ -10,7 +10,8 @@ const MainDetails = ({ name, address, contact }) => {
         style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          alignSelf: 'flex-end'
+          alignSelf: 'flex-end',
+          color: 'black'
         }}
       >
         Staff: {name}
@@ -19,7 +20,8 @@ const MainDetails = ({ name, address, contact }) => {
         style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          alignSelf: 'flex-end'
+          alignSelf: 'flex-end',
+          color: 'black'
         }}
       >
         Staff phone: {contact}
@@ -28,7 +30,8 @@ const MainDetails = ({ name, address, contact }) => {
         style={{
           fontSize: '14px',
           fontStyle: 'italic',
-          alignSelf: 'flex-end'
+          alignSelf: 'flex-end',
+          color: 'black'
         }}
       >
         {address}

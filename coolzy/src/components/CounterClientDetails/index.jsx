@@ -18,6 +18,7 @@ const ClientDetails = ({ clientName, clientAddress }) => {
         style={{
           fontSize: '14px',
           fontWeight: 'bold',
+          color: 'black'
         }}
       >
         {clientName}
@@ -26,6 +27,7 @@ const ClientDetails = ({ clientName, clientAddress }) => {
         style={{
           fontSize: '14px',
           fontStyle: 'italic',
+          color: 'black'
         }}
       >
         {clientAddress}

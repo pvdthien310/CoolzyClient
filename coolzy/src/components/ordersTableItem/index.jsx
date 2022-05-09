@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { unwrapResult } from "@reduxjs/toolkit"
-// import { getProductWithID } from "../../redux/slices/productSlice"
+import { getClothesWithID } from "../../redux/slices/clothSlice"
 
 export default function TableOrderItem({ list, total }) {
 
@@ -11,22 +11,12 @@ export default function TableOrderItem({ list, total }) {
     const fetchListProduct = async () => {
         let listTemp = []
         for (let i = 0; i < list.length; i++) {
-            if (list[i].productid === null) {
-                let price = list[i].total / list[i].amount;
-                let temp = {
-                    productID: null,
-                    name: "This product might not be on shop anymore",
-                    price: price
-                }
-                listTemp = [...listTemp, temp]
-            } else {
-                // const resultAction = await dispatch(getProductWithID(list[i].productid))
-                // const originalPromiseResult = unwrapResult(resultAction)
-                // // handle result here
-                // listTemp = [...listTemp, originalPromiseResult]
-            }
-        }
 
+            const resultAction = await dispatch(getClothesWithID(list[i]._itemid))
+            const originalPromiseResult = unwrapResult(resultAction)
+            // handle result here
+            listTemp = [...listTemp, originalPromiseResult]
+        }
         setListProduct(listTemp)
         setReady(true)
     }
@@ -42,31 +32,31 @@ export default function TableOrderItem({ list, total }) {
             <table width="100%" style={{ marginLeft: '1.5rem', marginTop: '1.5rem' }}>
                 <thead>
                     <tr style={{ marginRight: '2rem' }}>
-                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'grey' }}>Description</td>
-                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'grey' }}>Quantity</td>
-                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'grey' }}>Price</td>
-                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'grey' }}>Amount</td>
+                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'gray' }}>Description</td>
+                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'gray' }}>Quantity</td>
+                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'gray' }}>Price</td>
+                        <td style={{ letterSpacing: '0.1rem', fontSize: '14px', color: 'gray' }}>Amount</td>
                     </tr>
                 </thead>
                 {listProduct.map((p) => (
                     <React.Fragment>
                         <tbody>
                             <tr>
-                                <td style={{ fontSize: '13px' }}>{p.name}</td>
+                                <td style={{ fontSize: '13px', color: 'black' }}>{p.name}</td>
                                 {
                                     list.map((i) => (
-                                        p.productID === i.productid ? (
-                                            <td style={{ fontFamily: 'serif', display: 'flex', justifyContent: 'center', fontSize: '13px' }}>{i.amount}</td>
+                                        p._id === i._itemid ? (
+                                            <td style={{ fontFamily: 'serif', display: 'flex', justifyContent: 'center', fontSize: '13px', color: 'black' }}>{i.quantity}</td>
                                         ) : (
                                             null
                                         )
                                     ))
                                 }
-                                <td style={{ fontFamily: 'serif', width: 'auto' }}>💸{p.price}</td>
+                                <td style={{ fontFamily: 'serif', width: 'auto', color: 'black' }}>💸{p.price}</td>
                                 {
                                     list.map((i) => (
-                                        p.productID === i.productid ? (
-                                            <td style={{ fontFamily: 'serif' }}>💸{i.total}</td>
+                                        p._id === i._itemid ? (
+                                            <td style={{ fontFamily: 'serif', color: 'black' }}>💸{i.total}</td>
                                         ) : (
                                             null
                                         )
@@ -79,7 +69,7 @@ export default function TableOrderItem({ list, total }) {
             </table>
 
             <div>
-                <h2 style={{ display: 'flex', justifyContent: 'flex-end', justifyItems: 'flex-end', fontWeight: 'bold', fontFamily: 'serif' }}>
+                <h2 style={{ display: 'flex', color: 'black', justifyContent: 'flex-end', justifyItems: 'flex-end', fontWeight: 'bold', fontFamily: 'serif' }}>
                     Total cost. {total} USD
                 </h2>
             </div>
