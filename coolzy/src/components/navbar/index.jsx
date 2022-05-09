@@ -48,10 +48,15 @@ const Navbar = () => {
 
             jwtAPI.login(email, password)
                 .then(async res => {
+                    console.log(res)
                     if (res != "Email not exist" && res != "Password incorrect") {
                         await accountApi.getAccountByEmail(email).then(res2 => {
                             dispatch(accountSlice.actions.update(res2.data))
                         }).catch(err => console.log(err))
+                    }
+                    else {
+                        localStorage.setItem("logged", false)
+                        navigate('/login')
                     }
                 })
                 .catch(err => console.log(err))
