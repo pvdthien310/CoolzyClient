@@ -14,6 +14,8 @@ const ProductManager = () => {
                 <Route path="add" element={<AddProduct />}></Route>
                 <Route path="edit" element={<EditProduct />}></Route>
             </Routes>
+
+            
         </Stack>
 
     )
