@@ -14,7 +14,7 @@ const ProductManager = () => {
         <div className="product_manager">
 
             <div className="product_manager__button">
-                <CustomFillButton onClick={() => navigate('manager/product/add')}>Add</CustomFillButton>
+                <CustomFillButton onClick={() => navigate('manager/product/add')}>New</CustomFillButton>
                 <CustomOutlineButton onClick={() => navigate('manager/product/edit')}>Edit</CustomOutlineButton>
             </div>
 

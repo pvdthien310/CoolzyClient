@@ -55,11 +55,11 @@ function App() {
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
             <Route path="/ordersManagement" element={<OrdersManagement />} />
-            <Route path="/" element={
+            {/* <Route path="/" element={
                 <div>
                     <Home />
                 </div>
-            } />
+            } /> */}
 
             <Route path="/productDetail/:categoryId/:id" element={
                 <div>
