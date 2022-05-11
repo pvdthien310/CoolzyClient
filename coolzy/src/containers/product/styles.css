@@ -1,0 +1,10 @@
+.product_manager {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.product_manager__button {
+    display: flex;
+    align-self: flex-end;
+}
