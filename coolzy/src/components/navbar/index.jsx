@@ -3,7 +3,7 @@ import './styles.css'
 import logo_png from '../../assets/logo_png.png'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import CustomMenu from '../Menu/menu';
+import CustomMenu from '../menu/menu';
 
 import jwtAPI from './../../api/jwtAPI';
 import accountApi from './../../api/accountAPI';

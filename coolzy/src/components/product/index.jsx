@@ -16,6 +16,7 @@ const Product = () => {
                 .then(async (res) => {
                     let products = [];
                     let count = 0;
+                    console.log(res)
                     await res.data.listProduct.map(async (item, i) => {
 
                         await clothesApi.getById(item)
@@ -39,24 +40,24 @@ const Product = () => {
         const getCategories = () => {
             let arr = [];
             listHomeProduct.map((item, i) => {
-                //console.log(item._categoryId)
+
                 arr.push(item._categoryId)
             })
             setListCategoriesId(removeDuplicates(arr))
         }
-        if (listHomeProduct.length != 0) 
-            getCategories() 
+        if (listHomeProduct.length != 0)
+            getCategories()
     }, [listHomeProduct])
 
     return (
-                listCategoriesId && listCategoriesId.map((item, i) => {
-                    //console.log(item)
-                    return (
-                        // categoryId && 
-                        <ProductHomeSlider key = {i} categoryId={item} products={listHomeProduct} />
-                        //<Typography variant="h6">{item}</Typography>
-                        )
-                })
+        listCategoriesId && listCategoriesId.map((item, i) => {
+            //console.log(item)
+            return (
+                // categoryId && 
+                <ProductHomeSlider key={i} categoryId={item} products={listHomeProduct} />
+                //<Typography variant="h6">{item}</Typography>
+            )
+        })
     )
 }
 

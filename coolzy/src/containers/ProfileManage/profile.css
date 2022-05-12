@@ -1,6 +1,5 @@
-.profile__container div {
+div {
     font-family: var(--font-family);
-    color: white;
 }
 
 .clear {
