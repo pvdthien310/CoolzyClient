@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import clothesApi from '../../api/clothesAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import './styles.css'
-import Loading from './../loading/loading';
+import Loading from './../Loading/loading';
 
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';

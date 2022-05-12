@@ -1,75 +1,52 @@
 import { Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import accountApi from './../../api/accountAPI';
+import { Route, Routes, useNavigate } from "react-router-dom";
+import DisplayStaff from './displayStaff/displayStaff';
+import NewStaff from './newStaff/newStaff'
+import EditStaff from './editStaff/editStaff'
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
-import Row from '../../components/staffManageRow'
-import { createData } from '../../components/staffManageRow'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import { styled } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 const StaffManager = () => {
-    const [staffList, setStaffList] = useState([])
-    const [row, setRow] = useState([])
-
-    useEffect(async () => {
-        const getStaff = async () => {
-            await accountApi.getAllStaff()
-                .then((res) => {
-                    setStaffList(res.data)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        }
-
-        await getStaff()
-    }, [])
-
-    useEffect(() => {
-        let arr = [];
-        if (staffList.length > 0) {
-            staffList.map((staff) => arr = [...arr, createData(staff)])
-        }
-
-        setStaffList(arr)
-    }, [staffList])
-
+    const navigate = useNavigate()
     return (
         <div>
-            <Typography>Staff Page</Typography>
-            <StaffTable data = {staffList}/>
-
+            <Routes>
+                <Route path="manager/staff/" element={<DisplayStaff />}></Route>
+                <Route path="manager/staff/add" element={<NewStaff />}></Route>
+                <Route path="manager/staff/edit/:id" element={<EditStaff />}></Route>
+            </Routes>
         </div>
     )
 }
 
-const StaffTable = (props) => {
-    const data = props.data
-    return (
-        <TableContainer component={Paper}>
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell>Name</TableCell>
-                        <TableCell align="right">Email</TableCell>
-                        <TableCell align="right">Phone</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row) => (
-                        <Row key={row.name} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    )
-}
+export const CustomFillButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.getContrastText(grey[900]),
+    backgroundColor: grey[900],
+    '&:hover': {
+        backgroundColor: grey[700],
+    },
+    padding: '6px 35px',
+    marginLeft: '20px',
+    borderRadius: '10px'
 
+}));
+
+export const CustomOutlineButton = styled(Button)(({ theme }) => ({
+    color: grey[900],
+    borderColor: grey[900],
+    borderWidth: 1,
+    borderStyle: 'solid',
+    '&:hover': {
+        backgroundColor: grey[900],
+        color: theme.palette.getContrastText(grey[900]),
+    },
+    padding: '6px 35px',
+    marginLeft: '20px',
+    borderRadius: '10px'
+
+}));
 export default StaffManager;

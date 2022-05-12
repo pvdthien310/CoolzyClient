@@ -13,8 +13,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 import PersonIcon from '@mui/icons-material/Person';
@@ -22,6 +23,13 @@ import EmailIcon from '@mui/icons-material/Email';
 import HomeIcon from '@mui/icons-material/Home';
 import CakeIcon from '@mui/icons-material/Cake';
 import PhoneIcon from '@mui/icons-material/Phone';
+
+import { styles } from './styles'
+
+import { Route, Routes, useNavigate } from "react-router-dom";
+
+
+import { CustomFillButton, CustomOutlineButton } from './../../../containers/staff/index';
 
 export const createData = (staff) => {
   const email = staff.email
@@ -54,16 +62,16 @@ const Row = (props) => {
         <TableCell component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="right">{row.email}</TableCell>
-        <TableCell align="right">{row.phoneNumber}</TableCell>
+        <TableCell align="center">{row.email}</TableCell>
+        <TableCell align="center">{row.phoneNumber}</TableCell>
       </TableRow>
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Detail
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Staff information:
               </Typography >
 
               <StaffInformation data={row} />
@@ -88,91 +96,86 @@ Row.propTypes = {
 
 const StaffInformation = (props) => {
   const data = props.data
+  const navigate = useNavigate()
   return (
-    <Grid container spacing={2}>
-      <Grid>
-        <Item item xs={1}>
+    <Box sx={{ width: '70%'}}>
+      <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: "center" }}>
+        <Grid xs={1} rowSpacing={2} item>
           <PersonIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={4}>
-        <Item>Name: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.name}</Item>
-      </Grid>
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Name</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.name}</Typography>
+        </Grid>
 
-      <Grid>
-        <Item item xs={1}>
+        <Grid xs={1} item>
           <EmailIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={4}>
-        <Item>Email: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.email}</Item>
-      </Grid>
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Email</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.email}</Typography>
+        </Grid>
 
-      <Grid>
-        <Item item xs={1}>
+        <Grid xs={1} item>
           <PhoneIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={4}>
-        <Item>Phone: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.phoneNumber}</Item>
-      </Grid>
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Phone</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.phoneNumber}</Typography>
+        </Grid>
 
-      <Grid>
-        <Item item xs={1}>
+        <Grid item xs={1}>
           <HomeIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={4}>
-        <Item>Address: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.address}</Item>
-      </Grid>
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Address</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.address}</Typography>
+        </Grid>
 
-      <Grid>
-        <Item item xs={1}>
+        <Grid xs={1} item>
           <PersonIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={4}>
-        <Item>Gender: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.gender}</Item>
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Gender</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.gender}</Typography>
+        </Grid>
+
+
+        <Grid xs={1} item>
+          <CakeIcon />
+        </Grid>
+        <Grid xs={4} item>
+          <Typography sx={styles.title}>Birthday</Typography>
+        </Grid>
+        <Grid xs={7} item>
+          <Typography sx={styles.item}>{data.birthday}</Typography>
+        </Grid>
       </Grid>
 
-      <Grid>
-        <Item item xs={1}>
-          <CakeIcon />
-        </Item>
-      </Grid>
-      <Grid item xs={5}>
-        <Item>Birthday: </Item>
-      </Grid>
-      <Grid item xs={7}>
-        <Item>{data.birthday}</Item>
-      </Grid>
-    </Grid>
+      <Stack direction="row">
+        <CustomOutlineButton onClick={()=>{
+          navigate('/manager/staff/edit/'+data._id)
+        }}>
+          Modify
+        </CustomOutlineButton>
+
+        <CustomFillButton variant="contained">Delete</CustomFillButton>
+      </Stack>
+    </Box>
+
   )
 
 
 }
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 export default Row
