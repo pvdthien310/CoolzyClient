@@ -10,7 +10,6 @@ import ProductManager from '../../containers/product';
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red, grey } from "@mui/material/colors";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -24,9 +23,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
+                <Box sx={{ p: 3 }}>{children}</Box>
             )}
         </div>
     );
@@ -98,6 +95,7 @@ export default function ManagerTabs(props) {
                     </Tabs>
                 </Box>
             </ThemeProvider>
+
             <TabPanel value={value} index={0}>
                 <OrderManager />
             </TabPanel>

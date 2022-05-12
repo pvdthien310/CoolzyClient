@@ -12,7 +12,6 @@ const MainManager = () => {
     const _currentUser = useSelector(currentUser)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    console.log(_currentUser)
 
     const logoutHandle = () => {
         // accountToggleHandle()
