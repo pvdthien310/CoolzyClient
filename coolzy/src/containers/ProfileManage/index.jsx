@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import accountApi from '../../api/accountAPI';
 import { accountSlice, updateAccount } from '../../redux/slices/accountSlices';
 import Message from '../../components/Message';
-import Loading from './../../components/loading/loading';
+import Loading from './../../components/Loading/loading';
 import { Success } from '../../components/alert/alert';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { currentUser } from './../../redux/selectors';
