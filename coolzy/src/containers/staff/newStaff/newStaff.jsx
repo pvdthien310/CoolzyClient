@@ -10,26 +10,28 @@ import Button from '@mui/material/Button';
 
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import mFunction from '../../../function';
+import accountApi from './../../../api/accountAPI';
 
 const NewStaff = () => {
   const [validName, setValidName] = useState({
     check: true,
-    alert: ''
+    flag: ''
   })
 
   const [validEmail, setValidEmail] = useState({
     check: true,
-    alert: ''
+    flag: ''
   })
 
   const [validPhone, setValidPhone] = useState({
     check: true,
-    alert: ''
+    flag: ''
   })
 
   const [validAddress, setValidAddress] = useState({
     check: true,
-    alert: ''
+    flag: ''
   })
 
   const [values, setValues] = useState({
@@ -64,10 +66,89 @@ const NewStaff = () => {
     })
   };
 
+  const validate = async () => {
+    let check = true;
+    console.log("iii: " + values.name)
+    if (values.name === undefined || values.name === '') {
+      setValidName({
+        flag: false,
+        alert: 'Please enter your name!'
+      })
+      check = false;
+    }
+    else if (!mFunction.onlyLettersAndSpaces(values.name)) {
+      console.log(mFunction.containNumeric(values.name))
+      setValidName({
+        flag: false,
+        alert: 'Invalid name!'
+      })
+      check = false;
+    }
+
+    if (values.email === undefined || values.email === '') {
+      setValidEmail({
+        flag: false,
+        alert: 'Please enter email'
+      })
+      check = false;
+    }
+    else if (!mFunction.validateEmail(values.email)) {
+      setValidEmail({
+        flag: false,
+        alert: 'Your email is not valid!'
+      })
+    }
+    else {
+      await accountApi.checkEmail(values.email)
+        .then((res) => {
+          if (res == 'Email already exists')
+            setValidEmail({
+              flag: false,
+              alert: 'Your email is already existed'
+            })
+        })
+    }
+
+    if (values.phoneNumber === undefined || values.phoneNumber === '') {
+      setValidPhone({
+        flag: false,
+        alert: 'Please enter phone number'
+      })
+      check = false;
+    }
+    else if (mFunction.validatePhoneNumber(values.phoneNumber)) {
+      setValidPhone({
+        flag: false,
+        alert: 'Invalid phone number!'
+      })
+      check = false;
+    }
+
+
+    if (values.address === undefined || values.address === '') {
+      setValidAddress({
+        flag: false,
+        alert: 'Please enter address'
+      })
+    }
+    return check;
+  }
+
+  const create = () => {
+    console.log(values)
+    if (validate()) {
+        accountApi.createNewAccount(values)
+        .then((res)=>{
+
+        })
+        .catch((err) => {console.log(err)})
+    }
+  }
+
   return (
     <div>
       <div style={styles.container}>
-        <Stack direction="column">
+      <Stack direction="column">
           <Typography variant="h6">New staff</Typography>
           <Grid container>
 
@@ -76,9 +157,9 @@ const NewStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validName.check === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} />
-                  : <TextField id="standard-basic" label="Name" variant="standard" error helperText={validName.alert} onChange={handleChangeValue('name')}
+                validName.flag === true ?
+                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')}  />
+                  : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert}
                   />
               }
             </Grid>
@@ -88,9 +169,9 @@ const NewStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validEmail.check === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} />
-                  : <TextField id="standard-basic" label="Email" variant="standard" error helperText={validEmail.alert} onChange={handleChangeValue('email')}
+                validEmail.flag === true ?
+                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')}  />
+                  : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert}
                   />
               }
             </Grid>
@@ -101,8 +182,8 @@ const NewStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validPhone.check === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} />
+                validPhone.flag === true ?
+                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')}  />
                   : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('phoneNumber')}
                   />
               }
@@ -113,8 +194,8 @@ const NewStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validAddress.check === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} />
+                validAddress.flag === true ?
+                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')}  />
                   : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')}
                   />
               }
@@ -124,7 +205,12 @@ const NewStaff = () => {
               <Typography variant="body1">Male: </Typography>
             </Grid>
             <Grid xs={8} item>
-              <Switch defaultChecked onChange={handleChangeValue('gender')} />
+              <Switch onChange={handleChangeValue('gender')}
+                defaultChecked
+              // defaultChecked={
+              //   staff.gender === 'male' ? true: false
+              // }
+              />
             </Grid>
 
             <Grid xs={4} item >
@@ -150,13 +236,13 @@ const NewStaff = () => {
                 InputProps={{
                   style: { color: "#000" },
                 }}
-                ///defaultValue=
+                
                 onChange={handleChangeValue('birthday')}
               />
             </Grid>
 
             <Stack direction="row">
-              <CustomFillButton>Add</CustomFillButton>
+              <CustomFillButton onClick={create}>New</CustomFillButton>
               <CustomOutlineButton>Cancel</CustomOutlineButton>
             </Stack>
           </Grid>

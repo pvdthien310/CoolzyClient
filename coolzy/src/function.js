@@ -35,6 +35,14 @@ const mFunction = {
 
     removeDuplicates: (array) => {
         return Array.from(new Set(array))
+    },
+
+    containNumeric: (string) => {
+        return /\d/.test(string)
+    },
+
+    onlyLettersAndSpaces: (str) => {
+        return /^[A-Za-z\s]*$/.test(str);
     }
 }
 module.exports = mFunction;

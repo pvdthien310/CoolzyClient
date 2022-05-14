@@ -18,7 +18,7 @@ const accountApi = {
         return res;
     },
     getAccountWithID: async(id) => {
-        const res = DatabaseClient.get('/' + baseURL + `/${id}`)
+        const res = DatabaseClient.get('/' + baseURL + '/getById' + `/${id}`)
             .catch(err => { return err.response })
         return res;
     },

@@ -6,46 +6,55 @@ import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Switch } from '@mui/material';
-import Button from '@mui/material/Button';
 
-import { styled } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
-
-import {CustomFillButton, CustomOutlineButton} from '../index'
+import { CustomFillButton, CustomOutlineButton } from '../index'
 import { useParams } from 'react-router';
 
+import mFunction from '../../../function';
+import accountApi from './../../../api/accountAPI';
+
 const EditStaff = () => {
-  const {id} = useParams()
+  const { id } = useParams()
+  const [staff, setStaff] = useState({})
+
+  useEffect(async () => {
+    await accountApi.getAccountWithID(id)
+      .then((res) => {
+        setStaff(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [id])
+
   const [validName, setValidName] = useState({
-    check: true,
+    flag: true,
     alert: ''
   })
 
   const [validEmail, setValidEmail] = useState({
-    check: true,
+    flag: true,
     alert: ''
   })
 
   const [validPhone, setValidPhone] = useState({
-    check: true,
+    flag: true,
     alert: ''
   })
 
   const [validAddress, setValidAddress] = useState({
-    check: true,
+    flag: true,
     alert: ''
   })
 
   const [values, setValues] = useState({
     _id: id,
-    name: '',
-    phoneNumber: '',
-    address: '',
-    birthday: '',
-    email: '',
-    password: '',
-    gender: '',
-
+    name: staff.name,
+    phoneNumber: staff.phoneNumber,
+    address: staff.address,
+    birthday: staff.birthday,
+    email: staff.email,
+    gender: staff.gender
   })
 
   const [updateSucceeded, setUpdateSucceeded] = useState({
@@ -54,19 +63,101 @@ const EditStaff = () => {
   })
 
   const handleChangeValue = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-    setUpdateSucceeded({
-      status: false,
-      message: ''
-    })
+    if (prop !== 'gender')
+      setValues({ ...values, [prop]: event.target.value });
+    else {
+      if (event.target.value === true)
+        setValues({ ...values, gender: 'male' })
+      else
+        setValues({ ...values, gender: 'female' });
+    }
+  }
 
-  };
+
+  const validate = async () => {
+    let check = true;
+    console.log("iii: " + values.name)
+    if (values.name === undefined || values.name === '') {
+      setValidName({
+        flag: false,
+        alert: 'Please enter your name!'
+      })
+      check = false;
+    }
+    else if (!mFunction.onlyLettersAndSpaces(values.name)) {
+      console.log(mFunction.containNumeric(values.name))
+      setValidName({
+        flag: false,
+        alert: 'Invalid name!'
+      })
+      check = false;
+    }
+
+    if (values.email === undefined || values.email === '') {
+      setValidEmail({
+        flag: false,
+        alert: 'Please enter email'
+      })
+      check = false;
+    }
+    else if (!mFunction.validateEmail(values.email)) {
+      setValidEmail({
+        flag: false,
+        alert: 'Your email is not valid!'
+      })
+    }
+    else {
+      await accountApi.checkEmail(values.email)
+        .then((res) => {
+          if (res == 'Email already exists')
+            setValidEmail({
+              flag: false,
+              alert: 'Your email is already existed'
+            })
+        })
+    }
+
+    if (values.phoneNumber === undefined || values.phoneNumber === '') {
+      setValidPhone({
+        flag: false,
+        alert: 'Please enter phone number'
+      })
+      check = false;
+    }
+    else if (mFunction.validatePhoneNumber(values.phoneNumber)) {
+      setValidPhone({
+        flag: false,
+        alert: 'Invalid phone number!'
+      })
+      check = false;
+    }
+
+
+    if (values.address === undefined || values.address === '') {
+      setValidAddress({
+        flag: false,
+        alert: 'Please enter address'
+      })
+    }
+    return check;
+  }
+
+  const modify = () => {
+    console.log(values)
+    if (validate()) {
+        accountApi.createNewAccount(values)
+        .then((res)=>{
+
+        })
+        .catch((err) => {console.log(err)})
+    }
+  }
 
   return (
     <div>
       <div style={styles.container}>
         <Stack direction="column">
-          <Typography variant="h6">New staff</Typography>
+          <Typography variant="h6">Modify staff</Typography>
           <Grid container>
 
             <Grid xs={4} item >
@@ -74,9 +165,9 @@ const EditStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validName.check === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" />
-                  : <TextField id="standard-basic" label="Name" variant="standard" error helperText={validName.alert}
+                validName.flag === true ?
+                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} defaultValue={values.name} />
+                  : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert}
                   />
               }
             </Grid>
@@ -86,9 +177,9 @@ const EditStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validEmail.check === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" />
-                  : <TextField id="standard-basic" label="Email" variant="standard" error helperText={validEmail.alert}
+                validEmail.flag === true ?
+                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} defaultValue={staff.email} />
+                  : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert}
                   />
               }
             </Grid>
@@ -99,9 +190,9 @@ const EditStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validPhone.check === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" />
-                  : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert}
+                validPhone.flag === true ?
+                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} defaultValue={staff.phoneNumber} />
+                  : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('phoneNumber')}
                   />
               }
             </Grid>
@@ -111,9 +202,9 @@ const EditStaff = () => {
             </Grid>
             <Grid xs={8} item>
               {
-                validAddress.check === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" />
-                  : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert}
+                validAddress.flag === true ?
+                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} defaultValue={staff.address} />
+                  : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')}
                   />
               }
             </Grid>
@@ -122,7 +213,12 @@ const EditStaff = () => {
               <Typography variant="body1">Male: </Typography>
             </Grid>
             <Grid xs={8} item>
-              <Switch defaultChecked />
+              <Switch onChange={handleChangeValue('gender')}
+                defaultChecked
+              // defaultChecked={
+              //   staff.gender === 'male' ? true: false
+              // }
+              />
             </Grid>
 
             <Grid xs={4} item >
@@ -148,13 +244,13 @@ const EditStaff = () => {
                 InputProps={{
                   style: { color: "#000" },
                 }}
-              // defaultValue={currentUser.birthday}
-              //  onChange={handleChangeInformation('birthday')}
+                defaultValue={staff.birthday}
+                onChange={handleChangeValue('birthday')}
               />
             </Grid>
 
             <Stack direction="row">
-              <CustomFillButton>Add</CustomFillButton>
+              <CustomFillButton onClick={modify}>Modify</CustomFillButton>
               <CustomOutlineButton>Cancel</CustomOutlineButton>
             </Stack>
           </Grid>
@@ -162,6 +258,7 @@ const EditStaff = () => {
       </div>
     </div>
   )
+
 }
 
 
