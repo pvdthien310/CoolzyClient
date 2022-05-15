@@ -30,6 +30,9 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 
 import { CustomFillButton, CustomOutlineButton } from './../../../containers/staff/index';
+import accountApi from '../../../api/accountAPI';
+import { staffSlice } from '../../../redux/slices/staffSlices';
+import { useDispatch } from 'react-redux';
 
 export const createData = (staff) => {
   const email = staff.email
@@ -69,7 +72,7 @@ const Row = (props) => {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{ margin: 1, p: 2 }}>
               <Typography variant="subtitle1" gutterBottom component="div">
                 Staff information:
               </Typography >
@@ -96,10 +99,23 @@ Row.propTypes = {
 
 const StaffInformation = (props) => {
   const data = props.data
+  const dispatch = useDispatch()
+
+  const handleDelete = async () => {
+    const response = await accountApi.deleteAccount(data._id)
+    if (response.status == 200) {
+      console.log('Xoa thanh cong')
+      dispatch(staffSlice.actions.deleteStaff(data._id))
+    }
+    else {
+      console.log("Xoa that bai ")
+    }
+  }
+
   const navigate = useNavigate()
   return (
-    <Box sx={{ width: '70%'}}>
-      <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: "center" }}>
+    <Box sx={{ width: '70%' }}>
+      <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: "center", p: 2 }}>
         <Grid xs={1} rowSpacing={2} item>
           <PersonIcon />
         </Grid>
@@ -119,7 +135,6 @@ const StaffInformation = (props) => {
         <Grid xs={7} item>
           <Typography sx={styles.item}>{data.email}</Typography>
         </Grid>
-
         <Grid xs={1} item>
           <PhoneIcon />
         </Grid>
@@ -149,8 +164,6 @@ const StaffInformation = (props) => {
         <Grid xs={7} item>
           <Typography sx={styles.item}>{data.gender}</Typography>
         </Grid>
-
-
         <Grid xs={1} item>
           <CakeIcon />
         </Grid>
@@ -161,15 +174,13 @@ const StaffInformation = (props) => {
           <Typography sx={styles.item}>{data.birthday}</Typography>
         </Grid>
       </Grid>
-
-      <Stack direction="row">
-        <CustomOutlineButton onClick={()=>{
-          navigate('/manager/staff/edit/'+data._id)
+      <Stack direction="row" sx={{ pt: 3 }}>
+        <CustomOutlineButton onClick={() => {
+          navigate('/manager/staff/edit/' + data._id)
         }}>
           Modify
         </CustomOutlineButton>
-
-        <CustomFillButton variant="contained">Delete</CustomFillButton>
+        <CustomFillButton variant="contained" onClick={handleDelete}>Delete</CustomFillButton>
       </Stack>
     </Box>
 

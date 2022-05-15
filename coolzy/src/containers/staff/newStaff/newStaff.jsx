@@ -12,8 +12,10 @@ import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import mFunction from '../../../function';
 import accountApi from './../../../api/accountAPI';
+import { useNavigate } from 'react-router';
 
 const NewStaff = () => {
+  const navigate = useNavigate()
   const [validName, setValidName] = useState({
     check: true,
     flag: ''
@@ -40,8 +42,10 @@ const NewStaff = () => {
     address: '',
     birthday: '',
     email: '',
-    password: '',
-    gender: '',
+    password: '123456',
+    gender: 'male',
+    role: "Staff",
+    enable: true
 
   })
 
@@ -52,14 +56,15 @@ const NewStaff = () => {
 
   const handleChangeValue = (prop) => (event) => {
     if (prop == 'gender') {
-      if (event.target.value === true)
+
+      if (event.target.checked === true)
         setValues({ ...values, [prop]: 'male' })
       else
         setValues({ ...values, [prop]: 'female' })
     }
     else
       setValues({ ...values, [prop]: event.target.value });
-      
+
     setUpdateSucceeded({
       status: false,
       message: ''
@@ -97,16 +102,21 @@ const NewStaff = () => {
         flag: false,
         alert: 'Your email is not valid!'
       })
+      check = false;
     }
     else {
       await accountApi.checkEmail(values.email)
         .then((res) => {
-          if (res == 'Email already exists')
+          if (res.status == 500) {
             setValidEmail({
               flag: false,
               alert: 'Your email is already existed'
             })
+            check = false;
+            console.log('email existed')
+          }
         })
+
     }
 
     if (values.phoneNumber === undefined || values.phoneNumber === '') {
@@ -130,35 +140,36 @@ const NewStaff = () => {
         flag: false,
         alert: 'Please enter address'
       })
+      check = false;
     }
+
     return check;
   }
 
-  const create = () => {
+  const create = async () => {
     console.log(values)
-    if (validate()) {
-        accountApi.createNewAccount(values)
-        .then((res)=>{
-
+    if (await validate()) {
+      await accountApi.createNewAccount(values)
+        .then((res) => {
+          console.log(res)
         })
-        .catch((err) => {console.log(err)})
+        .catch((err) => { console.log(err) })
     }
   }
 
   return (
     <div>
       <div style={styles.container}>
-      <Stack direction="column">
+        <Stack direction="column">
           <Typography variant="h6">New staff</Typography>
-          <Grid container>
-
+          <Grid container sx={{ p: 2 }}>
             <Grid xs={4} item >
               <Typography variant="body1">Name: </Typography>
             </Grid>
             <Grid xs={8} item>
               {
                 validName.flag === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')}  />
+                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} />
                   : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert}
                   />
               }
@@ -170,7 +181,7 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validEmail.flag === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')}  />
+                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} />
                   : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert}
                   />
               }
@@ -183,7 +194,7 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validPhone.flag === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')}  />
+                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} />
                   : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('phoneNumber')}
                   />
               }
@@ -195,7 +206,7 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validAddress.flag === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')}  />
+                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} />
                   : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')}
                   />
               }
@@ -236,14 +247,14 @@ const NewStaff = () => {
                 InputProps={{
                   style: { color: "#000" },
                 }}
-                
+
                 onChange={handleChangeValue('birthday')}
               />
             </Grid>
 
-            <Stack direction="row">
+            <Stack direction="row" sx={{ m: 2, p: 1, width: '100%', justifyContent: 'end' }}>
               <CustomFillButton onClick={create}>New</CustomFillButton>
-              <CustomOutlineButton>Cancel</CustomOutlineButton>
+              <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
             </Stack>
           </Grid>
         </Stack>

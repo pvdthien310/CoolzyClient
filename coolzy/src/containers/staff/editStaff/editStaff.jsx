@@ -8,7 +8,7 @@ import { TextField } from '@mui/material';
 import { Switch } from '@mui/material';
 
 import { CustomFillButton, CustomOutlineButton } from '../index'
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import mFunction from '../../../function';
 import accountApi from './../../../api/accountAPI';
@@ -16,11 +16,22 @@ import accountApi from './../../../api/accountAPI';
 const EditStaff = () => {
   const { id } = useParams()
   const [staff, setStaff] = useState({})
+  const navigate = useNavigate()
 
   useEffect(async () => {
     await accountApi.getAccountWithID(id)
       .then((res) => {
+        console.log(res.data)
         setStaff(res.data)
+        setValues({
+          _id: res.data._id,
+          name: res.data.name,
+          phoneNumber: res.data.phoneNumber,
+          address: res.data.address,
+          birthday: res.data.birthday,
+          email: res.data.email,
+          gender: res.data.gender
+        })
       })
       .catch((err) => {
         console.log(err)
@@ -63,6 +74,7 @@ const EditStaff = () => {
   })
 
   const handleChangeValue = (prop) => (event) => {
+    console.log(event.target.value)
     if (prop !== 'gender')
       setValues({ ...values, [prop]: event.target.value });
     else {
@@ -145,11 +157,11 @@ const EditStaff = () => {
   const modify = () => {
     console.log(values)
     if (validate()) {
-        accountApi.createNewAccount(values)
-        .then((res)=>{
+      accountApi.createNewAccount(values)
+        .then((res) => {
 
         })
-        .catch((err) => {console.log(err)})
+        .catch((err) => { console.log(err) })
     }
   }
 
@@ -158,15 +170,14 @@ const EditStaff = () => {
       <div style={styles.container}>
         <Stack direction="column">
           <Typography variant="h6">Modify staff</Typography>
-          <Grid container>
-
+          <Grid container sx={{ p: 2 }}>
             <Grid xs={4} item >
               <Typography variant="body1">Name: </Typography>
             </Grid>
             <Grid xs={8} item>
               {
                 validName.flag === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} defaultValue={values.name} />
+                  <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('name')} value={values.name}/>
                   : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert}
                   />
               }
@@ -178,7 +189,7 @@ const EditStaff = () => {
             <Grid xs={8} item>
               {
                 validEmail.flag === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} defaultValue={staff.email} />
+                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} value={values.email} />
                   : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert}
                   />
               }
@@ -191,7 +202,7 @@ const EditStaff = () => {
             <Grid xs={8} item>
               {
                 validPhone.flag === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} defaultValue={staff.phoneNumber} />
+                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} value={values.phoneNumber}/>
                   : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('phoneNumber')}
                   />
               }
@@ -203,7 +214,7 @@ const EditStaff = () => {
             <Grid xs={8} item>
               {
                 validAddress.flag === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} defaultValue={staff.address} />
+                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} value={values.address}/>
                   : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')}
                   />
               }
@@ -244,14 +255,14 @@ const EditStaff = () => {
                 InputProps={{
                   style: { color: "#000" },
                 }}
-                defaultValue={staff.birthday}
+                defaultValue={values.birthday}
                 onChange={handleChangeValue('birthday')}
               />
             </Grid>
 
-            <Stack direction="row">
+            <Stack direction="row" sx={{ width: '100%', mt: 3, p: 1, justifyContent: 'end', alignItems: 'center' }}>
               <CustomFillButton onClick={modify}>Modify</CustomFillButton>
-              <CustomOutlineButton>Cancel</CustomOutlineButton>
+              <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
             </Stack>
           </Grid>
         </Stack>

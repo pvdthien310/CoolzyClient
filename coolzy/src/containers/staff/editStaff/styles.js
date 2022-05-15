@@ -8,7 +8,8 @@ export const styles = {
         borderRadius: 10,
         padding: 30,
         top: 100,
-        zIndex: 3
+        zIndex: 3,
+        boxShadow : 10
     },
 
 }

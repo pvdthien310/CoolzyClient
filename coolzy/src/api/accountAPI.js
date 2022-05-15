@@ -10,7 +10,7 @@ const accountApi = {
     },
     checkEmail: async(email) => {
         const res = await DatabaseClient.post('/account/checkEmail/' + email);
-        return res.data
+        return res
     },
     register: async(dataForReg) => {
         const res = DatabaseClient.post('/' + baseURL, dataForReg)
