@@ -25,7 +25,7 @@ import { Pagination } from "swiper";
 import './styles.css'
 
 import categoryApi from './../../../api/categoryAPI';
-
+import cloudinaryApi from '../../../api/cloudinaryAPI';
 import clothesApi from './../../../api/clothesAPI';
 
 const AddProduct = () => {
@@ -87,6 +87,8 @@ const AddProduct = () => {
         images: []
     })
 
+    const [imgDisplays, setImgDisplays] = useState([])
+    const [imgFiles, setImgFiles] = useState([])
     const sizeChange = (id, val) => {
         let sizesTemp = data.sizes.map(item => {
             if (item.id == id) {
@@ -120,17 +122,32 @@ const AddProduct = () => {
     }, [data])
 
 
-    const newImageHandle = (event) => {
-        setData({ ...data, images: [...data.images, event.target.files[0]] })
+    const newImageHandle = (e) => {
+        if (e.target.files) {
+            const listFile = []
+            for (let i = 0; i < e.target.files.length; i++) {
+                let reader = new FileReader();
+                reader.readAsDataURL(e.target.files[i])
+                reader.onloadend = () => {
+                    listFile.push(reader.result);
+                    if (i == e.target.files.length - 1)
+                        setImgFiles(listFile)
+                }
+            }
+        }
+        setImgDisplays([...imgDisplays, e.target.files[0]])
     }
 
     const deleteImageHandle = (name) => {
-        let imgList = data.images.filter(item => item.name !== name)
-        setData({ ...data, images: imgList })
+        let imgList = imgDisplays.filter(item => item.name !== name)
+        setImgDisplays(imgList)
     }
 
     const saveHandle = () => {
         if (checkData()) {
+            cloudinaryApi.upload(JSON.stringify({ data: imgFiles })).then(res => {
+                console.log(res)
+            }).catch(err => console.log(err))
 
         }
     }
@@ -151,7 +168,7 @@ const AddProduct = () => {
             openAlert('Please choose category of product')
             return false
         }
-        else if (data.images.length == 0) {
+        else if (imgDisplays.length == 0) {
             openAlert('Please insert image for product')
             return false
         }
@@ -199,7 +216,7 @@ const AddProduct = () => {
 
                 <Grid item xs={5} >
                     <Item>
-                        <ProductImages imgList={data.images} deleteImageHandle={deleteImageHandle} />
+                        <ProductImages imgList={imgDisplays} deleteImageHandle={deleteImageHandle} />
                     </Item>
                 </Grid>
 
