@@ -1,13 +1,25 @@
 export const styles = {
     container: {
         backgroundColor: '#fff',
-        position: 'fixed',
-        display: 'flex',
+        position: 'absolute',
         left: 300,
         right: 300,
         borderRadius: 10,
         padding: 30,
-        zIndex: 3
+        zIndex: 1
     },
+
+    page: {
+        position: 'relative'
+    },
+
+    TextField: {
+        width: '80%',
+        height: 80
+    },
+
+    typo: {
+        marginTop: 20
+    }
 
 }

@@ -24,9 +24,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import CakeIcon from '@mui/icons-material/Cake';
 import PhoneIcon from '@mui/icons-material/Phone';
 
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
+
 import { styles } from './styles'
 
 import { Route, Routes, useNavigate } from "react-router-dom";
+
+
 
 
 import { CustomFillButton, CustomOutlineButton } from './../../../containers/staff/index';
@@ -62,17 +67,18 @@ const Row = (props) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" style={{fontWeight: 'bold'}}>
           {row.name}
         </TableCell>
-        <TableCell align="center">{row.email}</TableCell>
-        <TableCell align="center">{row.phoneNumber}</TableCell>
+        <TableCell align="left">{row.email}</TableCell>
+        <TableCell align="left">{row.phoneNumber}</TableCell>
+        <TableCell align="left">{row.gender=='male' ? <MaleIcon style={{color: "#ba0666"}}/> : <FemaleIcon style={{color: "#180c75"}} />}</TableCell>
       </TableRow>
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1, p: 2 }}>
+            <Box sx={{ mt: 1, ml: 20, p: 2 }}>
               <Typography variant="subtitle1" gutterBottom component="div">
                 Staff information:
               </Typography >
@@ -174,7 +180,7 @@ const StaffInformation = (props) => {
           <Typography sx={styles.item}>{data.birthday}</Typography>
         </Grid>
       </Grid>
-      <Stack direction="row" sx={{ pt: 3 }}>
+      <Stack direction="row" sx={{ pt: 3, ml: 12}} >
         <CustomOutlineButton onClick={() => {
           navigate('/manager/staff/edit/' + data._id)
         }}>
