@@ -12,7 +12,7 @@ const ProductManager = () => {
             <Routes>
                 <Route path="manager/product/:categoryId" element={<DisplayProduct />}></Route>
                 <Route path="manager/product/add" element={<AddProduct />}></Route>
-                <Route path="manager/product/edit" element={<EditProduct />}></Route>
+                <Route path="manager/product/edit/:productId" element={<EditProduct />}></Route>
             </Routes>
         </div>
 

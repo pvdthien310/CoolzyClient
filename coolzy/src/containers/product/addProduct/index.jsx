@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react'
-import SizeItem from './sizeItem';
+import SizeItem from '../../../components/sizeItem';
+import Loading from './../../../components/Loading/loading';
+import { useNavigate } from "react-router-dom";
 
 import { Stack, Typography, Button } from "@mui/material";
 import Grid from '@mui/material/Grid';
@@ -29,8 +31,10 @@ import cloudinaryApi from '../../../api/cloudinaryAPI';
 import clothesApi from './../../../api/clothesAPI';
 
 const AddProduct = () => {
-    const [listCategory, setListCategory] = useState()
+    const navigate = useNavigate()
 
+    const [listCategory, setListCategory] = useState()
+    const [loading, setLoading] = useState(false)
     const tabTheme = createTheme({
         palette: {
             primary: {
@@ -48,37 +52,37 @@ const AddProduct = () => {
         sizes: [
             {
                 id: 0,
-                name: 'XS',
+                size: 'XS',
                 quantity: 0
             },
             {
                 id: 1,
-                name: 'S',
+                size: 'S',
                 quantity: 0
             },
             {
                 id: 2,
-                name: 'M',
+                size: 'M',
                 quantity: 0
             },
             {
                 id: 3,
-                name: 'L',
+                size: 'L',
                 quantity: 0
             },
             {
                 id: 4,
-                name: 'XL',
+                size: 'XL',
                 quantity: 0
             },
             {
                 id: 5,
-                name: 'L',
+                size: 'L',
                 quantity: 0
             },
             {
                 id: 6,
-                name: 'XXL',
+                size: 'XXL',
                 quantity: 0
             },
 
@@ -117,11 +121,6 @@ const AddProduct = () => {
         getCategories()
     }, [])
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
-
-
     const newImageHandle = (e) => {
         if (e.target.files) {
             const listFile = []
@@ -130,8 +129,11 @@ const AddProduct = () => {
                 reader.readAsDataURL(e.target.files[i])
                 reader.onloadend = () => {
                     listFile.push(reader.result);
-                    if (i == e.target.files.length - 1)
-                        setImgFiles(listFile)
+                    if (i == e.target.files.length - 1) {
+                        let temp = imgFiles.concat(listFile)
+                        setImgFiles(temp)
+                    }
+
                 }
             }
         }
@@ -139,41 +141,88 @@ const AddProduct = () => {
     }
 
     const deleteImageHandle = (name) => {
+        let index = 0
+        imgDisplays.forEach(e => {
+            if (e.name == name) {
+                return;
+            }
+            else {
+                index++
+            }
+        })
+
+        if (index > -1) {
+            let temp = imgFiles.splice(index, 1);
+            setImgFiles(temp)
+        }
+
         let imgList = imgDisplays.filter(item => item.name !== name)
         setImgDisplays(imgList)
+
+
     }
 
     const saveHandle = () => {
         if (checkData()) {
-            cloudinaryApi.upload(JSON.stringify({ data: imgFiles })).then(res => {
-                console.log(res)
-            }).catch(err => console.log(err))
+            let count = 0;
+            data.sizes.forEach(element => {
+                count += element.quantity
+            });
 
+            if (count == 0) {
+                openAlert('Please fill out sizes of product')
+                return false
+            }
+            else {
+                setLoading(true)
+                cloudinaryApi.upload(JSON.stringify({ data: imgFiles })).then(res => {
+
+                    let clothObj = {
+                        name: data.name,
+                        brand: data.brand,
+                        price: data.price,
+                        description: data.description,
+                        _categoryId: data.categoryId,
+                        images: res.data,
+                        sizes: data.sizes
+                    }
+                    console.log(clothObj)
+                    clothesApi.create(clothObj).then(res => {
+                        if (res.status = 200) {
+                            openAlert('Update new product successful', 'success')
+                            setLoading(false)
+                            navigate('/manager/product/all')
+
+                        }
+                    }).catch(err => console.log(err))
+
+                }).catch(err => console.log(err))
+            }
         }
     }
     const checkData = () => {
         if (data.name == "") {
-            openAlert('Please fill out name of product')
+            openAlert('Please fill out name of product', 'error')
             return false
         }
         else if (data.brand == "") {
-            openAlert('Please fill out brand of product')
+            openAlert('Please fill out brand of product', 'error')
             return false
         }
         else if (data.price == "") {
-            openAlert('Please fill out price of product')
+            openAlert('Please fill out price of product', 'error')
             return false
         }
         else if (data.categoryId == "") {
-            openAlert('Please choose category of product')
+            openAlert('Please choose category of product', 'error')
             return false
         }
         else if (imgDisplays.length == 0) {
-            openAlert('Please insert image for product')
+            openAlert('Please insert image for product', 'error')
             return false
         }
         else if (data.description == "") {
-            openAlert('Please fill out description of product')
+            openAlert('Please fill out description of product', 'error')
             return false
         }
         else if (isNaN(data.price) || data.price < 0) {
@@ -184,7 +233,7 @@ const AddProduct = () => {
             let flag = 0
             data.sizes.forEach(element => {
                 if (isNaN(element.quantity) || element.quantity < 0) {
-                    openAlert('Quantity of sizes invalid')
+                    openAlert('Quantity of sizes invalid', 'error')
                     flag++
                 }
             });
@@ -194,12 +243,13 @@ const AddProduct = () => {
     }
     const [alertObj, setAlertObj] = useState({
         message: '',
-        status: false
+        status: false,
+        type: 'error'
     });
 
 
-    const openAlert = (text) => {
-        setAlertObj({ message: text, status: true })
+    const openAlert = (text, type) => {
+        setAlertObj({ message: text, status: true, type: type })
     }
 
     const handleClose = (event, reason) => {
@@ -212,6 +262,7 @@ const AddProduct = () => {
 
     return (
         <ThemeProvider theme={tabTheme}>
+
             <Grid container spacing={2} columns={9}>
 
                 <Grid item xs={5} >
@@ -225,7 +276,7 @@ const AddProduct = () => {
                         <Stack>
                             <input type="file" name="file" onChange={newImageHandle} />
 
-                            <TextField label="Name" variant="standard" value={data.name} onChange={handleChange('name')} />
+                            <TextField label="Name" variant="standard" value={data.name} onChange={handleChange('name')} sx={{ marginTop: 2 }} />
                             <TextField label="Brand" variant="standard" value={data.brand} onChange={handleChange('brand')} sx={{ marginTop: 2 }} />
                             <TextField
                                 label="Price"
@@ -264,10 +315,15 @@ const AddProduct = () => {
                 </Grid>
 
                 <Snackbar open={alertObj.status} autoHideDuration={5000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error" variant="filled">
+                    <Alert onClose={handleClose} severity={alertObj.type} variant="filled">
                         {alertObj.message}
                     </Alert>
                 </Snackbar>
+
+                {
+                    loading && <Loading />
+                }
+
             </Grid>
         </ThemeProvider>
     )
@@ -309,21 +365,6 @@ const CustomFillButton = styled(Button)(({ theme }) => ({
     },
     padding: '6px 35px',
     marginTop: '20px',
-    borderRadius: '10px'
-
-}));
-
-const CustomOutlineButton = styled(Button)(({ theme }) => ({
-    color: grey[900],
-    borderColor: grey[900],
-    borderWidth: 1,
-    borderStyle: 'solid',
-    '&:hover': {
-        backgroundColor: grey[900],
-        color: theme.palette.getContrastText(grey[900]),
-    },
-    padding: '6px 35px',
-    marginLeft: '20px',
     borderRadius: '10px'
 
 }));
