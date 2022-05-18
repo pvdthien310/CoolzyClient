@@ -12,12 +12,12 @@ import { Stack, Typography } from '@mui/material';
 const ProductList = ({ categoryId }) => {
     const [data, setData] = useState()
 
-
     useEffect(() => {
         if (categoryId == 'all') {
             clothesApi.getAll().then(res => {
                 if (res.status == 200) {
-                    setData(res.data)
+                    let result = res.data.filter(e => e.isAvailable == true)
+                    setData(result)
                 }
             })
         }
@@ -57,13 +57,19 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ProductItem = ({ item }) => {
+    const navigate = useNavigate()
+    const clickHandle = () => {
+        navigate('/manager/product/edit/' + item._id)
+    }
+
+    let sizeLength = item.size.filter(e => e.quantity != 0)
 
     return (
-        <Stack>
+        <Stack sx={{ cursor: 'pointer' }} onClick={() => clickHandle()}>
             <img src={item.images[0]} alt='' />
             <Typography sx={{ color: '#272727' }}>{item.name}</Typography>
             <Typography sx={{ color: '#a6a6a6' }}>{item.brand}</Typography>
-            <Typography sx={{ color: '#a6a6a6' }}>{item.size.length} SIZE</Typography>
+            <Typography sx={{ color: '#a6a6a6' }}>{sizeLength.length} SIZE</Typography>
             <Typography sx={{ color: '#272727' }}>{item.price} VNĐ</Typography>
         </Stack>
     )
