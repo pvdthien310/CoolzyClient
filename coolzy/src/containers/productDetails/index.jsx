@@ -19,12 +19,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
+import { useNavigate } from 'react-router-dom';
 
 const ProductDetail = () => {
   const { id } = useParams()
   const [item, setItem] = useState({})
   const [sizeValue, setSizeValue] = useState('')
   const [quantityValue, setQuantityValue] = useState(1)
+
+  const navigate = useNavigate()
 
   const [quantityButtonEnable, setQuantityButtonEnable] = useState({
     increase: true,
@@ -142,6 +145,18 @@ const ProductDetail = () => {
     },
   })
 
+  const buyNow = ()=>{
+      let items = {
+        _itemid: {id},
+        size: sizeValue.size,
+        quantity: quantityValue,
+        total: item.price * quantityValue
+      }
+
+      
+      navigate(`/checkout/${items}`)
+  }
+
 
   return (
     <div >
@@ -230,7 +245,9 @@ const ProductDetail = () => {
                       color: "#fff",
                       background: '#000',
                       fontWeight: "bold",
-                    }}>Buy now</Button>
+                    }}
+                    onClick={buyNow}
+                    >Buy now</Button>
                   </ThemeProvider>
                 </Stack>
               </Box>

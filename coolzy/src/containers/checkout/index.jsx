@@ -24,14 +24,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import Paypal from './../../components/Paypal/index';
-import { CheckEmail, CheckPhoneNumber } from './../LoginAndRegister/ValidationDataForAccount'
-import { isSignedIn_user, currentUser, cartListSelector } from '../../redux/selectors';
-import { deleteCartById, getAllCart } from '../../redux/slices/cartSlice';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { getAllProduct, getProductWithID } from '../../redux/slices/productSlice';
-import { accountSlice } from '../../redux/slices/accountSlice';
-import moment from 'moment'
+// import Paypal from './../../components/Paypal/index';
+// import { CheckEmail, CheckPhoneNumber } from './../LoginAndRegister/ValidationDataForAccount'
+// import { isSignedIn_user, currentUser, cartListSelector } from '../../redux/selectors';
+// import { deleteCartById, getAllCart } from '../../redux/slices/cartSlice';
+// import { unwrapResult } from '@reduxjs/toolkit';
+// import { getAllProduct, getProductWithID } from '../../redux/slices/productSlice';
+// import { accountSlice } from '../../redux/slices/accountSlice';
+// import moment from 'moment'
 // import { addInvoice } from "../../redux/slices/invoiceSlice";
 // import { addInvoiceItem } from "../../redux/slices/invoiceItemSlice";
 import emailApi from '../../api/emailAPI';
@@ -48,11 +48,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     />;
 });
 
-export const CheckoutPage = () => {
+const Checkout = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const isSignedIn = useSelector(isSignedIn_user)
+    //const isSignedIn = useSelector(isSignedIn_user)
 
     const [isHideCompleteButton, setIsHideCompleteButton] = useState("flex")
 
@@ -62,7 +62,7 @@ export const CheckoutPage = () => {
     const [listCart, setListCart] = useState([])
     const [listProd, setListProd] = useState([])
 
-    const _guestCart = useSelector(cartListSelector)
+    //const _guestCart = useSelector(cartListSelector)
 
     const [selectedPayMethod, setSelectedPayMethod] = useState("Pay on delivery");
     const handleChangePayMethod = (event) => {
@@ -84,25 +84,25 @@ export const CheckoutPage = () => {
                 let temp = []
                 let listCart = []
                 let listProd = []
-                try {
-                    const resultAction = await dispatch(getAllCart())
-                    const originalPromiseResult = unwrapResult(resultAction)
-                    temp = originalPromiseResult
-                    for (let i = 0; i < temp.length; i++) {
-                        if (temp[i].email === _currentUser.email) {
-                            listCart.push(temp[i])
-                            const resultAction2 = await dispatch(getProductWithID(temp[i].productId))
-                            const originalPromiseResult2 = unwrapResult(resultAction2)
-                            listProd.push(originalPromiseResult2)
-                        }
-                    }
-                    await setListCart(listCart)
-                    await setListProd(listProd)
-                    await CountTotal(listCart, listProd)
-                    await MakePurchaseUnit(listCart, listProd)
-                } catch (rejectedValueOrSerializedError) {
-                    alert(rejectedValueOrSerializedError)
-                }
+               // try {
+                    //const resultAction = await dispatch(getAllCart())
+                    //const originalPromiseResult = unwrapResult(resultAction)
+                  //  temp = originalPromiseResult
+                //    for (let i = 0; i < temp.length; i++) {
+                  //      if (temp[i].email === _currentUser.email) {
+                       //     listCart.push(temp[i])
+                           // const resultAction2 = await dispatch(getProductWithID(temp[i].productId))
+                           // const originalPromiseResult2 = unwrapResult(resultAction2)
+                      //      listProd.push(originalPromiseResult2)
+                    //    }
+                  //  }
+                  //  await setListCart(listCart)
+                  //  await setListProd(listProd)
+                  //  await CountTotal(listCart, listProd)
+                  //  await MakePurchaseUnit(listCart, listProd)
+                // } catch (rejectedValueOrSerializedError) {
+                //     alert(rejectedValueOrSerializedError)
+                // }
             // } else {
             //     let temp = _guestCart
             //     let listCart = []
@@ -183,9 +183,9 @@ export const CheckoutPage = () => {
     };
 
     //for customer is member
-    const _currentUser = useSelector(currentUser)
-    const [name, setName] = useState(_currentUser.name)
-    const [phoneNumber, setPhoneNumber] = useState(_currentUser.phoneNumber)
+    ///const _currentUser = useSelector(currentUser)
+   // const [name, setName] = useState(_currentUser.name)
+   // const [phoneNumber, setPhoneNumber] = useState(_currentUser.phoneNumber)
 
     //for guest
     const [guestName, setGuestName] = useState('')
@@ -257,7 +257,7 @@ export const CheckoutPage = () => {
     }
 
     const handleLogOut = () => {
-        dispatch(accountSlice.actions.logout());
+       // dispatch(accountSlice.actions.logout());
         localStorage.setItem('role', '')
         localStorage.setItem('idUser', '')
         localStorage.setItem('cart', JSON.stringify([]));
@@ -269,19 +269,19 @@ export const CheckoutPage = () => {
     }
 
     const handleToPayment = async () => {
-        if (name === '' || phoneNumber === '' || addressShip === '') {
-            setOpenSnackbar(true)
-        } else {
-            if (province === null || district === null && commune === null) {
-                setOpenSnackbar(true)
-            } else {
-                const temp = addressShip + ', ' + commune.name + ', ' + district.name + ', ' + province.name
-                setBigAddress(temp)
-                setOpenPaymentMethodScreen(true)
-                // await MakePurchaseUnit()
-                // console.log(purchaseUnits)
-            }
-        }
+        // if (name === '' || phoneNumber === '' || addressShip === '') {
+        //     setOpenSnackbar(true)
+        // } else {
+        //     if (province === null || district === null && commune === null) {
+        //         setOpenSnackbar(true)
+        //     } else {
+        //         const temp = addressShip + ', ' + commune.name + ', ' + district.name + ', ' + province.name
+        //         setBigAddress(temp)
+        //         setOpenPaymentMethodScreen(true)
+        //         // await MakePurchaseUnit()
+        //         // console.log(purchaseUnits)
+        //     }
+        // }
     }
 
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -305,8 +305,8 @@ export const CheckoutPage = () => {
         if (localStorage.getItem('role') === "customer") {
             for (let i = 0; i < listCart.length; i++) {
                 try {
-                    const resultAction = await dispatch(deleteCartById(listCart[i]))
-                    const originalPromiseResult = unwrapResult(resultAction)
+                 //   const resultAction = await dispatch(deleteCartById(listCart[i]))
+                 //   const originalPromiseResult = unwrapResult(resultAction)
                 } catch (rejectedValueOrSerializedError) {
                     alert(rejectedValueOrSerializedError);
                 }
@@ -326,23 +326,23 @@ export const CheckoutPage = () => {
     const [invoiceId, setInvoiceId] = useState(' ')
 
     const MakeInvoice = async () => {
-        var m = moment().format('H mm')
-        var date = moment().format('D/M/YYYY')
+      //  var m = moment().format('H mm')
+      //  var date = moment().format('D/M/YYYY')
         let tempID = ''
       ///  if (localStorage.getItem('role') === "customer") {
             let temp = {
                 moneyReceived: '0',
                 isChecked: false,
                 isPaid: false,
-                date: date + ' ' + m,
-                userID: _currentUser.userID,
+              //  date: date + ' ' + m,
+              //  userID: _currentUser.userID,
                 branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
             }
 
             try {
-                const resultAction = await dispatch(addInvoice(temp))
-                const originalPromiseResult = unwrapResult(resultAction)
-                setInvoiceId(originalPromiseResult.data.invoiceID)
+             //   const resultAction = await dispatch(addInvoice(temp))
+            //    const originalPromiseResult = unwrapResult(resultAction)
+             //   setInvoiceId(originalPromiseResult.data.invoiceID)
             } catch (rejectedValueOrSerializedError) {
                 alert(rejectedValueOrSerializedError)
             }
@@ -387,8 +387,8 @@ export const CheckoutPage = () => {
                     stringOrder = stringOrder + "\n" + `${listProd[j].name} - Quantity: ${listCart[i].amount} - Sub-cost: $${item.total} `
                     // t.push(item)
                     try {
-                        const resultAction = await dispatch(addInvoiceItem(item))
-                        const originalPromiseResult = unwrapResult(resultAction)
+                    //    const resultAction = await dispatch(addInvoiceItem(item))
+                     //   const originalPromiseResult = unwrapResult(resultAction)
                     } catch (rejectedValueOrSerializedError) {
                         console.log(rejectedValueOrSerializedError)
                     }
@@ -398,12 +398,12 @@ export const CheckoutPage = () => {
 
       ///  if (localStorage.getItem('role') === "customer") {
             emailApi.sendEmail({
-                to: _currentUser.email,
+               /// to: _currentUser.email,
                 subject: "Your order information",
                 text: "Thank for placing order in ComeBuy site. \n" +
                     "Your order: \n" +
-                    `Name: ${_currentUser.name} \n` +
-                    `Phone: ${_currentUser.phoneNumber} \n` +
+                 //   `Name: ${_currentUser.name} \n` +
+                 ///   `Phone: ${_currentUser.phoneNumber} \n` +
                     `COD Address: ${bigAddress}` + "\n" +
                     "-------------------------------------------------------- \n" +
                     stringOrder + "\n" +
@@ -445,11 +445,11 @@ export const CheckoutPage = () => {
             if (province != null && district != null && commune != null) {
                 setOpenSnackbar(true)
             } else {
-                if (CheckEmail(email) && CheckPhoneNumber(guestPhoneNum)) {
-                    alert("Move to payment method")
-                } else {
-                    setOpenSnackbar2(true)
-                }
+             //   if (CheckEmail(email) && CheckPhoneNumber(guestPhoneNum)) {
+                //     alert("Move to payment method")
+                // } else {
+                //     setOpenSnackbar2(true)
+                // }
             }
         }
     }
@@ -754,7 +754,7 @@ export const CheckoutPage = () => {
                                             OR:
                                         </Typography>
                                         <div style={{ width: '50%', marginTop: '1.2em', alignSelf: 'center' }}>
-                                            <Paypal _bigAddress={bigAddress} _guestEmail={email} _guestName={guestName} _guestPhoneNumber={guestPhoneNum} cartList={listCart} prodList={listProd} purchases={purchaseUnits} />
+                                            {/* <Paypal _bigAddress={bigAddress} _guestEmail={email} _guestName={guestName} _guestPhoneNumber={guestPhoneNum} cartList={listCart} prodList={listProd} purchases={purchaseUnits} /> */}
                                         </div>
                                     </>
                                 ) : (null)}
@@ -842,7 +842,7 @@ export const CheckoutPage = () => {
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" sx={{ width: '100%', position: 'relative' }} >
-                                    <Avatar sx={{ height: '70px', width: '70px' }} alt="" src={_currentUser.avatar} />
+                                    {/* <Avatar sx={{ height: '70px', width: '70px' }} alt="" src={_currentUser.avatar} /> */}
                                     <Stack direction="column" marginLeft="0.1em">
                                         <p
                                             style={{
@@ -856,7 +856,9 @@ export const CheckoutPage = () => {
                                                 marginTop: '0.1%',
                                                 marginLeft: '1.2em'
                                             }}
-                                        >{_currentUser.name} ({_currentUser.email})</p>
+                                        >
+                                            {/* {_currentUser.name} ({_currentUser.email}) */}
+                                            </p>
                                         <a
                                             onClick={handleLogOut}
                                             style={{
@@ -878,23 +880,23 @@ export const CheckoutPage = () => {
                                 <TextField
                                     fullWidth
                                     id="outlined-basic"
-                                    label={_currentUser.name != '' ? null : 'Full name'}
+                                    // label={_currentUser.name != '' ? null : 'Full name'}
                                     variant="outlined"
                                     sx={{
                                         color: '#333333',
                                         fontFamily: 'sans-serif',
                                         marginTop: '1em'
                                     }}
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    // value={name}
+                                    // onChange={(e) => setName(e.target.value)}
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-basic"
-                                    label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
+                                    // label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
                                     variant="outlined"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    // value={phoneNumber}
+                                    // onChange={(e) => setPhoneNumber(e.target.value)}
                                     sx={{
                                         color: '#333333',
                                         fontFamily: 'sans-serif',
@@ -1477,12 +1479,12 @@ export const CheckoutPage = () => {
             {/* snackbar */}
             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-                    {
+                    {/* {
                         _currentUser != null ?
                             ((name === '' || phoneNumber === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
                             :
                             ((guestName === '' || guestPhoneNum === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
-                    }
+                    } */}
                 </Alert>
             </Snackbar>
 
@@ -1503,10 +1505,10 @@ export const CheckoutPage = () => {
                     {localStorage.getItem('role') === "customer" ? (
                         <DialogContentText id="alert-dialog-slide-description">
                             You are about using COD service. <br />
-                            Order's name: {name} <br />
+                            {/* Order's name: {name} <br />
                             Order's phone number: {phoneNumber} <br />
                             Order's address: {bigAddress} <br />
-                            An order will be sent to your email: {_currentUser.email} <br />
+                            An order will be sent to your email: {_currentUser.email} <br /> */}
                             About 5 days your order will be delivered.
                         </DialogContentText>
                     ) : (
@@ -1559,3 +1561,5 @@ export const CheckoutPage = () => {
         </Grid >
     )
 }
+
+export default Checkout

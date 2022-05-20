@@ -37,16 +37,17 @@ const Product = () => {
     }, [])
 
     useEffect(() => {
-        const getCategories = () => {
-            let arr = [];
-            listHomeProduct.map((item, i) => {
+        console.log(listHomeProduct)
+        // const getCategories = () => {
+        //     let arr = [];
+        //     listHomeProduct.map((item, i) => {
 
-                arr.push(item._categoryId)
-            })
-            setListCategoriesId(removeDuplicates(arr))
-        }
-        if (listHomeProduct.length != 0)
-            getCategories()
+        //         arr.push(item._categoryId)
+        //     })
+        //     setListCategoriesId(removeDuplicates(arr))
+        // }
+        // if (listHomeProduct.length != 0)
+        //     getCategories()
     }, [listHomeProduct])
 
     return (
