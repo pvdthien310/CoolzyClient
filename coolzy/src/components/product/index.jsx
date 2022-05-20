@@ -24,7 +24,7 @@ const Product = () => {
                                 products.push(result_1.data)
                                 count++
                                 if (count == res.data.listProduct.length) {
-                                    setListHomeProduct(products)
+                                    setListHomeProduct(products.filter(ite => ite != null))
                                 }
                             })
                             .catch((err) => console(err))
@@ -39,8 +39,8 @@ const Product = () => {
     useEffect(() => {
         const getCategories = () => {
             let arr = [];
-            listHomeProduct.map((item, i) => {
-
+            console.log(listHomeProduct)
+            listHomeProduct.filter(ite => ite != null).map((item, i) => {
                 arr.push(item._categoryId)
             })
             setListCategoriesId(removeDuplicates(arr))
@@ -50,7 +50,7 @@ const Product = () => {
     }, [listHomeProduct])
 
     return (
-        listCategoriesId && listCategoriesId.map((item, i) => {
+        listCategoriesId && listCategoriesId.filter(ite => ite != null).map((item, i) => {
             //console.log(item)
             return (
                 // categoryId && 
