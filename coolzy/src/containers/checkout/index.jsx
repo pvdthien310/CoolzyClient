@@ -24,7 +24,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { currentUser, checkoutSelector } from './../../redux/selectors';
+import { currentUser } from './../../redux/selectors';
+import {currentListItem} from './../../redux/selectors'
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
 
 // import Paypal from './../../components/Paypal/index';
@@ -52,13 +53,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Checkout = () => {
-    const CHECKOUT = useSelector(checkoutSelector)
-    const [listCart, setListCart] = useState([])
+    const listItem = useSelector(currentListItem)
+   const [listCart, setListCart] = useState([])
 
-    useEffect(()=>{
-
-    },[])
-
+   useEffect(() => {
+       if (listItem.length != 0)
+        setListCart(listItem)
+   },[listItem])
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -68,8 +69,6 @@ const Checkout = () => {
 
     const [openPaymentMethodScreen, setOpenPaymentMethodScreen] = useState(false)
     const [openPayOnline, setOpenPayOnline] = useState(false)
-
-    const [listProd, setListProd] = useState([])
 
     const [selectedPayMethod, setSelectedPayMethod] = useState("Pay on delivery");
     const handleChangePayMethod = (event) => {
@@ -96,31 +95,36 @@ const Checkout = () => {
             value: 0,
         }
         for (let i = 0; i < listCart.length; i++) {
-                if (listProd[j].item._id === listCart[i].item._id) {
-                    amountObj = {
-                        ...amountObj,
-                        value: Number(listCart[i].quantity) * Number(listCart[i].price)
-                    }
-                    let temp = {
-                        description: listCart[i].item.name,
-                        reference_id: listCart[i].item._id,
-                        amount: amountObj
-                    }
-                    sample.push(temp)
+            if (listProd[i].product._id === listCart[i].product._id) {
+                amountObj = {
+                    ...amountObj,
+                    value: listCart[i].total
                 }
+                let temp = {
+                    description: listCart[i].product.name,
+                    reference_id: listCart[i].size,
+                    amount: amountObj
+                }
+                sample.push(temp)
+            }
         }
         setPurchaseUnits(...purchaseUnits, sample)
     }
 
     const [subTotal, setSubTotal] = useState(0)
 
-    const CountTotal = () => {
-        let newTotal = 0
-        listCart.map((value) => {
-            newTotal = newTotal + value.total
-        })
-        setSubTotal(newTotal)
-    }
+    useEffect(() => {
+        const CountTotal = () => {
+            let newTotal = 0
+            listCart.map((value) => {
+                console.log(value.total)
+                newTotal = newTotal + value.total
+            })
+            setSubTotal(newTotal)
+        }
+
+        CountTotal()
+    },[])
 
     //for snackbar
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -162,12 +166,13 @@ const Checkout = () => {
     //get province
     useEffect(() => {
         const getProvinceList = async () => {
-           await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
-            .then((res)=>res.json())
-            .then((data) => setProvinceList(data))
+            await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
+                .then((res) => res.json())
+                .then((data) => setProvinceList(data))
         }
         getProvinceList()
     }, [])
+
 
     function handleChangeProvince(event) {
         setProvince(event.target.value)
@@ -176,8 +181,8 @@ const Checkout = () => {
     useEffect(() => {
         const getDistrict = async () => {
             await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
-            .then((res)=>res.json())
-            .then((data) => setDistrict(data))
+                .then((res) => res.json())
+                .then((data) => setDistrictList(data))
         }
         getDistrict()
     }, [province])
@@ -190,8 +195,8 @@ const Checkout = () => {
     useEffect(() => {
         const getCommune = async () => {
             await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
-            .then((res)=>res.json())
-            .then((data) => setCommuneList(data))
+                .then((res) => res.json())
+                .then((data) => setCommuneList(data))
         }
         getCommune()
     }, [district])
@@ -203,10 +208,10 @@ const Checkout = () => {
     function handleClickToCart(event) {
         event.preventDefault();
         ///if (localStorage.getItem('role') === 'customer') {
-            navigate('/myplace/mycart')
-      ///  } else {
-       ///   if     navigate('/guestCart')
-      //  }
+        navigate('/myplace/mycart')
+        ///  } else {
+        ///   if     navigate('/guestCart')
+        //  }
     }
 
     const handleChangeAddress = async (e) => {
@@ -214,19 +219,19 @@ const Checkout = () => {
     }
 
     const handleToPayment = async () => {
-        // if (name === '' || phoneNumber === '' || addressShip === '') {
-        //     setOpenSnackbar(true)
-        // } else {
-        //     if (province === null || district === null && commune === null) {
-        //         setOpenSnackbar(true)
-        //     } else {
-        //         const temp = addressShip + ', ' + commune.name + ', ' + district.name + ', ' + province.name
-        //         setBigAddress(temp)
-        //         setOpenPaymentMethodScreen(true)
-        //         // await MakePurchaseUnit()
-        //         // console.log(purchaseUnits)
-        //     }
-        // }
+        if (name === '' || phoneNumber === '' || addressShip === '') {
+            setOpenSnackbar(true)
+        } else {
+            if (province === null || district === null && commune === null) {
+                setOpenSnackbar(true)
+            } else {
+                const temp = addressShip + ', ' + commune.name + ', ' + district.name + ', ' + province.name
+                setBigAddress(temp)
+                setOpenPaymentMethodScreen(true)
+                // await MakePurchaseUnit()
+                // console.log(purchaseUnits)
+            }
+        }
     }
 
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -247,18 +252,15 @@ const Checkout = () => {
     const [openBackdrop, setOpenBackdrop] = useState(false);
     const handleCloseBackdrop = async () => {
         handleCloseConfirm()
-        if (localStorage.getItem('role') === "customer") {
-            for (let i = 0; i < listCart.length; i++) {
-                try {
-                 //   const resultAction = await dispatch(deleteCartById(listCart[i]))
-                 //   const originalPromiseResult = unwrapResult(resultAction)
-                } catch (rejectedValueOrSerializedError) {
-                    alert(rejectedValueOrSerializedError);
-                }
-            }
-        } else {
-            localStorage.setItem('cart', JSON.stringify([]));
-        }
+        // for (let i = 0; i < listCart.length; i++) {
+        //     try {
+        //         //   const resultAction = await dispatch(deleteCartById(listCart[i]))
+        //         //   const originalPromiseResult = unwrapResult(resultAction)
+        //     } catch (rejectedValueOrSerializedError) {
+        //         alert(rejectedValueOrSerializedError);
+        //     }
+        // }
+
         setOpenBackdrop(false);
         setPlacedOrderSuccessfully(true)
     };
@@ -271,25 +273,25 @@ const Checkout = () => {
     const [invoiceId, setInvoiceId] = useState(' ')
 
     const MakeInvoice = async () => {
-       // var m = 
-       // var date = moment().format('D/M/YYYY')
+        // var m = 
+        // var date = moment().format('D/M/YYYY')
         let tempID = ''
-            let temp = {
-                moneyReceived: '0',
-                isChecked: false,
-                isPaid: false,
-               // date: date + ' ' + m,
-                userID: _currentUser.userID,
-                branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
-            }
+        let temp = {
+            moneyReceived: '0',
+            isChecked: false,
+            isPaid: false,
+            // date: date + ' ' + m,
+            userID: _currentUser.userID,
+            branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
+        }
 
-           // try {
-             //   const resultAction = await dispatch(addInvoice(temp))
-            //    const originalPromiseResult = unwrapResult(resultAction)
-             //   setInvoiceId(originalPromiseResult.data.invoiceID)
-           // } catch (rejectedValueOrSerializedError) {
-            //    alert(rejectedValueOrSerializedError)
-           // }
+        // try {
+        //   const resultAction = await dispatch(addInvoice(temp))
+        //    const originalPromiseResult = unwrapResult(resultAction)
+        //   setInvoiceId(originalPromiseResult.data.invoiceID)
+        // } catch (rejectedValueOrSerializedError) {
+        //    alert(rejectedValueOrSerializedError)
+        // }
     }
 
     useEffect(async () => {
@@ -301,45 +303,42 @@ const Checkout = () => {
     const _addInvoiceItem = async (_invoiceId) => {
         let stringOrder = ''
         for (let i = 0; i < listCart.length; i++) {
-            for (let j = 0; j < listProd.length; j++) {
-                if (listCart[i].productid === listProd[j].productID) {
-                    let item = {
-                        invoiceID: _invoiceId,
-                        productID: listProd[j].productID,
-                        amount: listCart[i].amount,
-                        total: Number(listCart[i].amount) * Number(listProd[j].price)
-                    }
-                    stringOrder = stringOrder + "\n" + `${listProd[j].name} - Quantity: ${listCart[i].amount} - Sub-cost: $${item.total} `
-                   // t.push(item)
-                    try {
-                    //    const resultAction = await dispatch(addInvoiceItem(item))
-                     //   const originalPromiseResult = unwrapResult(resultAction)
-                    } catch (rejectedValueOrSerializedError) {
-                        console.log(rejectedValueOrSerializedError)
-                    }
-                }
+            let item = {
+                invoiceID: _invoiceId,
+                productID: listCart[i].product._id,
+                quantity: listCart[i].quantity,
+                total: Number(listCart[i].total)
             }
+            stringOrder = stringOrder + "\n" + `${listCart[i].item.name} - Quantity: ${listCart[i].quantity} - Sub-cost: ${item.total} VND`
+            // t.push(item)
+            try {
+                //    const resultAction = await dispatch(addInvoiceItem(item))
+                //   const originalPromiseResult = unwrapResult(resultAction)
+            } catch (rejectedValueOrSerializedError) {
+                console.log(rejectedValueOrSerializedError)
+            }
+
         }
 
-            emailApi.sendEmail({
-                to: _currentUser.email,
-                subject: "Your order information",
-                text: "Thank for placing order in Coolzy site. \n" +
-                    "Your order: \n" +
-                    `Name: ${_currentUser.name} \n` +
-                    `Phone: ${_currentUser.phoneNumber} \n` +
-                    `COD Address: ${bigAddress}` + "\n" +
-                    "-------------------------------------------------------- \n" +
-                    stringOrder + "\n" +
-                    "-------------------------------------------------------- \n" +
-                    `Total: ${subTotal} USD` + "\n" +
-                    "-------------------------------------------------------- \n" +
-                    "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
-            }).then(data => {
-                handleCloseBackdrop()
-            })
-                .catch(err => console.log(err))
-      
+        emailApi.sendEmail({
+            to: _currentUser.email,
+            subject: "Your order information",
+            text: "Thank for placing order in Coolzy site. \n" +
+                "Your order: \n" +
+                `Name: ${_currentUser.name} \n` +
+                `Phone: ${_currentUser.phoneNumber} \n` +
+                `COD Address: ${bigAddress}` + "\n" +
+                "-------------------------------------------------------- \n" +
+                stringOrder + "\n" +
+                "-------------------------------------------------------- \n" +
+                `Total: ${subTotal} VND` + "\n" +
+                "-------------------------------------------------------- \n" +
+                "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
+        }).then(data => {
+            handleCloseBackdrop()
+        })
+            .catch(err => console.log(err))
+
     }
 
     const handleClosePaymentMethodScreen = () => {
@@ -637,201 +636,172 @@ const Checkout = () => {
                     </Stack>
                 </Grid>
             ) : (
-                
-                    <Grid item xs={7} height="100%" >
-                        <Stack direction="column" spacing={2} p="2rem" paddingLeft="12em">
-                            <Stack direction="column"
+                <Grid item xs={7} height="100%" >
+                    <Stack direction="column" spacing={2} p="2rem" paddingLeft="12em">
+                        <Stack direction="column"
+                            sx={{
+                                paddingBottom: '1em',
+                                display: 'block'
+                            }}>
+                            <Button
                                 sx={{
-                                    paddingBottom: '1em',
-                                    display: 'block'
-                                }}>
-                                <Button
-                                    sx={{
-                                        marginLeft: '-1.2%',
-                                        color: '#333333',
-                                        fontSize: '2em',
-                                        fontWeight: 'normal',
-                                        lineHeight: '1em',
-                                        display: 'block',
-                                        marginBlockStart: '0.67em',
-                                        marginBlockEnd: '0.67em',
-                                        background: 'white !important',
-                                        fontFamily: 'sans-serif'
-                                    }}
-                                    onClick={() => navigate('/')}
-                                >
-                                    Coolzy
-                                </Button>
-                                {/* <Stack direction="row"
-                                    sx={{
-                                        marginTop: '-2%',
-                                        listStyleType: 'none',
-                                        display: 'block',
-                                        marginBlockEnd: '1em',
-                                    }}
-                                >
-                                    <Breadcrumbs separator="›" style={{ color: '#000D0A' }} aria-label="breadcrumb">
-                                        {breadcrumbs}
-                                    </Breadcrumbs>
-                                </Stack> */}
-                                <Stack marginTop="-3%">
-                                    <Typography
-                                        sx={{
-                                            color: '#333333',
-                                            fontSize: '1.28571em',
-                                            fontWeight: 'normal',
-                                            lineHeight: '1em',
-                                            marginBlockStart: '0.83em',
-                                            marginBlockEnd: '0.83em',
+                                    marginLeft: '-1.2%',
+                                    color: '#333333',
+                                    fontSize: '2em',
+                                    fontWeight: 'normal',
+                                    lineHeight: '1em',
+                                    display: 'block',
+                                    marginBlockStart: '0.67em',
+                                    marginBlockEnd: '0.67em',
+                                    background: 'white !important',
+                                    fontFamily: 'sans-serif'
+                                }}
+                                onClick={() => navigate('/')}
+                            >
+                                Coolzy
+                            </Button>
+                            <Stack direction="row" sx={{ width: '100%', position: 'relative' }} >
+                                {/* <Avatar sx={{ height: '70px', width: '70px' }} alt="" src={_currentUser.avatar} /> */}
+                                <Stack direction="column" marginLeft="0.1em">
+                                    <p
+                                        style={{
+                                            marginBlockStart: '1em',
+                                            marginBlockEnd: '1em',
                                             display: 'block',
-                                            fontFamily: 'sans-serif'
+                                            marginBottom: '0.75em',
+                                            lineHeight: '1.5em',
+                                            fontSize: '14px',
+                                            fontFamily: 'sans-serif',
+                                            marginTop: '0.1%',
+                                            marginLeft: '1.2em'
                                         }}
                                     >
-                                        Cart Information
-                                    </Typography>
+                                        {_currentUser.name} ({_currentUser.email})
+                                    </p>
+
                                 </Stack>
-                                <Stack direction="row" sx={{ width: '100%', position: 'relative' }} >
-                                    {/* <Avatar sx={{ height: '70px', width: '70px' }} alt="" src={_currentUser.avatar} /> */}
-                                    <Stack direction="column" marginLeft="0.1em">
-                                        <p
+                            </Stack>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                label={_currentUser.name != '' ? null : 'Full name'}
+                                variant="outlined"
+                                sx={{
+                                    color: '#333333',
+                                    fontFamily: 'sans-serif',
+                                    marginTop: '1em'
+                                }}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
+                                variant="outlined"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                sx={{
+                                    color: '#333333',
+                                    fontFamily: 'sans-serif',
+                                    marginTop: '1.2rem'
+                                }} />
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                label="Your address"
+                                variant="outlined"
+                                onChange={handleChangeAddress}
+                                sx={{
+                                    color: '#333333',
+                                    fontFamily: 'sans-serif',
+                                    marginTop: '1.3rem'
+                                }}
+                            />
+                            <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '1em' }}>
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">City/Province</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={province}
+                                            label="Province/City"
+                                            onChange={handleChangeProvince}
+                                        >
+                                            {provinceList.map((province) => (
+                                                <MenuItem value={province}>{province.name}</MenuItem>
+                                            )
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">District</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={district}
+                                            label="District"
+                                            onChange={handleChangeDistrict}
+                                        >
+                                            {districtList.map((district) => (
+                                                <MenuItem value={district}>{district.name}</MenuItem>
+                                            )
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Commune</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={commune}
+                                            label="Commune"
+                                            onChange={handleChangeCommune}
+                                        >
+                                            {communeList.map((commune) => (
+                                                <MenuItem value={commune}>{commune.name}</MenuItem>
+                                            )
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
+                                    <Grid item xs={6}>
+                                        <a onClick={() => navigate('/myplace/mycart')}
                                             style={{
-                                                marginBlockStart: '1em',
-                                                marginBlockEnd: '1em',
-                                                display: 'block',
-                                                marginBottom: '0.75em',
-                                                lineHeight: '1.5em',
+                                                textDecoration: 'none',
+                                                color: '#338dbc',
+                                                transition: 'color 0.2s ease-in-out',
+                                                display: 'inline-block',
+                                                cursor: 'pointer',
                                                 fontSize: '14px',
                                                 fontFamily: 'sans-serif',
-                                                marginTop: '0.1%',
+                                                lineHeight: '1.5em',
                                                 marginLeft: '1.2em'
                                             }}
                                         >
-                                            {_currentUser.name} ({_currentUser.email})
-                                            </p>
-                                     
-                                    </Stack>
-                                </Stack>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label={_currentUser.name != '' ? null : 'Full name'}
-                                    variant="outlined"
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '1em'
-                                    }}
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
-                                    variant="outlined"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '1.2rem'
-                                    }} />
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Your address"
-                                    variant="outlined"
-                                    onChange={handleChangeAddress}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '1.3rem'
-                                    }}
-                                />
-                                <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '1em' }}>
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">City/Province</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={province}
-                                                label="Province/City"
-                                                onChange={handleChangeProvince}
-                                            >
-                                                {provinceList.map((province) => (
-                                                    <MenuItem value={province}>{province.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
+                                            My Cart
+                                        </a>
                                     </Grid>
-
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">District</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={district}
-                                                label="District"
-                                                onChange={handleChangeDistrict}
-                                            >
-                                                {districtList.map((district) => (
-                                                    <MenuItem value={district}>{district.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
+                                    <Grid item xs={6}>
+                                        <Button onClick={handleToPayment} variant="contained" sx={{ fontSize: '14px' }} size="large">
+                                            Continue to payment method
+                                        </Button>
                                     </Grid>
-
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Commune</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={commune}
-                                                label="Commune"
-                                                onChange={handleChangeCommune}
-                                            >
-                                                {communeList.map((commune) => (
-                                                    <MenuItem value={commune}>{commune.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
-                                        <Grid item xs={6}>
-                                            <a onClick={() => navigate('/myplace/mycart')}
-                                                style={{
-                                                    textDecoration: 'none',
-                                                    color: '#338dbc',
-                                                    transition: 'color 0.2s ease-in-out',
-                                                    display: 'inline-block',
-                                                    cursor: 'pointer',
-                                                    fontSize: '14px',
-                                                    fontFamily: 'sans-serif',
-                                                    lineHeight: '1.5em',
-                                                    marginLeft: '1.2em'
-                                                }}
-                                            >
-                                                My Cart
-                                            </a>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <Button onClick={handleToPayment} variant="contained" sx={{ fontSize: '14px' }} size="large">
-                                                Continue to payment method
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-
                                 </Grid>
-                            </Stack>
+
+                            </Grid>
                         </Stack>
-                    </Grid>
+                    </Stack>
+                </Grid>
             )}
 
             {/* Cart visualization part */}
@@ -841,249 +811,119 @@ const Checkout = () => {
                 backgroundPosition: 'left top',
                 boxShadow: '1px 0 0 #e1e1e1 inset'
             }} height="auto" item xs={5}>
-                {localStorage.getItem('role') === 'customer' ? (
-                    <Stack direction="column" spacing={2} p="2rem" paddingRight="6em">
-                        {listCart.map((cart) => (
-                            <Stack
-                                sx={{
-                                    backgroundColor: '#F2F2F2',
-                                    borderRadius: '8px',
-                                    padding: '1em',
-                                    boxShadow: '0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)'
-                                }}
-                                direction="row"
-                                width="100%">
-                                {listProd.map((prod) =>
-                                    prod.productID === cart.productid ? (
-                                        <img style={{
-                                            width: '7em',
-                                            height: '7em',
-                                            borderRadius: '8px',
-                                            background: '#fff',
-                                            position: 'relative'
-                                        }}
-                                            alt={prod.name}
-                                            src={prod.productimage[0].imageURL}
-                                        />
-                                    ) : (
-                                        null
-                                    )
-                                )}
-                                <Stack direction="column">
-                                    <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{cart.product.name}</Typography>
-                                    <Typography sx={{ marginLeft: '1em', marginTop: '0.75em' }}> Quantity: {cart.amount}</Typography>
-                                </Stack>
-                                {listProd.map((prod) =>
-                                    prod.productID === cart.productid ? (
-                                        <Typography sx={{ alignSelf: 'flex-end', fontWeight: 600 }}> ${Number(prod.price) * Number(cart.amount)}</Typography>
-                                    ) : (null)
-                                )}
-                            </Stack>
-                        ))}
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Grid container width="100%" spacing={1}>
-                            <Grid item xs={8.5}>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Discount code"
-                                    variant="outlined"
-                                    onChange={handleChangeAddress}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={3.5} sx={{ height: '100%' }}>
-                                <Button variant="contained" sx={{ fontSize: '14px', backgroundColor: 'gray', marginTop: '0.5em', width: '100%', height: '100%' }}>
-                                    Use
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Stack direction="column" width="100%">
-                            <Typography sx={{
-                                color: '#333333',
-                                fontFamily: 'sans-serif', fontWeight: 300
+                <Stack direction="column" spacing={2} p="2rem" paddingRight="6em">
+                    {listCart.map((item) => (
+                        <Stack
+                            sx={{
+                                backgroundColor: '#F2F2F2',
+                                borderRadius: '8px',
+                                padding: '1em',
+                                boxShadow: '0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)'
                             }}
-                            >RARE MEMBER
-                            </Typography>
-                            <Stack direction="row" width="100%">
-                                <DiamondIcon sx={{ width: '17px', height: '17px' }} />
-                                <Typography sx={{
-                                    color: '#333333',
-                                    fontFamily: 'sans-serif',
-                                    fontSize: '13px',
-                                    marginLeft: '0.5em'
-                                }}>
-                                    MEMBER - 0 point(s)
-                                </Typography>
-                            </Stack>
-                        </Stack>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 600,
-                                marginTop: '1.2em'
-                            }}
-                            >
-                                ${subTotal}
-                            </Typography>
-                        </Stack>
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 800,
-                                marginTop: '-0.5em'
-                            }}
-                            >
-                                $2.00
-                            </Typography>
-                        </Stack>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                            direction="row"
+                            width="100%">
 
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 600,
-                                marginTop: '1.2em',
-                                fontSize: '20px'
+                            <img style={{
+                                width: '7em',
+                                height: '7em',
+                                borderRadius: '8px',
+                                background: '#fff',
+                                position: 'relative'
                             }}
-                            >
-                                {subTotal + 2} USD
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                ) : (
-                    <Stack direction="column" spacing={2} p="2rem" paddingRight="6em">
-                        {listCart.map((cart) => (
-                            <Stack
-                                sx={{
-                                    backgroundColor: '#F2F2F2',
-                                    borderRadius: '8px',
-                                    padding: '1em',
-                                    boxShadow: '0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)'
-                                }}
-                                direction="row"
-                                width="100%">
-                                {listProd.map((prod) =>
-                                    prod.productID === cart.productid ? (
-                                        <img style={{
-                                            width: '7em',
-                                            height: '7em',
-                                            borderRadius: '8px',
-                                            background: '#fff',
-                                            position: 'relative'
-                                        }}
-                                            alt={prod.name}
-                                            src={prod.productimage[0].imageURL}
-                                        />
-                                    ) : (
-                                        null
-                                    )
-                                )}
-                                <Stack direction="column">
-                                    {listProd.map((prod) =>
-                                        prod.productID === cart.productid ? (
-                                            <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{prod.name}</Typography>
-                                        ) : (
-                                            null
-                                        )
-                                    )}
-                                    <Typography sx={{ marginLeft: '1em', marginTop: '0.75em' }}> Quantity: {cart.amount}</Typography>
-                                </Stack>
-                                {listProd.map((prod) =>
-                                    prod.productID === cart.productid ? (
-                                        <Typography sx={{ alignSelf: 'flex-end', fontWeight: 800 }}> ${Number(prod.price) * Number(cart.amount)}</Typography>
-                                    ) : (null)
-                                )}
-                            </Stack>
-                        ))}
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Grid container width="100%" spacing={1}>
-                            <Grid item xs={8.5}>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Discount code"
-                                    variant="outlined"
-                                    // onChange={handleChangeAddress}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={3.5} sx={{ height: '100%' }}>
-                                <Button variant="contained" sx={{ fontSize: '14px', backgroundColor: 'gray', marginTop: '0.5em', width: '100%', height: '100%' }}>
-                                    Use
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Stack direction="column" width="100%">
-                            <Typography sx={{
-                                color: '#333333',
-                                fontFamily: 'sans-serif', fontWeight: 300
-                            }}
-                            >RARE MEMBER
-                            </Typography>
-                            <Stack direction="row" width="100%">
-                                <DiamondIcon sx={{ width: '17px', height: '17px' }} />
-                                <Typography sx={{
-                                    color: '#333333',
-                                    fontFamily: 'sans-serif',
-                                    fontSize: '13px',
-                                    marginLeft: '0.5em'
-                                }}>
-                                    MEMBER - 0 point(s)
-                                </Typography>
-                            </Stack>
-                        </Stack>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 800,
-                                marginTop: '1.2em'
-                            }}
-                            >
-                                ${subTotal}
-                            </Typography>
-                        </Stack>
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 800,
-                                marginTop: '-0.5em'
-                            }}
-                            >
-                                $2.00
-                            </Typography>
-                        </Stack>
-                        <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                                alt={item.product.name}
+                                src={item.product.images[0]}
+                            />
 
-                        <Stack direction="row" width='100%' justifyContent="space-between">
-                            <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
-                            <Typography sx={{
-                                color: '#333333',
-                                fontWeight: 800,
-                                marginTop: '1.2em',
-                                fontSize: '20px'
-                            }}
-                            >
-                                {subTotal} USD
-                            </Typography>
+                            <Stack direction="column">
+                                <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{item.product.name}</Typography>
+                                <Typography sx={{ marginLeft: '1em', marginTop: '0.75em' }}> x{item.quantity}</Typography>
+                            </Stack>
+                            {listCart.map((item) =>
+                                <Typography sx={{ alignSelf: 'flex-end', fontWeight: 600 }}> {item.total}</Typography>
+
+                            )}
                         </Stack>
+                    ))}
+                </Stack>
+
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                <Grid container width="100%" spacing={1}>
+                    <Grid item xs={8.5}>
+                        <TextField
+                            fullWidth
+                            id="outlined-basic"
+                            label="Discount code"
+                            variant="outlined"
+                            onChange={handleChangeAddress}
+                            sx={{
+                                color: '#333333',
+                                fontFamily: 'sans-serif',
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={3.5} sx={{ height: '100%' }}>
+                        <Button variant="contained" sx={{ fontSize: '14px', backgroundColor: 'gray', marginTop: '0.5em', width: '100%', height: '100%' }}>
+                            Use
+                        </Button>
+                    </Grid>
+                </Grid>
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                <Stack direction="column" width="100%">
+                    <Typography sx={{
+                        color: '#333333',
+                        fontFamily: 'sans-serif', fontWeight: 300
+                    }}
+                    >RARE MEMBER
+                    </Typography>
+                    <Stack direction="row" width="100%">
+                        <DiamondIcon sx={{ width: '17px', height: '17px' }} />
+                        <Typography sx={{
+                            color: '#333333',
+                            fontFamily: 'sans-serif',
+                            fontSize: '13px',
+                            marginLeft: '0.5em'
+                        }}>
+                            MEMBER - 0 point(s)
+                        </Typography>
                     </Stack>
-                )}
+                </Stack>
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
+                    <Typography sx={{
+                        color: '#333333',
+                        fontWeight: 800,
+                        marginTop: '1.2em'
+                    }}
+                    >
+                        {subTotal} VND
+                    </Typography>
+                </Stack>
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
+                    <Typography sx={{
+                        color: '#333333',
+                        fontWeight: 800,
+                        marginTop: '-0.5em'
+                    }}
+                    >
+                        15000 VND
+                    </Typography>
+                </Stack>
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
+                    <Typography sx={{
+                        color: '#333333',
+                        fontWeight: 800,
+                        marginTop: '1.2em',
+                        fontSize: '20px'
+                    }}
+                    >
+                        {subTotal + 15000} USD
+                    </Typography>
+                </Stack>
             </Grid>
 
             {/* snackbar */}
@@ -1091,8 +931,8 @@ const Checkout = () => {
                 <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
                     {
                         _currentUser != null &&
-                            ((name === '' || phoneNumber === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
-                 }
+                        ((name === '' || phoneNumber === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
+                    }
                 </Alert>
             </Snackbar>
 
@@ -1110,15 +950,15 @@ const Checkout = () => {
             >
                 <DialogTitle>{"Please check these information below carefully before placing an order"}</DialogTitle>
                 <DialogContent>
-                    
-                        <DialogContentText id="alert-dialog-slide-description">
-                            You are about using COD service. <br />
-                            Order's name: {name} <br />
-                            Order's phone number: {phoneNumber} <br />
-                            Order's address: {bigAddress} <br />
-                            An order will be sent to your email: {_currentUser.email} <br /> 
-                            About 5 days your order will be delivered.
-                        </DialogContentText>
+
+                    <DialogContentText id="alert-dialog-slide-description">
+                        You are about using COD service. <br />
+                        Order's name: {name} <br />
+                        Order's phone number: {phoneNumber} <br />
+                        Order's address: {bigAddress} <br />
+                        An order will be sent to your email: {_currentUser.email} <br />
+                        About 5 days your order will be delivered.
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>

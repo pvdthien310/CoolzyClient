@@ -4,7 +4,7 @@ import accountApi from "../../api/accountAPI";
 export const checkoutSlice = createSlice({
     name: 'checkout',
     initialState: {
-        listItems: []
+        listItems: [],
     },
     reducers: {
         setListItems: (state, action) => {

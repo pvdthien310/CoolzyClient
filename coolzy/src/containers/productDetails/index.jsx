@@ -152,7 +152,7 @@ const ProductDetail = () => {
 
     let listCart = [
       {
-        item: item,
+        product: item,
         size: sizeValue.size,
         quantity: quantityValue,
         total: item.price * quantityValue
