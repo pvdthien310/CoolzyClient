@@ -21,6 +21,10 @@ import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
 import { useNavigate } from 'react-router-dom';
 
+import { checkoutSlice } from '../../redux/slices/checkoutSlices';
+import { useDispatch, useSelector } from 'react-redux';
+import { currentUser } from './../../redux/selectors';
+
 const ProductDetail = () => {
   const { id } = useParams()
   const [item, setItem] = useState({})
@@ -28,6 +32,9 @@ const ProductDetail = () => {
   const [quantityValue, setQuantityValue] = useState(1)
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const _currentUser = useSelector(currentUser)
 
   const [quantityButtonEnable, setQuantityButtonEnable] = useState({
     increase: true,
@@ -44,10 +51,6 @@ const ProductDetail = () => {
     await getItem()
 
   }, [])
-
-  // useEffect(() => {
-  //   console.log(item.images)
-  // }, [item])
 
   useEffect(() => {
     console.log(quantityButtonEnable)
@@ -119,7 +122,7 @@ const ProductDetail = () => {
           <div className="quantity__button-text">{quantityValue}</div>
 
           {
-            quantityButtonEnable.increase == false ? 
+            quantityButtonEnable.increase == false ?
               <ThemeProvider theme={btnTheme}>
                 <Button variant="contained" onClick={handleIncrementQuantity} sx={style.enable} disable> + </Button>
               </ThemeProvider>
@@ -145,16 +148,23 @@ const ProductDetail = () => {
     },
   })
 
-  const buyNow = ()=>{
-      let items = {
-        _itemid: {id},
+  const buyNow = () => {
+
+    let listCart = [
+      {
+        item: item,
         size: sizeValue.size,
         quantity: quantityValue,
         total: item.price * quantityValue
       }
+    ]
 
-      
-      navigate(`/checkout/${items}`)
+    if (_currentUser == '')
+      navigate('/login')
+    else {
+      dispatch(checkoutSlice.actions.setListItems(listCart))
+      navigate(`/checkout/`)
+    }
   }
 
 
@@ -246,7 +256,7 @@ const ProductDetail = () => {
                       background: '#000',
                       fontWeight: "bold",
                     }}
-                    onClick={buyNow}
+                      onClick={buyNow}
                     >Buy now</Button>
                   </ThemeProvider>
                 </Stack>

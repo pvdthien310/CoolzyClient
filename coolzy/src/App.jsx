@@ -16,6 +16,7 @@ import JWTApi from './api/jwtAPI';
 import { decode, encode } from 'base-64';
 import { accountSlice } from './redux/slices/accountSlices';
 import { ProfileManage } from './containers/ProfileManage';
+import Checkout from './containers/checkout/index'
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -77,6 +78,10 @@ function App() {
             <Route path="/register" element={
                 <Register />
             } />
+
+            <Route path="/checkout" element={
+                <Checkout />
+            }/>
         </Routes>
     );
 }

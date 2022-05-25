@@ -24,6 +24,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { currentUser, checkoutSelector } from './../../redux/selectors';
+import { checkoutSlice } from '../../redux/slices/checkoutSlices';
+
 // import Paypal from './../../components/Paypal/index';
 // import { CheckEmail, CheckPhoneNumber } from './../LoginAndRegister/ValidationDataForAccount'
 // import { isSignedIn_user, currentUser, cartListSelector } from '../../redux/selectors';
@@ -49,6 +52,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Checkout = () => {
+    const CHECKOUT = useSelector(checkoutSelector)
+    const [listCart, setListCart] = useState([])
+
+    useEffect(()=>{
+
+    },[])
+
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -59,10 +69,7 @@ const Checkout = () => {
     const [openPaymentMethodScreen, setOpenPaymentMethodScreen] = useState(false)
     const [openPayOnline, setOpenPayOnline] = useState(false)
 
-    const [listCart, setListCart] = useState([])
     const [listProd, setListProd] = useState([])
-
-    //const _guestCart = useSelector(cartListSelector)
 
     const [selectedPayMethod, setSelectedPayMethod] = useState("Pay on delivery");
     const handleChangePayMethod = (event) => {
@@ -78,51 +85,7 @@ const Checkout = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchYourCart = async () => {
-         ///   if (localStorage.getItem('role') === 'customer') {
-                let temp = []
-                let listCart = []
-                let listProd = []
-               // try {
-                    //const resultAction = await dispatch(getAllCart())
-                    //const originalPromiseResult = unwrapResult(resultAction)
-                  //  temp = originalPromiseResult
-                //    for (let i = 0; i < temp.length; i++) {
-                  //      if (temp[i].email === _currentUser.email) {
-                       //     listCart.push(temp[i])
-                           // const resultAction2 = await dispatch(getProductWithID(temp[i].productId))
-                           // const originalPromiseResult2 = unwrapResult(resultAction2)
-                      //      listProd.push(originalPromiseResult2)
-                    //    }
-                  //  }
-                  //  await setListCart(listCart)
-                  //  await setListProd(listProd)
-                  //  await CountTotal(listCart, listProd)
-                  //  await MakePurchaseUnit(listCart, listProd)
-                // } catch (rejectedValueOrSerializedError) {
-                //     alert(rejectedValueOrSerializedError)
-                // }
-            // } else {
-            //     let temp = _guestCart
-            //     let listCart = []
-            //     let listProd = []
-            //     for (let i = 0; i < temp.length; i++) {
-            //         if (temp.productid != 'undefined') {
-            //             listCart.push(temp[i])
-            //             const resultAction2 = await dispatch(getProductWithID(temp[i].productid))
-            //             const originalPromiseResult2 = unwrapResult(resultAction2)
-            //             listProd.push(originalPromiseResult2)
-            //         }
-            //     }
-            //     await setListCart(listCart)
-            //     await setListProd(listProd)
-            //     await CountTotal(listCart, listProd)
-            //     await MakePurchaseUnit(listCart, listProd)
-            // }
-        }
-        fetchYourCart()
-    }, [])
+    const _currentUser = useSelector(currentUser)
 
     const [purchaseUnits, setPurchaseUnits] = useState([])
 
@@ -133,32 +96,28 @@ const Checkout = () => {
             value: 0,
         }
         for (let i = 0; i < listCart.length; i++) {
-            for (let j = 0; j < listProd.length; j++) {
-                if (listProd[j].productId === listCart[i].productId) {
+                if (listProd[j].item._id === listCart[i].item._id) {
                     amountObj = {
                         ...amountObj,
-                        value: Number(listCart[i].quantity) * Number(listProd[j].price)
+                        value: Number(listCart[i].quantity) * Number(listCart[i].price)
                     }
                     let temp = {
-                        description: listProd[j].name,
-                        reference_id: listProd[j].productId,
+                        description: listCart[i].item.name,
+                        reference_id: listCart[i].item._id,
                         amount: amountObj
                     }
                     sample.push(temp)
                 }
-            }
         }
         setPurchaseUnits(...purchaseUnits, sample)
     }
 
     const [subTotal, setSubTotal] = useState(0)
 
-    const CountTotal = async (_cart, prList) => {
+    const CountTotal = () => {
         let newTotal = 0
-        await _cart.map((item) => {
-            let rs = prList.find((ite) => ite.productId == item.productId)
-            if (rs != undefined)
-                newTotal = newTotal + Number(Number(rs.price) * Number(item.quantity))
+        listCart.map((value) => {
+            newTotal = newTotal + value.total
         })
         setSubTotal(newTotal)
     }
@@ -183,14 +142,8 @@ const Checkout = () => {
     };
 
     //for customer is member
-    ///const _currentUser = useSelector(currentUser)
-   // const [name, setName] = useState(_currentUser.name)
-   // const [phoneNumber, setPhoneNumber] = useState(_currentUser.phoneNumber)
-
-    //for guest
-    const [guestName, setGuestName] = useState('')
-    const [guestPhoneNum, setGuestPhoneNum] = useState('')
-    const [email, setEmail] = useState('')
+    const [name, setName] = useState(_currentUser.name)
+    const [phoneNumber, setPhoneNumber] = useState(_currentUser.phoneNumber)
 
     //general information
     const [addressShip, setAddressShip] = useState('')
@@ -209,9 +162,9 @@ const Checkout = () => {
     //get province
     useEffect(() => {
         const getProvinceList = async () => {
-            const resProvince = await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
-            const resProv = resProvince.json()
-            setProvinceList(await resProv)
+           await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
+            .then((res)=>res.json())
+            .then((data) => setProvinceList(data))
         }
         getProvinceList()
     }, [])
@@ -222,9 +175,9 @@ const Checkout = () => {
     //get district
     useEffect(() => {
         const getDistrict = async () => {
-            const resDistrict = await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
-            const resDis = resDistrict.json()
-            setDistrictList(await resDis)
+            await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
+            .then((res)=>res.json())
+            .then((data) => setDistrict(data))
         }
         getDistrict()
     }, [province])
@@ -236,9 +189,9 @@ const Checkout = () => {
     //get commune
     useEffect(() => {
         const getCommune = async () => {
-            const reCommune = await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
-            const resCom = reCommune.json()
-            setCommuneList(await resCom)
+            await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
+            .then((res)=>res.json())
+            .then((data) => setCommuneList(data))
         }
         getCommune()
     }, [district])
@@ -254,14 +207,6 @@ const Checkout = () => {
       ///  } else {
        ///   if     navigate('/guestCart')
       //  }
-    }
-
-    const handleLogOut = () => {
-       // dispatch(accountSlice.actions.logout());
-        localStorage.setItem('role', '')
-        localStorage.setItem('idUser', '')
-        localStorage.setItem('cart', JSON.stringify([]));
-        navigate(0)
     }
 
     const handleChangeAddress = async (e) => {
@@ -326,45 +271,25 @@ const Checkout = () => {
     const [invoiceId, setInvoiceId] = useState(' ')
 
     const MakeInvoice = async () => {
-      //  var m = moment().format('H mm')
-      //  var date = moment().format('D/M/YYYY')
+       // var m = 
+       // var date = moment().format('D/M/YYYY')
         let tempID = ''
-      ///  if (localStorage.getItem('role') === "customer") {
             let temp = {
                 moneyReceived: '0',
                 isChecked: false,
                 isPaid: false,
-              //  date: date + ' ' + m,
-              //  userID: _currentUser.userID,
+               // date: date + ' ' + m,
+                userID: _currentUser.userID,
                 branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
             }
 
-            try {
+           // try {
              //   const resultAction = await dispatch(addInvoice(temp))
             //    const originalPromiseResult = unwrapResult(resultAction)
              //   setInvoiceId(originalPromiseResult.data.invoiceID)
-            } catch (rejectedValueOrSerializedError) {
-                alert(rejectedValueOrSerializedError)
-            }
-        // } else {
-        //     let temp = {
-        //         moneyReceived: "0",
-        //         isChecked: false,
-        //         isPaid: false,
-        //         date: date + ' ' + m,
-        //         userID: "10f8e845-b0ea-47fd-9f26-7d65f1bb571a",
-        //         branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
-        //     }
-
-        //     try {
-        //         const resultAction = await dispatch(addInvoice(temp))
-        //         const originalPromiseResult = unwrapResult(resultAction)
-        //         setInvoiceId(originalPromiseResult.data.invoiceID)
-        //     } catch (rejectedValueOrSerializedError) {
-        //         alert(rejectedValueOrSerializedError)
-        //     }
-        // }
-
+           // } catch (rejectedValueOrSerializedError) {
+            //    alert(rejectedValueOrSerializedError)
+           // }
     }
 
     useEffect(async () => {
@@ -385,7 +310,7 @@ const Checkout = () => {
                         total: Number(listCart[i].amount) * Number(listProd[j].price)
                     }
                     stringOrder = stringOrder + "\n" + `${listProd[j].name} - Quantity: ${listCart[i].amount} - Sub-cost: $${item.total} `
-                    // t.push(item)
+                   // t.push(item)
                     try {
                     //    const resultAction = await dispatch(addInvoiceItem(item))
                      //   const originalPromiseResult = unwrapResult(resultAction)
@@ -396,102 +321,26 @@ const Checkout = () => {
             }
         }
 
-      ///  if (localStorage.getItem('role') === "customer") {
             emailApi.sendEmail({
-               /// to: _currentUser.email,
+                to: _currentUser.email,
                 subject: "Your order information",
-                text: "Thank for placing order in ComeBuy site. \n" +
+                text: "Thank for placing order in Coolzy site. \n" +
                     "Your order: \n" +
-                 //   `Name: ${_currentUser.name} \n` +
-                 ///   `Phone: ${_currentUser.phoneNumber} \n` +
+                    `Name: ${_currentUser.name} \n` +
+                    `Phone: ${_currentUser.phoneNumber} \n` +
                     `COD Address: ${bigAddress}` + "\n" +
                     "-------------------------------------------------------- \n" +
                     stringOrder + "\n" +
                     "-------------------------------------------------------- \n" +
                     `Total: ${subTotal} USD` + "\n" +
                     "-------------------------------------------------------- \n" +
-                    "Any wondered things. Please contact with our shop with contact below site: ComeBuy.com"
+                    "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
             }).then(data => {
                 handleCloseBackdrop()
             })
                 .catch(err => console.log(err))
-        // } else {
-        //     emailApi.sendEmail({
-        //         to: email,
-        //         subject: "Your order information",
-        //         text: "Thank for placing order in ComeBuy site. \n" +
-        //             "Your order: \n" +
-        //             `Name: ${guestName} \n` +
-        //             `Phone: ${guestPhoneNum} \n` +
-        //             `COD Address: ${bigAddress}` + "\n" +
-        //             "-------------------------------------------------------- \n" +
-        //             stringOrder + "\n" +
-        //             "-------------------------------------------------------- \n" +
-        //             `Total: ${subTotal} USD` + "\n" +
-        //             "-------------------------------------------------------- \n" +
-        //             "Any wondered things. Please contact with our shop with contact below site: ComeBuy.com"
-        //     }).then(data => {
-        //         handleCloseBackdrop()
-        //     })
-        //         .catch(err => console.log(err))
-        // }
+      
     }
-
-
-    const handlePaymentGuest = () => {
-        if (guestName === '' || guestPhoneNum === '' || addressShip === '' || email === '') {
-            setOpenSnackbar(true)
-        } else {
-            if (province != null && district != null && commune != null) {
-                setOpenSnackbar(true)
-            } else {
-             //   if (CheckEmail(email) && CheckPhoneNumber(guestPhoneNum)) {
-                //     alert("Move to payment method")
-                // } else {
-                //     setOpenSnackbar2(true)
-                // }
-            }
-        }
-    }
-
-    const breadcrumbs = [
-        <Link
-            underline="hover"
-            key="2"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#338dbc',
-                lineHeight: '1.3em',
-                cursor: 'pointer'
-            }}
-            onClick={handleClickToCart}
-        >
-            Cart
-        </Link>,
-        <Typography
-            key="2"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#000D0A',
-                lineHeight: '1.3em',
-                fontFamily: 'sans-serif'
-            }}
-        >
-            Cart Information
-        </Typography>,
-        <Typography key="3"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#999999',
-                lineHeight: '1.3em',
-                fontFamily: 'sans-serif'
-            }}>
-            Payment method
-        </Typography>,
-    ];
 
     const handleClosePaymentMethodScreen = () => {
         setAddressShip('')
@@ -578,7 +427,7 @@ const Checkout = () => {
                                 }}
                                 onClick={() => navigate('/')}
                             >
-                                ComeBuy
+                                Coolzy
                             </Button>
                             <Stack direction="row"
                                 sx={{
@@ -788,7 +637,7 @@ const Checkout = () => {
                     </Stack>
                 </Grid>
             ) : (
-                localStorage.getItem('role') === 'customer' ? (
+                
                     <Grid item xs={7} height="100%" >
                         <Stack direction="column" spacing={2} p="2rem" paddingLeft="12em">
                             <Stack direction="column"
@@ -811,9 +660,9 @@ const Checkout = () => {
                                     }}
                                     onClick={() => navigate('/')}
                                 >
-                                    ComeBuy
+                                    Coolzy
                                 </Button>
-                                <Stack direction="row"
+                                {/* <Stack direction="row"
                                     sx={{
                                         marginTop: '-2%',
                                         listStyleType: 'none',
@@ -824,7 +673,7 @@ const Checkout = () => {
                                     <Breadcrumbs separator="›" style={{ color: '#000D0A' }} aria-label="breadcrumb">
                                         {breadcrumbs}
                                     </Breadcrumbs>
-                                </Stack>
+                                </Stack> */}
                                 <Stack marginTop="-3%">
                                     <Typography
                                         sx={{
@@ -857,46 +706,31 @@ const Checkout = () => {
                                                 marginLeft: '1.2em'
                                             }}
                                         >
-                                            {/* {_currentUser.name} ({_currentUser.email}) */}
+                                            {_currentUser.name} ({_currentUser.email})
                                             </p>
-                                        <a
-                                            onClick={handleLogOut}
-                                            style={{
-                                                textDecoration: 'none',
-                                                color: '#338dbc',
-                                                transition: 'color 0.2s ease-in-out',
-                                                display: 'inline-block',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                fontFamily: 'sans-serif',
-                                                lineHeight: '1.5em',
-                                                marginLeft: '1.2em'
-                                            }}
-                                        >
-                                            Log out
-                                        </a>
+                                     
                                     </Stack>
                                 </Stack>
                                 <TextField
                                     fullWidth
                                     id="outlined-basic"
-                                    // label={_currentUser.name != '' ? null : 'Full name'}
+                                    label={_currentUser.name != '' ? null : 'Full name'}
                                     variant="outlined"
                                     sx={{
                                         color: '#333333',
                                         fontFamily: 'sans-serif',
                                         marginTop: '1em'
                                     }}
-                                    // value={name}
-                                    // onChange={(e) => setName(e.target.value)}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-basic"
-                                    // label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
+                                    label={_currentUser.phoneNumber != '' ? null : 'Phone number'}
                                     variant="outlined"
-                                    // value={phoneNumber}
-                                    // onChange={(e) => setPhoneNumber(e.target.value)}
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
                                     sx={{
                                         color: '#333333',
                                         fontFamily: 'sans-serif',
@@ -998,230 +832,6 @@ const Checkout = () => {
                             </Stack>
                         </Stack>
                     </Grid>
-                ) : (
-                    // Guest
-                    <Grid item xs={7} height="100%" >
-                        <Stack direction="column" spacing={2} p="2rem" paddingLeft="12em">
-                            <Stack direction="column"
-                                sx={{
-                                    paddingBottom: '1em',
-                                    display: 'block'
-                                }}>
-                                <Button
-                                    onClick={() => navigate('/')}
-                                    sx={{
-                                        marginLeft: '-1.2%',
-                                        color: '#333333',
-                                        fontSize: '2em',
-                                        fontWeight: 'normal',
-                                        lineHeight: '1em',
-                                        display: 'block',
-                                        marginBlockStart: '0.67em',
-                                        marginBlockEnd: '0.67em',
-                                        background: 'white !important',
-                                        fontFamily: 'sans-serif'
-                                    }}
-
-                                >ComeBuy
-                                </Button>
-                                <Stack direction="row"
-                                    sx={{
-                                        marginTop: '-2%',
-                                        listStyleType: 'none',
-                                        display: 'block',
-                                        marginBlockEnd: '1em',
-                                    }}
-                                >
-                                    <Breadcrumbs separator="›" style={{ color: '#000D0A' }} aria-label="breadcrumb">
-                                        {breadcrumbs}
-                                    </Breadcrumbs>
-                                </Stack>
-                                <Stack marginTop="-3%">
-                                    <Typography
-                                        sx={{
-                                            color: '#333333',
-                                            fontSize: '1.28571em',
-                                            fontWeight: 'normal',
-                                            lineHeight: '1em',
-                                            marginBlockStart: '0.83em',
-                                            marginBlockEnd: '0.83em',
-                                            display: 'block',
-                                            fontFamily: 'sans-serif'
-                                        }}
-                                    >
-                                        Cart Information
-                                    </Typography>
-                                </Stack>
-                                <p
-                                    style={{
-                                        marginBlockStart: '1em',
-                                        marginBlockEnd: '1em',
-                                        display: 'block',
-                                        marginBottom: '0.75em',
-                                        lineHeight: '1.5em',
-                                        fontSize: '14px',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '0.1%'
-                                    }}
-                                >
-                                    Did you have an account ?
-                                    <a onClick={() => navigate('/login')}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#338dbc',
-                                            transition: 'color 0.2s ease-in-out',
-                                            display: 'inline-block',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontFamily: 'sans-serif',
-                                            lineHeight: '1.5em',
-                                            marginLeft: '0.5%'
-                                        }}
-                                    >
-                                        Sign in
-                                    </a>
-                                </p>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Full name"
-                                    variant="outlined"
-                                    value={guestName}
-                                    onChange={(e) => setGuestName(e.target.value)}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '1em'
-                                    }}
-                                />
-                                <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '0.25rem' }}>
-                                    <Grid item xs={8}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-basic"
-                                            label="Email"
-                                            variant="outlined"
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            sx={{
-                                                color: '#333333',
-                                                fontFamily: 'sans-serif',
-                                            }}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-basic"
-                                            label="Phone number"
-                                            variant="outlined"
-                                            onChange={(e) => setGuestPhoneNum(e.target.value)}
-                                            sx={{
-                                                color: '#333333',
-                                                fontFamily: 'sans-serif',
-                                            }}
-                                        />
-                                    </Grid>
-                                </Grid>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Your address"
-                                    variant="outlined"
-                                    onChange={handleChangeAddress}
-                                    sx={{
-                                        color: '#333333',
-                                        fontFamily: 'sans-serif',
-                                        marginTop: '1.3rem'
-                                    }}
-                                />
-                                <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '1em' }}>
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">City/Province</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={province}
-                                                label="Province/City"
-                                                onChange={handleChangeProvince}
-                                            >
-                                                {provinceList.map((province) => (
-                                                    <MenuItem value={province}>{province.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">District</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={district}
-                                                label="District"
-                                                onChange={handleChangeDistrict}
-                                            >
-                                                {districtList.map((district) => (
-                                                    <MenuItem value={district}>{district.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Commune</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={commune}
-                                                label="Commune"
-                                                onChange={handleChangeCommune}
-                                            >
-                                                {communeList.map((commune) => (
-                                                    <MenuItem value={commune}>{commune.name}</MenuItem>
-                                                )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
-                                        <Grid item xs={6}>
-                                            <a onClick={() => navigate('/guestCart')}
-                                                style={{
-                                                    textDecoration: 'none',
-                                                    color: '#338dbc',
-                                                    transition: 'color 0.2s ease-in-out',
-                                                    display: 'inline-block',
-                                                    cursor: 'pointer',
-                                                    fontSize: '14px',
-                                                    fontFamily: 'sans-serif',
-                                                    lineHeight: '1.5em',
-                                                    marginLeft: '1.2em'
-                                                }}
-                                            >
-                                                My Cart
-                                            </a>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <Button onClick={handleToPayment} variant="contained" sx={{ fontSize: '14px' }} size="large">
-                                                Continue to payment method
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-
-                                </Grid>
-                            </Stack>
-                        </Stack>
-                    </Grid>
-                )
             )}
 
             {/* Cart visualization part */}
@@ -1278,7 +888,7 @@ const Checkout = () => {
                                     id="outlined-basic"
                                     label="Discount code"
                                     variant="outlined"
-                                    // onChange={handleChangeAddress}
+                                    onChange={handleChangeAddress}
                                     sx={{
                                         color: '#333333',
                                         fontFamily: 'sans-serif',
@@ -1479,12 +1089,10 @@ const Checkout = () => {
             {/* snackbar */}
             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-                    {/* {
-                        _currentUser != null ?
+                    {
+                        _currentUser != null &&
                             ((name === '' || phoneNumber === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
-                            :
-                            ((guestName === '' || guestPhoneNum === '' || addressShip === '') ? "Please fill in completely" : "Please set your location")
-                    } */}
+                 }
                 </Alert>
             </Snackbar>
 
@@ -1502,25 +1110,15 @@ const Checkout = () => {
             >
                 <DialogTitle>{"Please check these information below carefully before placing an order"}</DialogTitle>
                 <DialogContent>
-                    {localStorage.getItem('role') === "customer" ? (
+                    
                         <DialogContentText id="alert-dialog-slide-description">
                             You are about using COD service. <br />
-                            {/* Order's name: {name} <br />
+                            Order's name: {name} <br />
                             Order's phone number: {phoneNumber} <br />
                             Order's address: {bigAddress} <br />
-                            An order will be sent to your email: {_currentUser.email} <br /> */}
+                            An order will be sent to your email: {_currentUser.email} <br /> 
                             About 5 days your order will be delivered.
                         </DialogContentText>
-                    ) : (
-                        <DialogContentText id="alert-dialog-slide-description">
-                            You are about using COD service. <br />
-                            Order's name: {guestName} <br />
-                            Order's phone number: {guestPhoneNum} <br />
-                            Order's address: {bigAddress} <br />
-                            An order will be sent to your email: {email} <br />
-                            About 5 days your order will be delivered.
-                        </DialogContentText>
-                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>
