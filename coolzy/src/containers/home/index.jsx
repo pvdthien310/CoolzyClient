@@ -9,7 +9,6 @@ const Home = () => {
         <div className='home__container'>
             <Slider />
             <Navbar />
-
             <Brand />
             <Product />
             <Footer />
