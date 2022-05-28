@@ -3,7 +3,6 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import Home from './containers/home';
 import ProductDetail from './containers/productDetails'
-import OrdersManagement from './containers/ordersManagement/index';
 import Login from './containers/login';
 import Register from './containers/register/index';
 import { useDispatch, useSelector } from 'react-redux';
