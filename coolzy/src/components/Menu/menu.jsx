@@ -48,7 +48,7 @@ const CustomMenu = ({ accountToggleHandle }) => {
                 user.role == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Transaction history</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/history') }}>Transaction history</p>
                     <VscHistory className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }

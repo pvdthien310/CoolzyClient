@@ -15,6 +15,7 @@ import JWTApi from './api/jwtAPI';
 import { decode, encode } from 'base-64';
 import { accountSlice } from './redux/slices/accountSlices';
 import { ProfileManage } from './containers/ProfileManage';
+import TransactionHistory from './containers/transactionHistory';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -75,6 +76,10 @@ function App() {
 
             <Route path="/register" element={
                 <Register />
+            } />
+
+            <Route path="/history" element={
+                <TransactionHistory />
             } />
         </Routes>
     );
