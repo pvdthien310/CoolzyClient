@@ -1,4 +1,4 @@
-import { Typography, Stack, CircularProgress, Card, Grid } from "@mui/material";
+import { Typography, Stack, CircularProgress, Grid } from "@mui/material";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,7 @@ const TransactionHistory = () => {
             try {
                 const resultAction = await dispatch(getAllOrder())
                 const originalPromiseResult = unwrapResult(resultAction)
-                setMyHistory(originalPromiseResult.filter(ite => ite.email == _currentUser.email))
+                setMyHistory(originalPromiseResult.reverse().filter(ite => ite.email == _currentUser.email))
             } catch (rejectedValueOrSerializedError) {
                 console.log(rejectedValueOrSerializedError);
             }
@@ -34,11 +34,11 @@ const TransactionHistory = () => {
     }, [_currentUser])
     return (
         <Grid container>
-            <Grid item xs={6} sx={{ p: 2 }}>
-                <Typography variant="h5" sx={{ width: '100%', alignSelf: 'center' }}>History</Typography>
+            <Grid item xs={6} sx={{ p: 2, justifyContent: 'center', alignItems: 'center', backgroundColor:'white' }}>
+                <Typography variant="h5" fontWeight={'bold'} sx={{m: 2}}>History</Typography>
                 {
                     _currentUser && myHistory ?
-                        <Stack>
+                        <Stack sx={{p: 2 }}>
                             {
                                 myHistory.map((item, i) => (
                                     <OrderCard key={i} order={item} handleChooseItem={ChooseItem}>
@@ -53,18 +53,19 @@ const TransactionHistory = () => {
                         </Stack>
                 }
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={5} sx={{ p: 2 }}>
+                <Typography variant="h5" fontWeight={'bold'} sx={{m: 2}}>Order Item List</Typography>
                 {
-                    selectedOrder &&
+                    selectedOrder ?
                     <Stack sx={{ justifyContent: 'center' }}>
-                        <Typography variant="h5" sx={{ width: '100%', alignSelf: 'center' }}>Order Item List</Typography>
                         {
                             selectedOrder.items.map((item, i) => (
                                 <OrderItemCard key={i} item={item}>
                                 </OrderItemCard>
                             ))
                         }
-                    </Stack>
+                    </Stack>:
+                    <Stack sx={{p:3}}>Choose Order To Show ! </Stack>
                 }
             </Grid>
         </Grid>

@@ -28,7 +28,7 @@ const OrderItemCard = (props) => {
     }, [item._itemid])
 
     return (
-        <Card sx={{ width: '100%', m:2, p:2 }}>
+        <Card sx={{ width: '100%', m: 2, p: 2 }}>
             <CardActionArea>
                 {
                     product &&
@@ -40,19 +40,20 @@ const OrderItemCard = (props) => {
                     />
                 }
                 <CardContent>
-                    {product &&
+                    {
+                        product &&
                         <Typography gutterBottom variant="h5" component="div">
                             {product.name}
                         </Typography>
                     }
-                    <Typography variant="body2" color="text.secondary">
-                        {item.size}
+                    <Typography variant="body2" color="text.secondary" sx={{p:1}}>
+                        Size : {item.size}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {item.quantity}
+                    <Typography variant="body2" color="text.secondary" sx={{p:1}}>
+                       Quantity: {item.quantity}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {item.total}
+                    <Typography variant="body1" color="success" sx={{p:1}} fontWeight={'bold'}>
+                        Total: {item.total}
                     </Typography>
                 </CardContent>
             </CardActionArea>
