@@ -16,6 +16,7 @@ import { decode, encode } from 'base-64';
 import { accountSlice } from './redux/slices/accountSlices';
 import { ProfileManage } from './containers/ProfileManage';
 import Checkout from './containers/checkout/index'
+import TransactionHistory from './containers/transactionHistory';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -81,6 +82,9 @@ function App() {
             <Route path="/checkout" element={
                 <Checkout />
             }/>
+            <Route path="/history" element={
+                <TransactionHistory />
+            } />
         </Routes>
     );
 }
