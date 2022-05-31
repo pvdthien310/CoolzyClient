@@ -18,7 +18,7 @@
 .navbar__tab_bar__container {
     display: flex;
     color: #272727;
-    background-color: aliceblue;
+    background-color: #fff;
     padding: 6px;
     border-radius: 25px;
 }
