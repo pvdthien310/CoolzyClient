@@ -234,20 +234,6 @@ const FavoritePage = () => {
         handleCloseConfirmDelete()
         setOpenDeleteAllSuccess(true)
     }
-    const handlePlaceAllToCart = () => {
-        // setIsMovingToCart(true) //backdrop
-        // favoriteList.map((i) => {
-        //     dispatch(addCart({
-        //         userID: _currentUser.userID,
-        //         productID: i.productid
-        //     }))
-        //     dispatch(deleteFavoriteById(i.favoriteID))
-        // })
-        // favoriteList.splice(0, favoriteList.length)
-        // handleCloseMovingToCart()
-        // handleCloseConfirmMove()
-        // setOpenMoveAllSuccess(true)
-    }
     const handleSpeedDialClick = (action) => {
         if (action.name === 'Get all to cart') {
             if (favoriteList.length != 0) {
@@ -384,7 +370,7 @@ const FavoritePage = () => {
                         {
                             favoriteList.map((item, i) => (
                                 <>
-                                    <ProductInFavorite key={i} handleDeleteOneFavorite={handleDeleteOneFav} handleMoveItemToCart={handleMoveItemToMyCart} productInFavorite={item} ></ProductInFavorite>
+                                    <ProductInFavorite key={i} handleDeleteOneFavorite={handleDeleteOneFav} productInFavorite={item} ></ProductInFavorite>
                                     <Dialog
                                         open={open}
                                         TransitionComponent={Transition}
@@ -466,7 +452,7 @@ const FavoritePage = () => {
                 </DialogActions>
             </Dialog>
 
-            <Dialog
+            {/* <Dialog
                 open={openConfirmMove}
                 TransitionComponent={Transition}
                 keepMounted
@@ -482,7 +468,7 @@ const FavoritePage = () => {
                     <Button onClick={handleCloseConfirmMove}>Cancel</Button>
                     <Button onClick={handlePlaceAllToCart}>Ok</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
         </Container >
     );
 };

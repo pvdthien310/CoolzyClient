@@ -58,13 +58,13 @@ const ProductInFavorite = (props) => {
                         </Stack>
 
                     </CardContent>
-                    <Stack direction={'row'} sx={{ height: '10%', justifyContent: 'center', alignSelf: 'center', p: 2, marginLeft: '3%' }} spacing={1}>
-                        <IconButton onClick={() => props.handleDeleteOneFavorite(props.productInFavorite)} color="primary" aria-label="add to shopping cart">
-                            <ClearIcon color="error" />
+                    <Stack direction={'row'} sx={{ backgroundColor: 'white', height: '10%', justifyContent: 'center', alignSelf: 'center', p: 2, marginLeft: '3%' }} spacing={1}>
+                        <IconButton sx={{ backgroundColor: 'white' }} onClick={() => props.handleDeleteOneFavorite(props.productInFavorite)} color="primary" aria-label="add to shopping cart">
+                            <ClearIcon sx={{ backgroundColor: 'white' }} color="error" />
                         </IconButton>
-                        <IconButton onClick={() => props.handleMoveItemToCart(props.productInFavorite)} color="primary" aria-label="add to shopping cart">
+                        {/* <IconButton onClick={() => props.handleMoveItemToCart(props.productInFavorite)} color="primary" aria-label="add to shopping cart">
                             <ShoppingCartCheckoutSharp />
-                        </IconButton>
+                        </IconButton> */}
                     </Stack>
                     {/* <Typography variant="body1" fontWeight={'bold'} sx={{ marginLeft: '5%', textAlign: 'end', alignSelf: 'center', minWidth: 100 }} color="#D94A56">
                         $ {product.price}

@@ -16,7 +16,7 @@ export const getAllFav = createAsyncThunk(
 
 export const addFav = createAsyncThunk(
     "favorite/addFav",
-    async ({ data }, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
             const response = await favoriteAPI.addFav(data);
             if (!response) {
