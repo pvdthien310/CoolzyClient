@@ -1,12 +1,10 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { Navbar, Product } from "../../components";
+import { useNavigate } from "react-router-dom";
 import ManagerTabs from "../../components/managerTabs";
 import { currentUser } from "../../redux/selectors";
 import { accountSlice } from "../../redux/slices/accountSlices";
-import Order from "../order";
-import Staff from "../staff";
+
 
 const MainManager = () => {
     const _currentUser = useSelector(currentUser)

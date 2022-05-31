@@ -10,6 +10,7 @@ import ProductManager from '../../containers/product';
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import RevenuePage from '../../containers/revenue';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -56,6 +57,9 @@ export default function ManagerTabs(props) {
         else if (newValue == 2) {
             navigate('/manager/staff')
         }
+        else if (newValue == 3) {
+            navigate('/manager/revenue')
+        }
     };
 
     const tabTheme = createTheme({
@@ -75,6 +79,9 @@ export default function ManagerTabs(props) {
         else if (path.includes('manager/staff')) {
             setValue(2)
         }
+        else if (path.includes('manager/revenue')) {
+            setValue(3)
+        }
     }, [])
 
     return (
@@ -90,6 +97,10 @@ export default function ManagerTabs(props) {
                         {
                             props.role == 'Admin' &&
                             <Tab label="Staff" {...a11yProps(2)} />
+                        }
+                        {
+                            props.role == 'Admin' &&
+                            <Tab label="Revenue" {...a11yProps(3)} />
                         }
 
                     </Tabs>
@@ -109,6 +120,12 @@ export default function ManagerTabs(props) {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={2}>
                     <StaffManager />
+                </TabPanel>
+            }
+             {
+                props.role == 'Admin' &&
+                <TabPanel value={value} index={3}>
+                    <RevenuePage />
                 </TabPanel>
             }
 
