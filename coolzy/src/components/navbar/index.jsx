@@ -18,6 +18,7 @@ import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStore
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { IconButton } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -97,9 +98,18 @@ const IconBar = () => {
     const accountToggleHandle = () => {
         setAccountToggle(!accountToggle)
     }
+    const navigate = useNavigate()
+    const handleClickFavorite = () => {
+        navigate('/favorite')
+    }
     return (
         <div className='navbar__icon_bar__container'>
-            <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            <IconButton sx={{ marginTop: -1 }}>
+                <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            </IconButton>
+            <IconButton onClick={handleClickFavorite} sx={{ marginTop: -1 }}>
+                <FavoriteBorderIcon />
+            </IconButton>
             {accountToggle ?
 
                 <MenuRoundedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#000', cursor: 'pointer' }} onClick={accountToggleHandle} />

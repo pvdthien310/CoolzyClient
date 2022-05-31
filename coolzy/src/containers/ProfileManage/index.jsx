@@ -40,7 +40,7 @@ export const ProfileManage = () => {
         },
     })
 
-    const currentUser = useSelector(currentUser)
+    const _currentUser = useSelector(currentUser)
     const dispatch = useDispatch()
 
     const [isLoading, setIsLoading] = useState(false)
@@ -53,12 +53,12 @@ export const ProfileManage = () => {
     })
 
     useEffect(() => {
-        console.log(currentUser)
+        console.log(_currentUser)
     }, [])
 
     useEffect(() => {
         refresh()
-    }, [currentUser])
+    }, [_currentUser])
 
     useEffect(() => {
     }, [updateSucceeded])
@@ -123,19 +123,19 @@ export const ProfileManage = () => {
     //#endregion
 
     const [values, setValues] = useState({
-        _id: currentUser._id,
-        name: currentUser.name,
-        phoneNumber: currentUser.phoneNumber,
-        address: currentUser.address,
-        birthday: currentUser.birthday,
-        email: currentUser.email,
-        password: currentUser.password,
-        gender: currentUser.gender,
+        _id: _currentUser._id,
+        name: _currentUser.name,
+        phoneNumber: _currentUser.phoneNumber,
+        address: _currentUser.address,
+        birthday: _currentUser.birthday,
+        email: _currentUser.email,
+        password: _currentUser.password,
+        gender: _currentUser.gender,
 
     })
 
     const [passwords, setPasswords] = useState({
-        old: currentUser.password,
+        old: _currentUser.password,
         new: '',
         repeatNew: ''
     })
@@ -170,7 +170,7 @@ export const ProfileManage = () => {
             })
             check = false;
         }
-        else if (encode(passwords.old) != currentUser.password) {
+        else if (encode(passwords.old) != _currentUser.password) {
             setOldPasswordNote({
                 ...oldPasswordNote,
                 type: 'err',
@@ -341,6 +341,12 @@ export const ProfileManage = () => {
 
         return check
     }
+    const [name, setName] = useState(_currentUser.name)
+    const [phoneNumber, setPhoneNumber] = useState(_currentUser.phoneNumber)
+    const [address, setAddress] = useState(_currentUser.address)
+    const [birthday, setBirthday] = useState(_currentUser.birthday)
+    const [email, setEmail] = useState(_currentUser.email)
+
 
     const editProfile = async () => {
         if (validateInformation()) {
@@ -389,11 +395,11 @@ export const ProfileManage = () => {
                                     sx={{
                                         borderRadius: '0.5',
                                         input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                                        icons: { color: 'white' }
-                                        ///backgroundColor: 'rgb(9, 24, 48)',
-                                        // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                                        icons: { color: 'white' },
+                                        color: 'white'
                                     }}
-                                    defaultValue={currentUser.name}
+                                    // value={values.name}
+                                    defaultValue={name}
                                     onChange={handleChangeInformation('name')}
                                 />
                             </ThemeProvider>
@@ -415,7 +421,8 @@ export const ProfileManage = () => {
                                         //backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
-                                    defaultValue={currentUser.phoneNumber}
+                                    // value={_currentUser.phoneNumber}
+                                    defaultValue={phoneNumber}
                                     onChange={handleChangeInformation('phoneNumber')}
                                 />
                             </ThemeProvider>
@@ -438,7 +445,7 @@ export const ProfileManage = () => {
                                         //backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
-                                    defaultValue={currentUser.address}
+                                    defaultValue={address}
                                     onChange={handleChangeInformation('address')}
                                 />
                             </ThemeProvider>
@@ -471,7 +478,7 @@ export const ProfileManage = () => {
                                     InputProps={{
                                         style: { color: "#ffff" },
                                     }}
-                                    defaultValue={currentUser.birthday}
+                                    defaultValue={birthday}
                                     onChange={handleChangeInformation('birthday')}
                                 />
                             </ThemeProvider>
@@ -494,7 +501,7 @@ export const ProfileManage = () => {
                                         // backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
-                                    defaultValue={currentUser.email}
+                                    defaultValue={email}
                                     onChange={handleChangeInformation('email')}
                                     InputProps={{
                                         readOnly: true,
