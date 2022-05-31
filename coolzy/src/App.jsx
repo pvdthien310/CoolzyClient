@@ -56,7 +56,7 @@ function App() {
     return (
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
-            <Route path="/ordersManagement" element={<OrdersManagement />} />
+            {/* <Route path="/ordersManagement" element={<OrdersManagement />} /> */}
             <Route path="/" element={
                 <Home />
             } />

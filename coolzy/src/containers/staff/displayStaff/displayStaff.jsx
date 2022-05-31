@@ -65,7 +65,7 @@ const DisplayStaff = () => {
                 console.log(rejectedValueOrSerializedError)
             })
         return () => cancel = true
-    }, [])
+    })
 
     useEffect(() => {
         let arr = [];

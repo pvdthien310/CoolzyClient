@@ -16,12 +16,15 @@ import accountApi from './../../../api/accountAPI';
 import Message from './../../../components/Message/index';
 import Loading from './../../../components/Loading/loading'
 import { Success, Error } from './../../../components/alert/alert'
+import { useDispatch } from 'react-redux';
+import {staffSlice} from '../../../redux/slices/staffSlices'
 
 const EditStaff = () => {
   const { id } = useParams()
   const [staff, setStaff] = useState({})
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(async () => {
     await accountApi.getAccountWithID(id)
@@ -345,7 +348,7 @@ const EditStaff = () => {
       </div>
 
       {isLoading && <Loading />}
-      <Success message={updateSucceeded.message} status={updateSucceeded.status} />
+      {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
       {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
     </div>
   )

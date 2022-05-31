@@ -22,14 +22,13 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useDispatch } from 'react-redux';
 
 import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
 import { useNavigate } from 'react-router-dom';
 
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { currentUser } from './../../redux/selectors';
 import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -62,10 +61,6 @@ const ProductDetail = () => {
 
   }, [])
 
-  useEffect(() => {
-    console.log(quantityButtonEnable)
-    console.log(sizeValue.quantity)
-  }, [quantityButtonEnable])
 
   const handleChangeSize = (event) => {
     setSizeValue(event.target.value);
@@ -75,7 +70,6 @@ const ProductDetail = () => {
     if (quantityValue < sizeValue.quantity) {
       setQuantityButtonEnable({ ...quantityButtonEnable, increase: true });
       setQuantityValue(quantityValue + 1);
-      console.log(quantityValue)
     }
     else if (quantityValue == sizeValue.quantity) {
       setQuantityButtonEnable({ ...quantityButtonEnable, increase: false });
@@ -93,6 +87,10 @@ const ProductDetail = () => {
     }
   };
 
+  useEffect (()=>{
+    if (sizeValue.size)
+      setQuantityValue(1)
+  }, [sizeValue])
   const QuantityButton = () => {
     const style = {
       enable: {
@@ -129,7 +127,7 @@ const ProductDetail = () => {
               </ThemeProvider>
           }
 
-          <div className="quantity__button-text">{quantityValue}</div>
+          {sizeValue.size ?  <div className="quantity__button-text">{quantityValue}</div> : <div className="quantity__button-text">0</div>}
 
           {
             quantityButtonEnable.increase == false ?
@@ -283,7 +281,7 @@ const ProductDetail = () => {
             <Grid xs={6}>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
-                <div className="product-details__container__price">{item.price}</div>
+                <div className="product-details__container__price">{item.price} USD</div>
                 <div className="product-details__container__description">{item.description}</div>
 
                 <Stack direction="row" sx={{

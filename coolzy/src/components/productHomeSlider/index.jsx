@@ -116,7 +116,7 @@ const SlideItem = props => {
 
             <label className="product-slider__item__container__title" onClick={GoToDetails}>{item.name}</label>
 
-            <div className="product-slider__item__container__price">{item.price}</div>
+            <div className="product-slider__item__container__price">{item.price} USD</div>
         </div>
     )
 }

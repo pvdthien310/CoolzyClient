@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -18,6 +18,8 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import HomeIcon from '@mui/icons-material/Home';
@@ -112,6 +114,7 @@ const StaffInformation = (props) => {
   const dispatch = useDispatch()
 
   const handleDelete = async () => {
+    closeDeleteConfirm(false)
     const response = await accountApi.deleteAccount(data._id)
     if (response.status == 200) {
       console.log('Xoa thanh cong')
@@ -120,6 +123,14 @@ const StaffInformation = (props) => {
     else {
       console.log("Xoa that bai ")
     }
+  }
+
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false)
+  const openDeleteConfirm = ()=>{
+    setDeleteConfirmVisible(true)
+  } 
+  const closeDeleteConfirm = ()=>{
+    setDeleteConfirmVisible(false)
   }
 
   const navigate = useNavigate()
@@ -190,8 +201,48 @@ const StaffInformation = (props) => {
         }}>
           Modify
         </CustomOutlineButton>
-        <CustomFillButton variant="contained" onClick={handleDelete}>Delete</CustomFillButton>
+        <CustomFillButton variant="contained" onClick={openDeleteConfirm}>Delete</CustomFillButton>
       </Stack>
+
+      <Dialog open={deleteConfirmVisible}>
+          <DialogTitle>Are you sure to remove this staff?</DialogTitle>
+          <Button
+            onClick={closeDeleteConfirm}
+            style={{
+              alignSelf: 'center',
+              width: '30px',
+              height: '30px',
+              borderRadius: '5px',
+              border: '1px solid black',
+              /// backgroundColor: 'red',
+              color: 'black',
+              fontSize: '13px',
+              marginBottom: '10px',
+              fontWeight: 'bold',
+              padding: '12px 45px',
+            }}
+          >
+            No
+          </Button>
+          <Button
+            onClick={handleDelete}
+            style={{
+              alignSelf: 'center',
+              width: '30px',
+              height: '30px',
+              borderRadius: '5px',
+              border: '1px solid black',
+              backgroundColor: 'black',
+              color: 'white',
+              fontSize: '13px',
+              marginBottom: '10px',
+              fontWeight: 'bold',
+              padding: '12px 45px',
+            }}
+          >
+            Yes
+          </Button>
+        </Dialog>
     </Box>
 
   )

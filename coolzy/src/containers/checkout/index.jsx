@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux'
-
+import { styles } from './styles'
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -25,19 +25,12 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { currentUser } from './../../redux/selectors';
-import {currentListItem} from './../../redux/selectors'
+import { currentListItem } from './../../redux/selectors'
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
 
-// import Paypal from './../../components/Paypal/index';
-// import { CheckEmail, CheckPhoneNumber } from './../LoginAndRegister/ValidationDataForAccount'
-// import { isSignedIn_user, currentUser, cartListSelector } from '../../redux/selectors';
-// import { deleteCartById, getAllCart } from '../../redux/slices/cartSlice';
-// import { unwrapResult } from '@reduxjs/toolkit';
-// import { getAllProduct, getProductWithID } from '../../redux/slices/productSlice';
-// import { accountSlice } from '../../redux/slices/accountSlice';
-// import moment from 'moment'
-// import { addInvoice } from "../../redux/slices/invoiceSlice";
-// import { addInvoiceItem } from "../../redux/slices/invoiceItemSlice";
+import { styled } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
+import Paypal from '../../components/paypal';
 import emailApi from '../../api/emailAPI';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -54,12 +47,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const Checkout = () => {
     const listItem = useSelector(currentListItem)
-   const [listCart, setListCart] = useState([])
+    const [listCart, setListCart] = useState([])
 
-   useEffect(() => {
-       if (listItem.length != 0)
-        setListCart(listItem)
-   },[listItem])
+    useEffect(() => {
+        if (listItem.length != 0)
+            setListCart(listItem)
+    }, [listItem])
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -88,25 +81,24 @@ const Checkout = () => {
 
     const [purchaseUnits, setPurchaseUnits] = useState([])
 
-    const MakePurchaseUnit = async (listCart, listProd) => {
+    const MakePurchaseUnit = async () => {
         let sample = []
         let amountObj = {
             currency_code: "USD",
             value: 0,
         }
         for (let i = 0; i < listCart.length; i++) {
-            if (listProd[i].product._id === listCart[i].product._id) {
-                amountObj = {
-                    ...amountObj,
-                    value: listCart[i].total
-                }
-                let temp = {
-                    description: listCart[i].product.name,
-                    reference_id: listCart[i].size,
-                    amount: amountObj
-                }
-                sample.push(temp)
+            amountObj = {
+                ...amountObj,
+                value: listCart[i].total
             }
+            let temp = {
+                description: listCart[i].product.name + " - " + listCart[i].size,
+                reference_id: listCart[i].size,
+                amount: amountObj
+            }
+            sample.push(temp)
+
         }
         setPurchaseUnits(...purchaseUnits, sample)
     }
@@ -117,14 +109,15 @@ const Checkout = () => {
         const CountTotal = () => {
             let newTotal = 0
             listCart.map((value) => {
-                console.log(value.total)
                 newTotal = newTotal + value.total
+                console.log(newTotal)
             })
             setSubTotal(newTotal)
         }
 
+        if (listCart.length !=0)
         CountTotal()
-    },[])
+    }, [listCart])
 
     //for snackbar
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -167,12 +160,10 @@ const Checkout = () => {
     useEffect(() => {
         const getProvinceList = async () => {
             await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
-                .then((res) => res.json())
-                .then((data) => setProvinceList(data))
+                .then(res => res.json()).then((data) => setProvinceList(data))
         }
         getProvinceList()
     }, [])
-
 
     function handleChangeProvince(event) {
         setProvince(event.target.value)
@@ -181,7 +172,7 @@ const Checkout = () => {
     useEffect(() => {
         const getDistrict = async () => {
             await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
-                .then((res) => res.json())
+                .then(res => res.json())
                 .then((data) => setDistrictList(data))
         }
         getDistrict()
@@ -195,7 +186,7 @@ const Checkout = () => {
     useEffect(() => {
         const getCommune = async () => {
             await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
-                .then((res) => res.json())
+                .then(res => res.json())
                 .then((data) => setCommuneList(data))
         }
         getCommune()
@@ -204,6 +195,10 @@ const Checkout = () => {
     async function handleChangeCommune(event) {
         setCommune(event.target.value)
     }
+
+    useEffect(() => {
+        setBigAddress(addressShip + ", " + commune.name + ", " + district.name + ", " + province.name)
+    }, [addressShip, province, district, commune])
 
     function handleClickToCart(event) {
         event.preventDefault();
@@ -218,21 +213,53 @@ const Checkout = () => {
         setAddressShip(e.target.value)
     }
 
-    const handleToPayment = async () => {
+    const [data, setData] = useState({})
+    const handleToPayment = () => {
         if (name === '' || phoneNumber === '' || addressShip === '') {
             setOpenSnackbar(true)
         } else {
             if (province === null || district === null && commune === null) {
                 setOpenSnackbar(true)
             } else {
-                const temp = addressShip + ', ' + commune.name + ', ' + district.name + ', ' + province.name
-                setBigAddress(temp)
-                setOpenPaymentMethodScreen(true)
-                // await MakePurchaseUnit()
-                // console.log(purchaseUnits)
+                let listItem = []
+                let total = 0
+
+                listCart.forEach((item) => {
+                    let obj = {
+                        _itemid: item.product._id,
+                        size: item.size,
+                        quantity: item.quantity,
+                        total: item.total
+                    }
+
+                    listItem.push(obj)
+
+                    total += item.total
+                })
+
+                setData({
+                    ...data,
+                    email: _currentUser.email,
+                    phone: phoneNumber,
+                    name: name,
+                    address: bigAddress,
+                    status: 'preparing',
+                    items: listItem,
+                    total: total,
+                })
+
             }
         }
     }
+
+    useEffect (async()=>{
+        if (data.email != null || data.email != undefined)
+        {
+            setOpenPaymentMethodScreen(true)
+            await MakePurchaseUnit()
+            console.log(data)
+        }
+    }, [data])
 
     const [openConfirm, setOpenConfirm] = useState(false);
     const handleCloseConfirm = () => {
@@ -267,79 +294,50 @@ const Checkout = () => {
 
     const handleAgreeCOD = () => {
         setOpenBackdrop(true)
-        MakeInvoice();
     }
 
-    const [invoiceId, setInvoiceId] = useState(' ')
 
-    const MakeInvoice = async () => {
-        // var m = 
-        // var date = moment().format('D/M/YYYY')
-        let tempID = ''
-        let temp = {
-            moneyReceived: '0',
-            isChecked: false,
-            isPaid: false,
-            // date: date + ' ' + m,
-            userID: _currentUser.userID,
-            branchID: 'da198f71-813b-47f8-9ded-331b358d4780'
-        }
 
-        // try {
-        //   const resultAction = await dispatch(addInvoice(temp))
-        //    const originalPromiseResult = unwrapResult(resultAction)
-        //   setInvoiceId(originalPromiseResult.data.invoiceID)
-        // } catch (rejectedValueOrSerializedError) {
-        //    alert(rejectedValueOrSerializedError)
-        // }
-    }
+    // const _addInvoiceItem = async (_invoiceId) => {
+    //     let stringOrder = ''
+    //     for (let i = 0; i < listCart.length; i++) {
+    //         let item = {
+    //             invoiceID: _invoiceId,
+    //             productID: listCart[i].product._id,
+    //             quantity: listCart[i].quantity,
+    //             total: Number(listCart[i].total)
+    //         }
+    //         stringOrder = stringOrder + "\n" + `${listCart[i].item.name} - Quantity: ${listCart[i].quantity} - Sub-cost: ${item.total} VND`
+    //         // t.push(item)
+    //         try {
+    //             //    const resultAction = await dispatch(addInvoiceItem(item))
+    //             //   const originalPromiseResult = unwrapResult(resultAction)
+    //         } catch (rejectedValueOrSerializedError) {
+    //             console.log(rejectedValueOrSerializedError)
+    //         }
 
-    useEffect(async () => {
-        if (invoiceId != ' ') {
-            _addInvoiceItem(invoiceId)
-        }
-    }, [invoiceId])
+    //     }
 
-    const _addInvoiceItem = async (_invoiceId) => {
-        let stringOrder = ''
-        for (let i = 0; i < listCart.length; i++) {
-            let item = {
-                invoiceID: _invoiceId,
-                productID: listCart[i].product._id,
-                quantity: listCart[i].quantity,
-                total: Number(listCart[i].total)
-            }
-            stringOrder = stringOrder + "\n" + `${listCart[i].item.name} - Quantity: ${listCart[i].quantity} - Sub-cost: ${item.total} VND`
-            // t.push(item)
-            try {
-                //    const resultAction = await dispatch(addInvoiceItem(item))
-                //   const originalPromiseResult = unwrapResult(resultAction)
-            } catch (rejectedValueOrSerializedError) {
-                console.log(rejectedValueOrSerializedError)
-            }
+    //     emailApi.sendEmail({
+    //         to: _currentUser.email,
+    //         subject: "Your order information",
+    //         text: "Thank for placing order in Coolzy site. \n" +
+    //             "Your order: \n" +
+    //             `Name: ${_currentUser.name} \n` +
+    //             `Phone: ${_currentUser.phoneNumber} \n` +
+    //             `COD Address: ${bigAddress}` + "\n" +
+    //             "-------------------------------------------------------- \n" +
+    //             stringOrder + "\n" +
+    //             "-------------------------------------------------------- \n" +
+    //             `Total: ${subTotal} VND` + "\n" +
+    //             "-------------------------------------------------------- \n" +
+    //             "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
+    //     }).then(data => {
+    //         handleCloseBackdrop()
+    //     })
+    //         .catch(err => console.log(err))
 
-        }
-
-        emailApi.sendEmail({
-            to: _currentUser.email,
-            subject: "Your order information",
-            text: "Thank for placing order in Coolzy site. \n" +
-                "Your order: \n" +
-                `Name: ${_currentUser.name} \n` +
-                `Phone: ${_currentUser.phoneNumber} \n` +
-                `COD Address: ${bigAddress}` + "\n" +
-                "-------------------------------------------------------- \n" +
-                stringOrder + "\n" +
-                "-------------------------------------------------------- \n" +
-                `Total: ${subTotal} VND` + "\n" +
-                "-------------------------------------------------------- \n" +
-                "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
-        }).then(data => {
-            handleCloseBackdrop()
-        })
-            .catch(err => console.log(err))
-
-    }
+    // }
 
     const handleClosePaymentMethodScreen = () => {
         setAddressShip('')
@@ -390,15 +388,11 @@ const Checkout = () => {
         </Typography>,
     ];
 
+
+
     return (
         <Grid container
-            sx={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                backgroundColor: 'white',
-                resize: 'none',
-            }}
+            sx={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'white', resize: 'none' }}
             spacing={2}
         >
             {/* Cart information part */}
@@ -412,18 +406,7 @@ const Checkout = () => {
                                 display: 'block'
                             }}>
                             <Button
-                                sx={{
-                                    marginLeft: '-1.2%',
-                                    color: '#333333',
-                                    fontSize: '2em',
-                                    fontWeight: 'normal',
-                                    lineHeight: '1em',
-                                    display: 'block',
-                                    marginBlockStart: '0.67em',
-                                    marginBlockEnd: '0.67em',
-                                    background: 'white !important',
-                                    fontFamily: 'sans-serif'
-                                }}
+                                sx={styles.btnCoolzy}
                                 onClick={() => navigate('/')}
                             >
                                 Coolzy
@@ -442,16 +425,7 @@ const Checkout = () => {
                             </Stack>
                             <Stack marginTop="-3%">
                                 <Typography
-                                    sx={{
-                                        color: '#333333',
-                                        fontSize: '1.28571em',
-                                        fontWeight: 'normal',
-                                        lineHeight: '1em',
-                                        marginBlockStart: '0.83em',
-                                        marginBlockEnd: '0.83em',
-                                        display: 'block',
-                                        fontFamily: 'sans-serif'
-                                    }}
+                                    sx={{ color: '#333333', fontSize: '1.28571em', fontWeight: 'normal', lineHeight: '1em', marginBlockStart: '0.83em', marginBlockEnd: '0.83em', display: 'block', fontFamily: 'sans-serif' }}
                                 >
                                     Delivery method
                                 </Typography>
@@ -527,13 +501,7 @@ const Checkout = () => {
 
                             <Stack direction="column"
                                 sx={{
-                                    height: 'auto',
-                                    backgroundColor: '#fafafa',
-                                    width: '97%',
-                                    borderWidth: '1px',
-                                    borderRadius: '8px',
-                                    padding: '1.15em',
-                                    marginTop: '0.25em'
+                                    height: 'auto', backgroundColor: '#fafafa', width: '97%', borderWidth: '1px', borderRadius: '8px', padding: '1.15em', marginTop: '0.25em'
                                 }}>
                                 <Stack direction="row">
                                     <Radio
@@ -557,14 +525,7 @@ const Checkout = () => {
                                 {openPayOnline ? (
                                     <>
                                         <hr style={{ height: '1px', width: '100%', backgroundColor: 'black' }}></hr>
-                                        <Typography sx={{
-                                            textAlign: 'center',
-                                            whiteSpace: 'pre-line',
-                                            paddingLeft: '2em',
-                                            paddingRight: '2em',
-                                            color: '#737373',
-                                            fontSize: '14px'
-                                        }}
+                                        {/* <Typography sx={{ textAlign: 'center', paddingLeft: '2em', paddingRight: '2em', color: '#737373', fontSize: '14px' }}
                                         >
                                             VIETCOMBANK -
                                             VONG MINH HUYNH -
@@ -572,23 +533,16 @@ const Checkout = () => {
                                             PGD TP HCM -
                                             Transfer content : Your name-Phone number-Product ID
                                         </Typography>
-                                        <Typography sx={{
-                                            textAlign: 'center',
-                                            whiteSpace: 'pre-line',
-                                            paddingLeft: '2em',
-                                            paddingRight: '2em',
-                                            color: '#737373',
-                                            fontSize: '14px'
-                                        }}
+                                        <Typography sx={{ textAlign: 'center', whiteSpace: 'pre-line', paddingLeft: '2em', paddingRight: '2em', color: '#737373', fontSize: '14px' }}
                                         >
                                             TECHCOMBANK -
                                             PHAM VO DI THIEN -
                                             Bank Account Number : 1852654970 -
                                             PGD TP HCM -
                                             Transfer content : Your name-Phone number-Product ID
-                                        </Typography>
+                                        </Typography> */}
 
-                                        <Typography sx={{
+                                        {/* <Typography sx={{
                                             textAlign: 'center',
                                             whiteSpace: 'pre-line',
                                             paddingLeft: '2em',
@@ -600,9 +554,9 @@ const Checkout = () => {
                                         }}
                                         >
                                             OR:
-                                        </Typography>
+                                        </Typography> */}
                                         <div style={{ width: '50%', marginTop: '1.2em', alignSelf: 'center' }}>
-                                            {/* <Paypal _bigAddress={bigAddress} _guestEmail={email} _guestName={guestName} _guestPhoneNumber={guestPhoneNum} cartList={listCart} prodList={listProd} purchases={purchaseUnits} /> */}
+                                            <Paypal data = {data} purchases={purchaseUnits} />
                                         </div>
                                     </>
                                 ) : (null)}
@@ -778,7 +732,7 @@ const Checkout = () => {
                                         <a onClick={() => navigate('/myplace/mycart')}
                                             style={{
                                                 textDecoration: 'none',
-                                                color: '#338dbc',
+                                                color: 'black',
                                                 transition: 'color 0.2s ease-in-out',
                                                 display: 'inline-block',
                                                 cursor: 'pointer',
@@ -792,9 +746,9 @@ const Checkout = () => {
                                         </a>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <Button onClick={handleToPayment} variant="contained" sx={{ fontSize: '14px' }} size="large">
+                                        <CustomFillButton onClick={handleToPayment} variant="contained" size="large">
                                             Continue to payment method
-                                        </Button>
+                                        </CustomFillButton>
                                     </Grid>
                                 </Grid>
 
@@ -805,30 +759,18 @@ const Checkout = () => {
             )}
 
             {/* Cart visualization part */}
-            <Grid sx={{
-                backgroundColor: '#fafafa',
-                left: 0,
-                backgroundPosition: 'left top',
-                boxShadow: '1px 0 0 #e1e1e1 inset'
-            }} height="auto" item xs={5}>
+            <Grid sx={{ backgroundColor: '#fafafa', left: 0, backgroundPosition: 'left top', boxShadow: '1px 0 0 #e1e1e1 inset' }}
+                height="auto"
+                item xs={5}>
                 <Stack direction="column" spacing={2} p="2rem" paddingRight="6em">
                     {listCart.map((item) => (
                         <Stack
-                            sx={{
-                                backgroundColor: '#F2F2F2',
-                                borderRadius: '8px',
-                                padding: '1em',
-                                boxShadow: '0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)'
-                            }}
+                            sx={styles.listCart_item}
                             direction="row"
                             width="100%">
 
                             <img style={{
-                                width: '7em',
-                                height: '7em',
-                                borderRadius: '8px',
-                                background: '#fff',
-                                position: 'relative'
+                                width: '7em', height: '7em', borderRadius: '8px', background: '#fff', position: 'relative'
                             }}
                                 alt={item.product.name}
                                 src={item.product.images[0]}
@@ -836,14 +778,30 @@ const Checkout = () => {
 
                             <Stack direction="column">
                                 <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{item.product.name}</Typography>
-                                <Typography sx={{ marginLeft: '1em', marginTop: '0.75em' }}> x{item.quantity}</Typography>
-                            </Stack>
-                            {listCart.map((item) =>
-                                <Typography sx={{ alignSelf: 'flex-end', fontWeight: 600 }}> {item.total}</Typography>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Typography sx={{ marginLeft: '1em', marginTop: '0.5em' }}> x{item.quantity}</Typography>
+                                        <Typography sx={{ marginLeft: '1em', marginTop: '0.5em', fontStyle: 'italic', fontSize: '12px'}}> Size: {item.size}</Typography>
+                                    </Grid>
+                                    <Grid item xs={8}></Grid>
 
-                            )}
+                                    <Grid item xs={4}>
+                                        {listCart.map((item) =>
+                                            <Typography sx={{ fontWeight: 600 }}> {item.total} USD</Typography>
+
+                                        )}
+                                    </Grid>
+                                </Grid>
+
+                            </Stack>
+
+
+
                         </Stack>
+
                     ))}
+
+
                 </Stack>
 
                 <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
@@ -873,7 +831,7 @@ const Checkout = () => {
                         color: '#333333',
                         fontFamily: 'sans-serif', fontWeight: 300
                     }}
-                    >RARE MEMBER
+                    >MEMBER
                     </Typography>
                     <Stack direction="row" width="100%">
                         <DiamondIcon sx={{ width: '17px', height: '17px' }} />
@@ -883,7 +841,7 @@ const Checkout = () => {
                             fontSize: '13px',
                             marginLeft: '0.5em'
                         }}>
-                            MEMBER - 0 point(s)
+                            MEMBER - {_currentUser.score} point(s)
                         </Typography>
                     </Stack>
                 </Stack>
@@ -896,7 +854,7 @@ const Checkout = () => {
                         marginTop: '1.2em'
                     }}
                     >
-                        {subTotal} VND
+                        {subTotal} USD
                     </Typography>
                 </Stack>
                 <Stack direction="row" width='100%' justifyContent="space-between">
@@ -907,7 +865,7 @@ const Checkout = () => {
                         marginTop: '-0.5em'
                     }}
                     >
-                        15000 VND
+                        2 USD
                     </Typography>
                 </Stack>
                 <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
@@ -921,7 +879,7 @@ const Checkout = () => {
                         fontSize: '20px'
                     }}
                     >
-                        {subTotal + 15000} USD
+                        {subTotal + 2} USD
                     </Typography>
                 </Stack>
             </Grid>
@@ -1000,4 +958,16 @@ const Checkout = () => {
     )
 }
 
+
+export const CustomFillButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.getContrastText(grey[900]),
+    backgroundColor: grey[900],
+    '&:hover': {
+        backgroundColor: grey[700],
+    },
+    padding: '6px 35px',
+    marginLeft: '20px',
+    borderRadius: '5px'
+
+}));
 export default Checkout
