@@ -15,8 +15,6 @@ import { decode } from 'base-64'
 import { encode } from 'base-64'
 
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { IconButton } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 

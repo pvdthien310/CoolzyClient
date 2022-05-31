@@ -1,12 +1,14 @@
-
 import React from 'react'
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import Footer from '../../components/footer'
 import Navbar from '../../components/navbar'
 
+import cartApi from './../../api/cartAPI';
 import clothesApi from './../../api/clothesAPI';
+
 
 import { Helmet } from 'react-helmet';
 import InputLabel from '@mui/material/InputLabel';
@@ -16,12 +18,16 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { Grid, Box, Paper, Stack, Select } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
 
+
 const ProductDetail = () => {
   const { id } = useParams()
+  const userId = useSelector(state => state.account.user._id)
   const [item, setItem] = useState({})
   const [sizeValue, setSizeValue] = useState('')
   const [quantityValue, setQuantityValue] = useState(1)
@@ -116,7 +122,7 @@ const ProductDetail = () => {
           <div className="quantity__button-text">{quantityValue}</div>
 
           {
-            quantityButtonEnable.increase == false ? 
+            quantityButtonEnable.increase == false ?
               <ThemeProvider theme={btnTheme}>
                 <Button variant="contained" onClick={handleIncrementQuantity} sx={style.enable} disable> + </Button>
               </ThemeProvider>
@@ -142,6 +148,23 @@ const ProductDetail = () => {
     },
   })
 
+  const addCartHandle = () => {
+
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setAlertObj({ ...alertObj, status: false });
+  };
+
+  const [alertObj, setAlertObj] = useState({
+    message: '',
+    status: false,
+    type: 'error'
+  });
 
   return (
     <div >
@@ -255,6 +278,11 @@ const ProductDetail = () => {
 
       <Footer />
 
+      <Snackbar open={alertObj.status} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={alertObj.type} variant="filled">
+          {alertObj.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
