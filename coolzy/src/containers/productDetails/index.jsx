@@ -1,12 +1,14 @@
-
 import React from 'react'
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import Footer from '../../components/footer'
 import Navbar from '../../components/navbar'
 
+import cartApi from './../../api/cartAPI';
 import clothesApi from './../../api/clothesAPI';
+
 
 import { Helmet } from 'react-helmet';
 import InputLabel from '@mui/material/InputLabel';
@@ -16,15 +18,27 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { Grid, Box, Paper, Stack, Select } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch } from 'react-redux';
 
 import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
+import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { currentUser } from './../../redux/selectors';
+
 
 const ProductDetail = () => {
   const { id } = useParams()
+  const userId = useSelector(state => state.account.user._id)
   const [item, setItem] = useState({})
   const [sizeValue, setSizeValue] = useState('')
   const [quantityValue, setQuantityValue] = useState(1)
+  const _currentUser = useSelector(currentUser)
+  const dispatch = useDispatch()
 
   const [quantityButtonEnable, setQuantityButtonEnable] = useState({
     increase: true,
@@ -116,7 +130,7 @@ const ProductDetail = () => {
           <div className="quantity__button-text">{quantityValue}</div>
 
           {
-            quantityButtonEnable.increase == false ? 
+            quantityButtonEnable.increase == false ?
               <ThemeProvider theme={btnTheme}>
                 <Button variant="contained" onClick={handleIncrementQuantity} sx={style.enable} disable> + </Button>
               </ThemeProvider>
@@ -142,6 +156,93 @@ const ProductDetail = () => {
     },
   })
 
+  const addCartHandle = () => {
+
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setAlertObj({ ...alertObj, status: false });
+  };
+
+  const [alertObj, setAlertObj] = useState({
+    message: '',
+    status: false,
+    type: 'error'
+  });
+  const [openBackdrop, setOpenBackdrop] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [favoriteList, setFavoriteList] = useState([])
+
+
+  //task function
+  const fetchYourFavorite = async (listFavorite) => {
+    let temp = []
+    try {
+      const resultAction = await dispatch(getAllFav())
+      const originalPromiseResult = unwrapResult(resultAction)
+      temp = originalPromiseResult
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i].email === _currentUser.email) {
+          listFavorite.push(temp[i])
+        }
+      }
+      setIsLoading(false)
+    } catch (rejectedValueOrSerializedError) {
+      return rejectedValueOrSerializedError
+    }
+  }
+
+  useEffect(() => {
+    if (isLoading === true) {
+      let listFavorite = []
+      fetchYourFavorite(listFavorite)
+      setFavoriteList(listFavorite)
+    }
+  }, [])
+
+  const handleAddToFavorite = async () => {
+    setOpenBackdrop(true)
+    let isExisted = false;
+    favoriteList.map(i => {
+      if (i.clotheid === item._id) {
+        isExisted = true;
+      }
+    })
+    if (isExisted === true) {
+      setOpenBackdrop(false)
+      setAlertObj({
+        ...alertObj,
+        message: 'This product was in your favorite',
+        status: true,
+        type: 'warning'
+      })
+    } else {
+      let temp = {
+        email: _currentUser.email,
+        clotheid: item._id
+      }
+      console.log(temp)
+      try {
+        const resultAction = await dispatch(addFav(temp))
+        const originalPromiseResult = unwrapResult(resultAction)
+        setOpenBackdrop(false)
+        setAlertObj({
+          ...alertObj,
+          message: 'Added to favorite successfully',
+          status: true,
+          type: 'success'
+        })
+        setFavoriteList([...favoriteList, temp])
+        console.log(originalPromiseResult)
+      } catch (rejectedValueOrSerializedError) {
+        return rejectedValueOrSerializedError
+      }
+    }
+  }
 
   return (
     <div >
@@ -215,6 +316,15 @@ const ProductDetail = () => {
                     marginTop: 3,
                   }}>
                   <ThemeProvider theme={btnTheme}>
+                    <Button onClick={handleAddToFavorite} variant="outlined" sx={{
+                      width: 160,
+                      color: "#F54040",
+                      borderColor: "#F54040",
+                      fontWeight: "bold",
+
+                    }}>Add to favorite</Button>
+                  </ThemeProvider>
+                  <ThemeProvider theme={btnTheme}>
                     <Button variant="outlined" sx={{
                       width: 160,
                       color: "#000",
@@ -255,6 +365,18 @@ const ProductDetail = () => {
 
       <Footer />
 
+      <Snackbar open={alertObj.status} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={alertObj.type} variant="filled">
+          {alertObj.message}
+        </Alert>
+      </Snackbar>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   )
 }
