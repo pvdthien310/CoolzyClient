@@ -87,7 +87,7 @@ const ProductDetail = () => {
     }
   };
 
-  useEffect (()=>{
+  useEffect(() => {
     if (sizeValue.size)
       setQuantityValue(1)
   }, [sizeValue])
@@ -127,7 +127,7 @@ const ProductDetail = () => {
               </ThemeProvider>
           }
 
-          {sizeValue.size ?  <div className="quantity__button-text">{quantityValue}</div> : <div className="quantity__button-text">0</div>}
+          {sizeValue.size ? <div className="quantity__button-text">{quantityValue}</div> : <div className="quantity__button-text">0</div>}
 
           {
             quantityButtonEnable.increase == false ?
@@ -317,9 +317,11 @@ const ProductDetail = () => {
 
                 </Stack>
 
-                <div className="product-details__container__remains">
-                  Remains: {sizeValue.quantity}
-                </div>
+                { sizeValue.size && 
+                  <div className="product-details__container__remains">
+                    Remains: {sizeValue.quantity}
+                  </div>
+                }
 
                 <Divider orientation="horizontal" flexItem
                   sx={{

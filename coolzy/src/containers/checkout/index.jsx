@@ -27,12 +27,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { currentUser } from './../../redux/selectors';
 import { currentListItem } from './../../redux/selectors'
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
+import {updateClothesWithID} from '../../redux/slices/clothSlice'
 
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import Paypal from '../../components/paypal';
 import emailApi from '../../api/emailAPI';
-
+import { unwrapResult } from "@reduxjs/toolkit";
+import { addOrder } from '../../redux/slices/orderSlice'
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6}
         ref={ref}
@@ -115,8 +117,8 @@ const Checkout = () => {
             setSubTotal(newTotal)
         }
 
-        if (listCart.length !=0)
-        CountTotal()
+        if (listCart.length != 0)
+            CountTotal()
     }, [listCart])
 
     //for snackbar
@@ -245,16 +247,15 @@ const Checkout = () => {
                     address: bigAddress,
                     status: 'preparing',
                     items: listItem,
-                    total: total,
+                    total: total + 2,
                 })
 
             }
         }
     }
 
-    useEffect (async()=>{
-        if (data.email != null || data.email != undefined)
-        {
+    useEffect(async () => {
+        if (data.email != null || data.email != undefined) {
             setOpenPaymentMethodScreen(true)
             await MakePurchaseUnit()
             console.log(data)
@@ -267,6 +268,7 @@ const Checkout = () => {
     };
     const handleCompleteOrder = () => {
         setOpenConfirm(true)
+
     }
 
     const [placedOrderSuccessfully, setPlacedOrderSuccessfully] = useState(false)
@@ -292,52 +294,103 @@ const Checkout = () => {
         setPlacedOrderSuccessfully(true)
     };
 
-    const handleAgreeCOD = () => {
+    const handleAgreeCOD = async() => {
         setOpenBackdrop(true)
+        setOpenConfirm(false);
+
+        const subtractQuantity = async() => {
+            //redux
+            let newList = []
+            listCart.forEach((item) => {
+                let product = item.product
+                let listProductSize = product.size
+                let _newListProductSize = []
+
+                for (let i = 0; i < listProductSize.length; i++) {
+                    if (listProductSize[i].size == item.size) {
+                        let size = {
+                            size: item.size,
+                            quantity:  listProductSize[i].quantity - item.quantity
+                        }
+                        _newListProductSize.push(size)
+                    }
+                    else
+                    _newListProductSize.push(listProductSize[i])
+                }
+
+              newList.push({
+                  ...product,
+                  size: _newListProductSize
+              })
+
+            })
+
+            console.log(newList)
+
+            newList.forEach(async(product) => {
+                try {
+                    const resultAction = await dispatch(updateClothesWithID(product))
+                    const originalPromiseResult = unwrapResult(resultAction)
+                } catch (rejectedValueOrSerializedError) {
+                    alert(rejectedValueOrSerializedError);
+                }
+            })
+
+        }
+
+        await subtractQuantity()
+
+        const sendEmail = () => {
+            let stringOrder = ''
+
+            listCart.forEach((item) => {
+                stringOrder += "\n"
+                stringOrder += item.product.name + "\n"
+                    + "\n- Size: " + item.size 
+                    +"- Quantity: " + item.quantity
+                    + "\n- Price: " + item.product.price + " USD"
+                    + "\n- Total: " + item.total + " USD"
+                stringOrder += "\n"
+            })
+    
+            emailApi.sendVerify({
+                to: data.email,
+                subject: "Your order information",
+                text: "Thank for placing an order in Coolzy site. \n" +
+                    "Your order: \n" +
+                    `Name: ${data.name} \n` +
+                    `Phone: ${data.phone} \n` +
+                    `COD Address: ${data.address}` + "\n" +
+                    "-------------------------------------------------------- \n" +
+                    stringOrder + "\n" +
+                    "-------------------------------------------------------- \n" +
+                    `Ship: 2 USD` +"\n"+
+                    `Total: ${data.total} USD` + "\n" +
+                    "-------------------------------------------------------- \n" +
+                    "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
+            }).then(data => {
+            })
+                .catch(err => console.log(err))
+        }
+
+        sendEmail()
+
+        const makeOrder = async () => {
+            try {
+                const resultAction = await dispatch(addOrder(data))
+                const originalPromiseResult = unwrapResult(resultAction)
+                setOpenBackdrop(false)
+                navigate('/')
+
+            } catch (rejectedValueOrSerializedError) {
+                alert(rejectedValueOrSerializedError);
+            }
+        }
+
+        await makeOrder()
+       
     }
 
-
-
-    // const _addInvoiceItem = async (_invoiceId) => {
-    //     let stringOrder = ''
-    //     for (let i = 0; i < listCart.length; i++) {
-    //         let item = {
-    //             invoiceID: _invoiceId,
-    //             productID: listCart[i].product._id,
-    //             quantity: listCart[i].quantity,
-    //             total: Number(listCart[i].total)
-    //         }
-    //         stringOrder = stringOrder + "\n" + `${listCart[i].item.name} - Quantity: ${listCart[i].quantity} - Sub-cost: ${item.total} VND`
-    //         // t.push(item)
-    //         try {
-    //             //    const resultAction = await dispatch(addInvoiceItem(item))
-    //             //   const originalPromiseResult = unwrapResult(resultAction)
-    //         } catch (rejectedValueOrSerializedError) {
-    //             console.log(rejectedValueOrSerializedError)
-    //         }
-
-    //     }
-
-    //     emailApi.sendEmail({
-    //         to: _currentUser.email,
-    //         subject: "Your order information",
-    //         text: "Thank for placing order in Coolzy site. \n" +
-    //             "Your order: \n" +
-    //             `Name: ${_currentUser.name} \n` +
-    //             `Phone: ${_currentUser.phoneNumber} \n` +
-    //             `COD Address: ${bigAddress}` + "\n" +
-    //             "-------------------------------------------------------- \n" +
-    //             stringOrder + "\n" +
-    //             "-------------------------------------------------------- \n" +
-    //             `Total: ${subTotal} VND` + "\n" +
-    //             "-------------------------------------------------------- \n" +
-    //             "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
-    //     }).then(data => {
-    //         handleCloseBackdrop()
-    //     })
-    //         .catch(err => console.log(err))
-
-    // }
 
     const handleClosePaymentMethodScreen = () => {
         setAddressShip('')
@@ -556,7 +609,7 @@ const Checkout = () => {
                                             OR:
                                         </Typography> */}
                                         <div style={{ width: '50%', marginTop: '1.2em', alignSelf: 'center' }}>
-                                            <Paypal data = {data} purchases={purchaseUnits} />
+                                            <Paypal data={data} purchases={purchaseUnits} />
                                         </div>
                                     </>
                                 ) : (null)}
@@ -581,9 +634,9 @@ const Checkout = () => {
                                     </a>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Button onClick={handleCompleteOrder} variant="contained" sx={{ fontSize: '14px', display: `${isHideCompleteButton}` }} size="large">
+                                    <CustomFillButton onClick={handleCompleteOrder} variant="contained" sx={{ fontSize: '14px', display: `${isHideCompleteButton}` }} size="large">
                                         Complete order
-                                    </Button>
+                                    </CustomFillButton>
                                 </Grid>
                             </Grid>
                         </Stack>
@@ -781,7 +834,7 @@ const Checkout = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <Typography sx={{ marginLeft: '1em', marginTop: '0.5em' }}> x{item.quantity}</Typography>
-                                        <Typography sx={{ marginLeft: '1em', marginTop: '0.5em', fontStyle: 'italic', fontSize: '12px'}}> Size: {item.size}</Typography>
+                                        <Typography sx={{ marginLeft: '1em', marginTop: '0.5em', fontStyle: 'italic', fontSize: '12px' }}> Size: {item.size}</Typography>
                                     </Grid>
                                     <Grid item xs={8}></Grid>
 
