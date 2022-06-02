@@ -63,10 +63,18 @@ const Navbar = () => {
 
     useEffect((checkLogged), [])
 
+    const contactClick = () => {
+        navigate('/contact')
+    }
+
+    const aboutClick = () => {
+        navigate('/about')
+    }
+
     return (
         <div className='navbar__container'>
             <img src={logo_png} alt='logo_png' />
-            <TabBar />
+            <TabBar aboutClick={aboutClick} contactClick={contactClick}/>
             {
                 user == '' ?
                     <LoginBar />
@@ -78,14 +86,14 @@ const Navbar = () => {
     )
 }
 
-const TabBar = () => {
+const TabBar = ({contactClick, aboutClick}) => {
 
     return (
         <div className='navbar__tab_bar__container'>
             <p>Home</p>
             <p>Store</p>
-            <p>About</p>
-            <p>Contact</p>
+            <p onClick={aboutClick}>About</p>
+            <p onClick ={contactClick}>Contact</p>
         </div>
     )
 }

@@ -18,6 +18,8 @@ import Checkout from './containers/checkout/index'
 import TransactionHistory from './containers/transactionHistory';
 import FavoritePage from './containers/favorite/index';
 import Cart from './containers/cart';
+import About from './containers/about/index'
+import Contact from './containers/contact/index'
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -55,7 +57,6 @@ function App() {
     }
 
     useEffect((checkLogged), [])
-
 
     return (
         <Routes>
@@ -98,6 +99,13 @@ function App() {
             <Route path="/myCart" element={
                 <Cart />
             } />
+            <Route path="/about" element={
+                <About/>
+            }/>
+
+            <Route path="/contact" element={
+                <Contact/>
+            }/>
         </Routes>
     );
 }

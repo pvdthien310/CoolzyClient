@@ -293,7 +293,7 @@ const ProductDetail = () => {
       <div className="product-detail__container">
         <Box sx={{ height: 'auto', marginTop: 20, marginBottom: 15 }}>
           <Grid container spacing={2}>
-            <Grid xs={6}>
+            <Grid xs={6} item>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
                 <div className="product-details__container__price">{item.price} USD</div>
@@ -307,7 +307,7 @@ const ProductDetail = () => {
                   <Select
                     id="demo-simple-select"
                     value={sizeValue}
-                    label="Size"
+                    variant="standard"
                     sx={{
                       height: 40,
                       marginLeft: 2,
@@ -391,13 +391,11 @@ const ProductDetail = () => {
                       onClick={buyNow}
                     >Buy now</Button>
                   </ThemeProvider>
-                </Stack >
-              </Box >
+                </Stack>
+              </Box>
+            </Grid>
 
-
-            </Grid >
-
-            <Grid xs={6}>
+            <Grid xs={6} item>
               <Box xs={{ marginTop: 8 }}>
                 {
                   item == null ? null :
