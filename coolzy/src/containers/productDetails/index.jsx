@@ -177,8 +177,21 @@ const ProductDetail = () => {
     }
   }
 
-  const addCartHandle = () => {
+  const handleAddToCart = () => {
+    let newCart = {
+      clothId: id,
+      quantity: quantityValue,
+      size: sizeValue.size
+    }
 
+    cartApi.insertByUserId(userId, newCart).then(res => {
+      if (res.status == 200) {
+        setAlertObj({ ...alertObj, type: 'success', message: "Add to cart successful", status: true })
+      }
+      else {
+        setAlertObj({ ...alertObj, type: 'error', message: "Add to cart fail", status: true })
+      }
+    }).catch(err => console.log(err))
   }
 
   const handleClose = (event, reason) => {
@@ -319,7 +332,7 @@ const ProductDetail = () => {
 
                 </Stack>
 
-                { sizeValue.size && 
+                {sizeValue.size &&
                   <div className="product-details__container__remains">
                     Remains: {sizeValue.quantity}
                   </div>
@@ -346,9 +359,10 @@ const ProductDetail = () => {
                       fontWeight: "bold",
 
                     }}>Add to favorite</Button>
-                  </ThemeProvider>
+                  </ThemeProvider >
+
                   <ThemeProvider theme={btnTheme}>
-                    <Button variant="outlined" sx={{
+                    <Button variant="outlined" onClick={() => handleAddToCart()} sx={{
                       width: 160,
                       color: "#000",
                       borderColor: "#000",
@@ -367,11 +381,11 @@ const ProductDetail = () => {
                       onClick={buyNow}
                     >Buy now</Button>
                   </ThemeProvider>
-                </Stack>
-              </Box>
+                </Stack >
+              </Box >
 
 
-            </Grid>
+            </Grid >
 
             <Grid xs={6}>
               <Box xs={{ marginTop: 8 }}>
@@ -382,10 +396,10 @@ const ProductDetail = () => {
               </Box>
             </Grid>
 
-          </Grid>
+          </Grid >
 
-        </Box>
-      </div>
+        </Box >
+      </div >
 
 
       <Footer />
@@ -402,7 +416,7 @@ const ProductDetail = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-    </div>
+    </div >
   )
 }
 
