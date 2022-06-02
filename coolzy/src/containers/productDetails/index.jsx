@@ -357,17 +357,24 @@ const ProductDetail = () => {
                       color: "#F54040",
                       borderColor: "#F54040",
                       fontWeight: "bold",
-
+                      '&:hover': {
+                        backgroundColor: '#F54040',
+                        color: '#fff',
+                        borderColor: "#F54040",
+                      },
                     }}>Add to favorite</Button>
                   </ThemeProvider >
 
                   <ThemeProvider theme={btnTheme}>
                     <Button variant="outlined" onClick={() => handleAddToCart()} sx={{
                       width: 160,
-                      color: "#000",
-                      borderColor: "#000",
+                      color: "#272727",
+                      borderColor: "#272727",
                       fontWeight: "bold",
-
+                      '&:hover': {
+                        backgroundColor: '#272727',
+                        color: '#fff'
+                      },
                     }}>Add to cart</Button>
                   </ThemeProvider>
 
@@ -377,6 +384,9 @@ const ProductDetail = () => {
                       color: "#fff",
                       background: '#000',
                       fontWeight: "bold",
+                      '&:hover': {
+                        backgroundColor: '#505050',
+                      },
                     }}
                       onClick={buyNow}
                     >Buy now</Button>
