@@ -47,9 +47,21 @@ import { clothesSlice } from './clothSlice';
 // );
 
 
+export const updateClothesWithID = createAsyncThunk(
+    'clothes/update',
+    async(data, { rejectedWithValue }) => {
+        const response = await clothesApi.update(data)
+        if (!response) {
+            return rejectedWithValue(" Find product failed")
+        } else {
+            return response.data
+        }
+    }
+)
+
 export const getClothesWithID = createAsyncThunk(
     'clothes/findOne',
-    async (data, { rejectedWithValue }) => {
+    async(data, { rejectedWithValue }) => {
         const response = await clothesApi.getById(data)
         if (!response) {
             return rejectedWithValue(" Find product failed")
@@ -110,18 +122,18 @@ export const clothSlice = createSlice({
             console.log("Successfully");
         },
         [getClothesWithID.rejected]: (state, action) => {
-            state.loading = false;
-        }
-        // [deleteProductByID.pending]: (state) => {
-        //     state.loading = true;
-        //     console.log("Start slice");
-        // },
-        // [deleteProductByID.fulfilled]: (state, action) => {
-        //     state.productList = state.productList.filter(member => (member.productID != action.payload));
-        //     console.log("Successfully");
-        // },
-        // [deleteProductByID.rejected]: (state, action) => {
-        //     state.loading = false;
-        // }
+                state.loading = false;
+            }
+            // [deleteProductByID.pending]: (state) => {
+            //     state.loading = true;
+            //     console.log("Start slice");
+            // },
+            // [deleteProductByID.fulfilled]: (state, action) => {
+            //     state.productList = state.productList.filter(member => (member.productID != action.payload));
+            //     console.log("Successfully");
+            // },
+            // [deleteProductByID.rejected]: (state, action) => {
+            //     state.loading = false;
+            // }
     }
 })

@@ -22,13 +22,17 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useDispatch } from 'react-redux';
 
 import './style.css'
 import ProductPhotoSwiper from '../../components/productPhotoSwiper';
+import { useNavigate } from 'react-router-dom';
+
+import { checkoutSlice } from '../../redux/slices/checkoutSlices';
+import { useDispatch } from 'react-redux';
+import { currentUser, isOrderFromCart } from './../../redux/selectors';
 import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { currentUser } from './../../redux/selectors';
+import { orderSlice } from '../../redux/slices/orderSlice';
 
 
 const ProductDetail = () => {
@@ -39,6 +43,8 @@ const ProductDetail = () => {
   const [quantityValue, setQuantityValue] = useState(1)
   const _currentUser = useSelector(currentUser)
   const dispatch = useDispatch()
+
+  const navigate = useNavigate()
 
   const [quantityButtonEnable, setQuantityButtonEnable] = useState({
     increase: true,
@@ -56,14 +62,6 @@ const ProductDetail = () => {
 
   }, [])
 
-  // useEffect(() => {
-  //   console.log(item.images)
-  // }, [item])
-
-  useEffect(() => {
-    console.log(quantityButtonEnable)
-    console.log(sizeValue.quantity)
-  }, [quantityButtonEnable])
 
   const handleChangeSize = (event) => {
     setSizeValue(event.target.value);
@@ -73,7 +71,6 @@ const ProductDetail = () => {
     if (quantityValue < sizeValue.quantity) {
       setQuantityButtonEnable({ ...quantityButtonEnable, increase: true });
       setQuantityValue(quantityValue + 1);
-      console.log(quantityValue)
     }
     else if (quantityValue == sizeValue.quantity) {
       setQuantityButtonEnable({ ...quantityButtonEnable, increase: false });
@@ -91,6 +88,10 @@ const ProductDetail = () => {
     }
   };
 
+  useEffect(() => {
+    if (sizeValue.size)
+      setQuantityValue(1)
+  }, [sizeValue])
   const QuantityButton = () => {
     const style = {
       enable: {
@@ -127,7 +128,7 @@ const ProductDetail = () => {
               </ThemeProvider>
           }
 
-          <div className="quantity__button-text">{quantityValue}</div>
+          {sizeValue.size ? <div className="quantity__button-text">{quantityValue}</div> : <div className="quantity__button-text">0</div>}
 
           {
             quantityButtonEnable.increase == false ?
@@ -155,6 +156,26 @@ const ProductDetail = () => {
       }
     },
   })
+
+  const buyNow = () => {
+
+    let listCart = [
+      {
+        product: item,
+        size: sizeValue.size,
+        quantity: quantityValue,
+        total: item.price * quantityValue
+      }
+    ]
+    dispatch(orderSlice.actions.setIsFromCart(false))
+
+    if (_currentUser == '')
+      navigate('/login')
+    else {
+      dispatch(checkoutSlice.actions.setListItems(listCart))
+      navigate(`/checkout/`)
+    }
+  }
 
   const addCartHandle = () => {
 
@@ -262,7 +283,7 @@ const ProductDetail = () => {
             <Grid xs={6}>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
-                <div className="product-details__container__price">{item.price}</div>
+                <div className="product-details__container__price">{item.price} USD</div>
                 <div className="product-details__container__description">{item.description}</div>
 
                 <Stack direction="row" sx={{
@@ -298,9 +319,11 @@ const ProductDetail = () => {
 
                 </Stack>
 
-                <div className="product-details__container__remains">
-                  Remains: {sizeValue.quantity}
-                </div>
+                { sizeValue.size && 
+                  <div className="product-details__container__remains">
+                    Remains: {sizeValue.quantity}
+                  </div>
+                }
 
                 <Divider orientation="horizontal" flexItem
                   sx={{
@@ -340,7 +363,9 @@ const ProductDetail = () => {
                       color: "#fff",
                       background: '#000',
                       fontWeight: "bold",
-                    }}>Buy now</Button>
+                    }}
+                      onClick={buyNow}
+                    >Buy now</Button>
                   </ThemeProvider>
                 </Stack>
               </Box>

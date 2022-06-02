@@ -29,7 +29,7 @@ div {
 .footer-container__introduce__name {
     line-height: 80px;
     margin-left: 120px;
-    color: red;
+    color: black;
     font-size: 1.5rem;
     font-weight: bold;
 }
@@ -48,7 +48,7 @@ div {
     padding: 1px 15px;
     margin-right: 10x;
     margin-left: 10px;
-    color: rgb(202, 0, 0);
+    color: black;
     cursor: pointer;
 }
 
@@ -62,7 +62,7 @@ div {
 }
 
 .footer-title {
-    color: red;
+    color: black;
     font-weight: bold;
     padding: 10px 0px;
 }

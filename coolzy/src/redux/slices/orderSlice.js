@@ -3,12 +3,11 @@ import orderAPI from '../../api/orderAPI'
 
 export const getAllOrder = createAsyncThunk(
     'order/getAll',
-    async (data, { rejectWithValue }) => {
+    async(data, { rejectWithValue }) => {
         const response = await orderAPI.getAll()
         if (!response) {
             return rejectWithValue("Get All Failed");
-        }
-        else {
+        } else {
             return response;
         }
     }
@@ -16,7 +15,7 @@ export const getAllOrder = createAsyncThunk(
 
 export const updateOrder = createAsyncThunk(
     'order/updateOrder',
-    async (data, { rejectedWithValue }) => {
+    async(data, { rejectedWithValue }) => {
         const response = await orderAPI.updateOrder(data)
         if (!response) {
             return rejectedWithValue(false)
@@ -28,7 +27,7 @@ export const updateOrder = createAsyncThunk(
 
 export const addOrder = createAsyncThunk(
     "order/addOrder",
-    async ({ data }, { rejectWithValue }) => {
+    async(data, { rejectWithValue }) => {
         try {
             const response = await orderAPI.addOrder(data);
             if (!response) {
@@ -46,6 +45,7 @@ export const orderSlice = createSlice({
     name: 'order',
     initialState: {
         orderList: [],
+        isFromCart: false,
         loading: false
     },
     reducers: {
@@ -58,6 +58,9 @@ export const orderSlice = createSlice({
         addOrder: (state, action) => {
             state.orderList.push(action.payload)
         },
+        setIsFromCart: (state, action) => {
+            state.isFromCart = action.payload
+        }
     },
     extraReducers: {
         [updateOrder.pending]: (state) => {

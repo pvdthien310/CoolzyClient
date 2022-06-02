@@ -15,6 +15,7 @@ import JWTApi from './api/jwtAPI';
 import { decode, encode } from 'base-64';
 import { accountSlice } from './redux/slices/accountSlices';
 import { ProfileManage } from './containers/ProfileManage';
+import Checkout from './containers/checkout/index'
 import TransactionHistory from './containers/transactionHistory';
 import FavoritePage from './containers/favorite/index';
 
@@ -56,9 +57,9 @@ function App() {
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
             {/* <Route path="/ordersManagement" element={<OrdersManagement />} /> */}
-            {/* <Route path="/" element={
+            <Route path="/" element={
                 <Home />
-            } /> */}
+            } />
 
             <Route path="/productDetail/:categoryId/:id" element={
                 <div>
@@ -79,6 +80,9 @@ function App() {
                 <Register />
             } />
 
+            <Route path="/checkout" element={
+                <Checkout />
+            }/>
             <Route path="/history" element={
                 <TransactionHistory />
             } />
