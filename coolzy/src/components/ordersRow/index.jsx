@@ -189,7 +189,7 @@ const Row = (props) => {
     return (
 
         <React.Fragment >
-            <TableRow sx={{ '& > *': { borderBottom: 'set', backgroundColor: '#384D59' } }}>
+            <TableRow sx={{ '& > *': { borderBottom: 'set' } }}>
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
@@ -200,10 +200,8 @@ const Row = (props) => {
                         {open ? <KeyboardArrowUpIcon color='error' /> : <KeyboardArrowDownIcon style={{ color: '#6FA61C' }} />}
                     </IconButton>
                 </TableCell>
-                <TableCell scope="row">
-                    <Box>
-                        <Typography style={{ color: '#52BF04', fontWeight: 'bold' }}>{row._id}</Typography>
-                    </Box>
+                <TableCell component="th" scope="row" style={{ fontWeight: 'bold' }}>
+                    {row._id}
                 </TableCell>
                 <TableCell align="center">
                     <Button
