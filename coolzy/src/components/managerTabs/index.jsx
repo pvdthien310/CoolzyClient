@@ -60,6 +60,9 @@ export default function ManagerTabs(props) {
         else if (newValue == 3) {
             navigate('/manager/revenue')
         }
+        else if (newValue == 4) {
+            navigate('/manager/homePageAssets')
+        }
     };
 
     const tabTheme = createTheme({
@@ -82,6 +85,9 @@ export default function ManagerTabs(props) {
         else if (path.includes('manager/revenue')) {
             setValue(3)
         }
+        else if (path.includes('/manager/homePageAssets')) {
+            setValue(4)
+        }
     }, [])
 
     return (
@@ -101,6 +107,10 @@ export default function ManagerTabs(props) {
                         {
                             props.role == 'Admin' &&
                             <Tab label="Revenue" {...a11yProps(3)} />
+                        }
+                        {
+                            props.role == 'Admin' &&
+                            <Tab label="Home Page Assets" {...a11yProps(4)} />
                         }
 
                     </Tabs>
@@ -125,6 +135,12 @@ export default function ManagerTabs(props) {
              {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={3}>
+                    <RevenuePage />
+                </TabPanel>
+            }
+            {
+                props.role == 'Admin' &&
+                <TabPanel value={value} index={4}>
                     <RevenuePage />
                 </TabPanel>
             }
