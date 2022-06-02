@@ -1,6 +1,6 @@
 import { React } from 'react';
 
-import { Navbar, Slider, Footer, Brand, Product } from '../../components/index';
+import { Navbar, Slider, Footer, FeaturedProduct, Product } from '../../components/index';
 
 const Home = () => {
    
@@ -9,7 +9,7 @@ const Home = () => {
         <div className='home__container'>
             <Slider />
             <Navbar />
-            <Brand />
+            <FeaturedProduct />
             <Product />
             <Footer />
         </div>

@@ -1,7 +1,7 @@
 export { default as Slider } from './slider/'
 export { default as Navbar } from './navbar'
 export { default as Footer } from './footer'
-export { default as Brand } from './brand'
+export { default as FeaturedProduct } from './featuredProduct'
 export { default as Product } from './product'
 export { default as Message } from './Message'
 export { default as ProductHomeSlider } from './productHomeSlider'
