@@ -29,9 +29,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
 import { useDispatch } from 'react-redux';
-import { currentUser } from './../../redux/selectors';
+import { currentUser, isOrderFromCart } from './../../redux/selectors';
 import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { orderSlice } from '../../redux/slices/orderSlice';
 
 
 const ProductDetail = () => {
@@ -166,6 +167,7 @@ const ProductDetail = () => {
         total: item.price * quantityValue
       }
     ]
+    dispatch(orderSlice.actions.setIsFromCart(false))
 
     if (_currentUser == '')
       navigate('/login')

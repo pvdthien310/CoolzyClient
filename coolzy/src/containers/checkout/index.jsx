@@ -25,9 +25,9 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { currentUser } from './../../redux/selectors';
-import { currentListItem } from './../../redux/selectors'
+import { currentListItem, isOrderFromCart } from './../../redux/selectors'
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
-import {updateClothesWithID} from '../../redux/slices/clothSlice'
+import { updateClothesWithID } from '../../redux/slices/clothSlice'
 
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
@@ -35,20 +35,10 @@ import Paypal from '../../components/paypal';
 import emailApi from '../../api/emailAPI';
 import { unwrapResult } from "@reduxjs/toolkit";
 import { addOrder } from '../../redux/slices/orderSlice'
-const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6}
-        ref={ref}
-        variant="filled" {...props}
-    />;
-});
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up"
-        ref={ref} {...props}
-    />;
-});
 
 const Checkout = () => {
     const listItem = useSelector(currentListItem)
+    const _isFromCart = useSelector(isOrderFromCart)
     const [listCart, setListCart] = useState([])
 
     useEffect(() => {
@@ -248,6 +238,7 @@ const Checkout = () => {
                     status: 'preparing',
                     items: listItem,
                     total: total + 2,
+                    method: 'Paypal'
                 })
 
             }
@@ -281,24 +272,15 @@ const Checkout = () => {
     const [openBackdrop, setOpenBackdrop] = useState(false);
     const handleCloseBackdrop = async () => {
         handleCloseConfirm()
-        // for (let i = 0; i < listCart.length; i++) {
-        //     try {
-        //         //   const resultAction = await dispatch(deleteCartById(listCart[i]))
-        //         //   const originalPromiseResult = unwrapResult(resultAction)
-        //     } catch (rejectedValueOrSerializedError) {
-        //         alert(rejectedValueOrSerializedError);
-        //     }
-        // }
-
         setOpenBackdrop(false);
         setPlacedOrderSuccessfully(true)
     };
 
-    const handleAgreeCOD = async() => {
+    const handleAgreeCOD = async () => {
         setOpenBackdrop(true)
         setOpenConfirm(false);
 
-        const subtractQuantity = async() => {
+        const subtractQuantity = async () => {
             //redux
             let newList = []
             listCart.forEach((item) => {
@@ -310,24 +292,24 @@ const Checkout = () => {
                     if (listProductSize[i].size == item.size) {
                         let size = {
                             size: item.size,
-                            quantity:  listProductSize[i].quantity - item.quantity
+                            quantity: listProductSize[i].quantity - item.quantity
                         }
                         _newListProductSize.push(size)
                     }
                     else
-                    _newListProductSize.push(listProductSize[i])
+                        _newListProductSize.push(listProductSize[i])
                 }
 
-              newList.push({
-                  ...product,
-                  size: _newListProductSize
-              })
+                newList.push({
+                    ...product,
+                    size: _newListProductSize
+                })
 
             })
 
             console.log(newList)
 
-            newList.forEach(async(product) => {
+            newList.forEach(async (product) => {
                 try {
                     const resultAction = await dispatch(updateClothesWithID(product))
                     const originalPromiseResult = unwrapResult(resultAction)
@@ -338,21 +320,19 @@ const Checkout = () => {
 
         }
 
-        await subtractQuantity()
-
         const sendEmail = () => {
             let stringOrder = ''
 
             listCart.forEach((item) => {
                 stringOrder += "\n"
                 stringOrder += item.product.name + "\n"
-                    + "\n- Size: " + item.size 
-                    +"- Quantity: " + item.quantity
+                    + "\n- Size: " + item.size
+                    + "- Quantity: " + item.quantity
                     + "\n- Price: " + item.product.price + " USD"
                     + "\n- Total: " + item.total + " USD"
                 stringOrder += "\n"
             })
-    
+
             emailApi.sendVerify({
                 to: data.email,
                 subject: "Your order information",
@@ -364,7 +344,7 @@ const Checkout = () => {
                     "-------------------------------------------------------- \n" +
                     stringOrder + "\n" +
                     "-------------------------------------------------------- \n" +
-                    `Ship: 2 USD` +"\n"+
+                    `Ship: 2 USD` + "\n" +
                     `Total: ${data.total} USD` + "\n" +
                     "-------------------------------------------------------- \n" +
                     "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
@@ -373,9 +353,8 @@ const Checkout = () => {
                 .catch(err => console.log(err))
         }
 
-        sendEmail()
-
         const makeOrder = async () => {
+            setData({ ...data, method: 'Cash' })
             try {
                 const resultAction = await dispatch(addOrder(data))
                 const originalPromiseResult = unwrapResult(resultAction)
@@ -387,10 +366,18 @@ const Checkout = () => {
             }
         }
 
-        await makeOrder()
-       
-    }
+        const updateCart = async () => {
 
+        }
+
+        await subtractQuantity()
+        await makeOrder()
+        sendEmail()
+        if (_isFromCart)
+            updateCart()
+        await updateCart()
+
+    }
 
     const handleClosePaymentMethodScreen = () => {
         setAddressShip('')
@@ -403,13 +390,7 @@ const Checkout = () => {
         <Link
             underline="hover"
             key="2"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#338dbc',
-                lineHeight: '1.3em',
-                cursor: 'pointer'
-            }}
+            style={{ display: 'inline-block', fontSize: '0.85714em', color: '#338dbc', lineHeight: '1.3em', cursor: 'pointer' }}
             onClick={handleClickToCart}
         >
             Cart
@@ -417,26 +398,13 @@ const Checkout = () => {
         <Link
             underline="hover"
             key="2"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#338dbc',
-                lineHeight: '1.3em',
-                fontFamily: 'sans-serif',
-                cursor: 'pointer'
-            }}
+            style={{ display: 'inline-block', fontSize: '0.85714em', color: '#338dbc', lineHeight: '1.3em', fontFamily: 'sans-serif', cursor: 'pointer' }}
             onClick={handleClosePaymentMethodScreen}
         >
             Cart Information
         </Link>,
         <Typography key="3"
-            style={{
-                display: 'inline-block',
-                fontSize: '0.85714em',
-                color: '#000D0A',
-                lineHeight: '1.3em',
-                fontFamily: 'sans-serif'
-            }}>
+            style={{ display: 'inline-block', fontSize: '0.85714em', color: '#000D0A', lineHeight: '1.3em', fontFamily: 'sans-serif' }}>
             Payment method
         </Typography>,
     ];
@@ -454,10 +422,7 @@ const Checkout = () => {
                 <Grid item xs={7} height="100%" >
                     <Stack direction="column" spacing={2} p="2rem" paddingLeft="12em">
                         <Stack direction="column"
-                            sx={{
-                                paddingBottom: '1em',
-                                display: 'block'
-                            }}>
+                            sx={{ paddingBottom: '1em', display: 'block' }}>
                             <Button
                                 sx={styles.btnCoolzy}
                                 onClick={() => navigate('/')}
@@ -465,12 +430,7 @@ const Checkout = () => {
                                 Coolzy
                             </Button>
                             <Stack direction="row"
-                                sx={{
-                                    marginTop: '-2%',
-                                    listStyleType: 'none',
-                                    display: 'block',
-                                    marginBlockEnd: '1em',
-                                }}
+                                sx={{ marginTop: '-2%', listStyleType: 'none', display: 'block', marginBlockEnd: '1em' }}
                             >
                                 <Breadcrumbs separator="›" style={{ color: '#000D0A' }} aria-label="breadcrumb">
                                     {breadcrumbsPayment}
@@ -484,16 +444,7 @@ const Checkout = () => {
                                 </Typography>
                             </Stack>
                             <Stack direction="row"
-                                sx={{
-                                    height: '2.5em',
-                                    backgroundColor: '#fafafa',
-                                    width: '97%',
-                                    borderWidth: '1px',
-                                    borderRadius: '8px',
-                                    padding: '0.5em',
-                                    justifyContent: 'space-between',
-                                    marginTop: '0.25em'
-                                }}>
+                                sx={{ height: '2.5em', backgroundColor: '#fafafa', width: '97%', borderWidth: '1px', borderRadius: '8px', padding: '0.5em', justifyContent: 'space-between', marginTop: '0.25em' }}>
                                 <Stack direction="row" sx={{ marginTop: '0.5em' }}>
                                     <Radio
                                         checked
@@ -509,30 +460,13 @@ const Checkout = () => {
                             </Stack>
                             <Stack marginTop="2em">
                                 <Typography
-                                    sx={{
-                                        color: '#333333',
-                                        fontSize: '1.28571em',
-                                        fontWeight: 'normal',
-                                        lineHeight: '1em',
-                                        marginBlockStart: '0.83em',
-                                        marginBlockEnd: '0.83em',
-                                        display: 'block',
-                                        fontFamily: 'sans-serif'
-                                    }}
+                                    sx={{ color: '#333333', fontSize: '1.28571em', fontWeight: 'normal', lineHeight: '1em', marginBlockStart: '0.83em', marginBlockEnd: '0.83em', display: 'block', fontFamily: 'sans-serif' }}
                                 >
                                     Payment method
                                 </Typography>
                             </Stack>
                             <Stack direction="row"
-                                sx={{
-                                    height: 'auto',
-                                    backgroundColor: '#fafafa',
-                                    width: '97%',
-                                    borderWidth: '1px',
-                                    borderRadius: '8px',
-                                    padding: '1.15em',
-                                    marginTop: '0.25em'
-                                }}>
+                                sx={{ height: 'auto', backgroundColor: '#fafafa', width: '97%', borderWidth: '1px', borderRadius: '8px', padding: '1.15em', marginTop: '0.25em' }}>
                                 <Radio
                                     checked={selectedPayMethod === 'Pay on delivery'}
                                     onChange={handleChangePayMethod}
@@ -540,13 +474,7 @@ const Checkout = () => {
                                     name="radio-buttons"
                                     size="medium"
                                 />
-                                <img style={{
-                                    marginRight: '10px',
-                                    display: 'flex',
-                                    alignSelf: 'center',
-                                    width: '50px',
-                                    height: '50px'
-                                }}
+                                <img style={{ marginRight: '10px', display: 'flex', alignSelf: 'center', width: '50px', height: '50px' }}
                                     src="https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=1"
                                 />
                                 <Typography sx={{ marginTop: '0.5em' }}>Pay on delivery</Typography>
@@ -564,71 +492,22 @@ const Checkout = () => {
                                         name="radio-buttons"
                                         size="medium"
                                     />
-                                    <img style={{
-                                        marginRight: '10px',
-                                        display: 'flex',
-                                        alignSelf: 'center',
-                                        width: '50px',
-                                        height: '50px'
-                                    }}
+                                    <img style={{ marginRight: '10px', display: 'flex', alignSelf: 'center', width: '50px', height: '50px' }}
                                         src="https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=1"
                                     />
                                     <Typography sx={{ marginTop: '0.5em' }}>Pay online</Typography>
                                 </Stack>
                                 {openPayOnline ? (
-                                    <>
-                                        <hr style={{ height: '1px', width: '100%', backgroundColor: 'black' }}></hr>
-                                        {/* <Typography sx={{ textAlign: 'center', paddingLeft: '2em', paddingRight: '2em', color: '#737373', fontSize: '14px' }}
-                                        >
-                                            VIETCOMBANK -
-                                            VONG MINH HUYNH -
-                                            Bank Account Number: 1234567896 -
-                                            PGD TP HCM -
-                                            Transfer content : Your name-Phone number-Product ID
-                                        </Typography>
-                                        <Typography sx={{ textAlign: 'center', whiteSpace: 'pre-line', paddingLeft: '2em', paddingRight: '2em', color: '#737373', fontSize: '14px' }}
-                                        >
-                                            TECHCOMBANK -
-                                            PHAM VO DI THIEN -
-                                            Bank Account Number : 1852654970 -
-                                            PGD TP HCM -
-                                            Transfer content : Your name-Phone number-Product ID
-                                        </Typography> */}
-
-                                        {/* <Typography sx={{
-                                            textAlign: 'center',
-                                            whiteSpace: 'pre-line',
-                                            paddingLeft: '2em',
-                                            paddingRight: '2em',
-                                            color: '#737373',
-                                            fontSize: '14px',
-                                            fontWeight: 'bold',
-                                            marginTop: '1.2em'
-                                        }}
-                                        >
-                                            OR:
-                                        </Typography> */}
-                                        <div style={{ width: '50%', marginTop: '1.2em', alignSelf: 'center' }}>
-                                            <Paypal data={data} purchases={purchaseUnits} />
-                                        </div>
-                                    </>
+                                    <div style={{ width: '50%', marginTop: '1.2em', alignSelf: 'center' }}>
+                                        <Paypal data={data} purchases={purchaseUnits} />
+                                    </div>
                                 ) : (null)}
                             </Stack>
 
                             <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
                                 <Grid item xs={6}>
                                     <a onClick={handleClosePaymentMethodScreen}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#338dbc',
-                                            transition: 'color 0.2s ease-in-out',
-                                            display: 'inline-block',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontFamily: 'sans-serif',
-                                            lineHeight: '1.5em',
-                                            marginLeft: '1.2em'
-                                        }}
+                                        style={{ textDecoration: 'none', color: '#338dbc', transition: 'color 0.2s ease-in-out', display: 'inline-block', cursor: 'pointer', fontSize: '14px', fontFamily: 'sans-serif', lineHeight: '1.5em', marginLeft: '1.2em' }}
                                     >
                                         Back to cart information
                                     </a>
@@ -651,18 +530,7 @@ const Checkout = () => {
                                 display: 'block'
                             }}>
                             <Button
-                                sx={{
-                                    marginLeft: '-1.2%',
-                                    color: '#333333',
-                                    fontSize: '2em',
-                                    fontWeight: 'normal',
-                                    lineHeight: '1em',
-                                    display: 'block',
-                                    marginBlockStart: '0.67em',
-                                    marginBlockEnd: '0.67em',
-                                    background: 'white !important',
-                                    fontFamily: 'sans-serif'
-                                }}
+                                sx={{ marginLeft: '-1.2%', color: '#333333', fontSize: '2em', fontWeight: 'normal', lineHeight: '1em', display: 'block', marginBlockStart: '0.67em', marginBlockEnd: '0.67em', background: 'white !important', fontFamily: 'sans-serif' }}
                                 onClick={() => navigate('/')}
                             >
                                 Coolzy
@@ -671,17 +539,7 @@ const Checkout = () => {
                                 {/* <Avatar sx={{ height: '70px', width: '70px' }} alt="" src={_currentUser.avatar} /> */}
                                 <Stack direction="column" marginLeft="0.1em">
                                     <p
-                                        style={{
-                                            marginBlockStart: '1em',
-                                            marginBlockEnd: '1em',
-                                            display: 'block',
-                                            marginBottom: '0.75em',
-                                            lineHeight: '1.5em',
-                                            fontSize: '14px',
-                                            fontFamily: 'sans-serif',
-                                            marginTop: '0.1%',
-                                            marginLeft: '1.2em'
-                                        }}
+                                        style={{ marginBlockStart: '1em', marginBlockEnd: '1em', display: 'block', marginBottom: '0.75em', lineHeight: '1.5em', fontSize: '14px', fontFamily: 'sans-serif', marginTop: '0.1%', marginLeft: '1.2em' }}
                                     >
                                         {_currentUser.name} ({_currentUser.email})
                                     </p>
@@ -693,11 +551,7 @@ const Checkout = () => {
                                 id="outlined-basic"
                                 label={_currentUser.name != '' ? null : 'Full name'}
                                 variant="outlined"
-                                sx={{
-                                    color: '#333333',
-                                    fontFamily: 'sans-serif',
-                                    marginTop: '1em'
-                                }}
+                                sx={{ color: '#333333', fontFamily: 'sans-serif', marginTop: '1em' }}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
@@ -708,22 +562,14 @@ const Checkout = () => {
                                 variant="outlined"
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
-                                sx={{
-                                    color: '#333333',
-                                    fontFamily: 'sans-serif',
-                                    marginTop: '1.2rem'
-                                }} />
+                                sx={{ color: '#333333', fontFamily: 'sans-serif', marginTop: '1.2rem' }} />
                             <TextField
                                 fullWidth
                                 id="outlined-basic"
                                 label="Your address"
                                 variant="outlined"
                                 onChange={handleChangeAddress}
-                                sx={{
-                                    color: '#333333',
-                                    fontFamily: 'sans-serif',
-                                    marginTop: '1.3rem'
-                                }}
+                                sx={{ color: '#333333', fontFamily: 'sans-serif', marginTop: '1.3rem' }}
                             />
                             <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '1em' }}>
                                 <Grid item xs={4}>
@@ -783,18 +629,7 @@ const Checkout = () => {
                                 <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
                                     <Grid item xs={6}>
                                         <a onClick={() => navigate('/myplace/mycart')}
-                                            style={{
-                                                textDecoration: 'none',
-                                                color: 'black',
-                                                transition: 'color 0.2s ease-in-out',
-                                                display: 'inline-block',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                fontFamily: 'sans-serif',
-                                                lineHeight: '1.5em',
-                                                marginLeft: '1.2em'
-                                            }}
-                                        >
+                                            style={{ textDecoration: 'none', color: 'black', transition: 'color 0.2s ease-in-out', display: 'inline-block', cursor: 'pointer', fontSize: '14px', fontFamily: 'sans-serif', lineHeight: '1.5em', marginLeft: '1.2em' }}>
                                             My Cart
                                         </a>
                                     </Grid>
@@ -845,16 +680,9 @@ const Checkout = () => {
                                         )}
                                     </Grid>
                                 </Grid>
-
                             </Stack>
-
-
-
                         </Stack>
-
                     ))}
-
-
                 </Stack>
 
                 <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
@@ -866,10 +694,7 @@ const Checkout = () => {
                             label="Discount code"
                             variant="outlined"
                             onChange={handleChangeAddress}
-                            sx={{
-                                color: '#333333',
-                                fontFamily: 'sans-serif',
-                            }}
+                            sx={{ color: '#333333', fontFamily: 'sans-serif', }}
                         />
                     </Grid>
                     <Grid item xs={3.5} sx={{ height: '100%' }}>
@@ -888,12 +713,7 @@ const Checkout = () => {
                     </Typography>
                     <Stack direction="row" width="100%">
                         <DiamondIcon sx={{ width: '17px', height: '17px' }} />
-                        <Typography sx={{
-                            color: '#333333',
-                            fontFamily: 'sans-serif',
-                            fontSize: '13px',
-                            marginLeft: '0.5em'
-                        }}>
+                        <Typography sx={{ color: '#333333', fontFamily: 'sans-serif', fontSize: '13px', marginLeft: '0.5em' }}>
                             MEMBER - {_currentUser.score} point(s)
                         </Typography>
                     </Stack>
@@ -901,22 +721,14 @@ const Checkout = () => {
                 <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
                 <Stack direction="row" width='100%' justifyContent="space-between">
                     <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
-                    <Typography sx={{
-                        color: '#333333',
-                        fontWeight: 800,
-                        marginTop: '1.2em'
-                    }}
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em' }}
                     >
                         {subTotal} USD
                     </Typography>
                 </Stack>
                 <Stack direction="row" width='100%' justifyContent="space-between">
                     <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
-                    <Typography sx={{
-                        color: '#333333',
-                        fontWeight: 800,
-                        marginTop: '-0.5em'
-                    }}
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '-0.5em' }}
                     >
                         2 USD
                     </Typography>
@@ -925,12 +737,7 @@ const Checkout = () => {
 
                 <Stack direction="row" width='100%' justifyContent="space-between">
                     <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
-                    <Typography sx={{
-                        color: '#333333',
-                        fontWeight: 800,
-                        marginTop: '1.2em',
-                        fontSize: '20px'
-                    }}
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em', fontSize: '20px' }}
                     >
                         {subTotal + 2} USD
                     </Typography>
@@ -983,20 +790,7 @@ const Checkout = () => {
                     Click OK to back to Main Page</DialogTitle>
                 <Button
                     onClick={handleClosePlacedOrderSuccessfully}
-                    style={{
-                        alignSelf: 'center',
-                        width: '30px',
-                        height: '30px',
-                        borderRadius: '15px',
-                        border: '1px solid #18608a',
-                        backgroundColor: 'green',
-                        color: 'black',
-                        fontSize: '13px',
-                        marginBottom: '10px',
-                        fontWeight: 'bold',
-                        padding: '12px 45px',
-                    }}
-                >
+                    style={{ alignSelf: 'center', width: '30px', height: '30px', borderRadius: '15px', border: '1px solid #18608a', backgroundColor: 'green', color: 'black', fontSize: '13px', marginBottom: '10px', fontWeight: 'bold', padding: '12px 45px', }}>
                     OK
                 </Button>
             </Dialog>
@@ -1023,4 +817,17 @@ export const CustomFillButton = styled(Button)(({ theme }) => ({
     borderRadius: '5px'
 
 }));
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6}
+        ref={ref}
+        variant="filled" {...props}
+    />;
+});
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up"
+        ref={ref} {...props}
+    />;
+});
+
 export default Checkout

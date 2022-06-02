@@ -45,6 +45,7 @@ export const orderSlice = createSlice({
     name: 'order',
     initialState: {
         orderList: [],
+        isFromCart: false,
         loading: false
     },
     reducers: {
@@ -57,6 +58,9 @@ export const orderSlice = createSlice({
         addOrder: (state, action) => {
             state.orderList.push(action.payload)
         },
+        setIsFromCart: (state, action) => {
+            state.isFromCart = action.payload
+        }
     },
     extraReducers: {
         [updateOrder.pending]: (state) => {
