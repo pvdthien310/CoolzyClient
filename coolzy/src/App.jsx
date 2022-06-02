@@ -48,6 +48,10 @@ function App() {
                 })
                 .catch(err => console.log(err))
         }
+        else 
+        {
+            localStorage.setItem('logged','false') 
+        }
     }
 
     useEffect((checkLogged), [])
