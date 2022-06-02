@@ -17,11 +17,10 @@ import { encode } from 'base-64'
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { grey } from '@mui/material/colors';
-
 
 const Navbar = () => {
     let navigate = useNavigate();
@@ -100,13 +99,16 @@ const IconBar = () => {
     const handleClickFavorite = () => {
         navigate('/favorite')
     }
+    const handleClickCart = () => {
+        navigate('/myCart')
+    }
     return (
         <div className='navbar__icon_bar__container'>
-            <IconButton sx={{ marginTop: -1 }}>
-                <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            <IconButton onClick={handleClickCart} sx={{ marginTop: -1 }}>
+                <LocalGroceryStoreOutlinedIcon sx={{ color: '#333333' }} />
             </IconButton>
             <IconButton onClick={handleClickFavorite} sx={{ marginTop: -1 }}>
-                <FavoriteBorderIcon />
+                <FavoriteBorderIcon sx={{ color: '#333333' }} />
             </IconButton>
             {accountToggle ?
 

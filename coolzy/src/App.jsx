@@ -8,7 +8,6 @@ import Register from './containers/register/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUser } from './redux/selectors';
 import MainManager from './containers/manager';
-import { Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import accountApi from './api/accountAPI';
 import JWTApi from './api/jwtAPI';
@@ -17,6 +16,7 @@ import { accountSlice } from './redux/slices/accountSlices';
 import { ProfileManage } from './containers/ProfileManage';
 import TransactionHistory from './containers/transactionHistory';
 import FavoritePage from './containers/favorite/index';
+import Cart from './containers/cart';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -85,6 +85,10 @@ function App() {
 
             <Route path="/favorite" element={
                 <FavoritePage />
+            } />
+
+            <Route path="/myCart" element={
+                <Cart />
             } />
         </Routes>
     );

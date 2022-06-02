@@ -148,8 +148,21 @@ const ProductDetail = () => {
     },
   })
 
-  const addCartHandle = () => {
+  const handleAddToCart = () => {
+    let newCart = {
+      clothId: id,
+      quantity: quantityValue,
+      size: sizeValue.size
+    }
 
+    cartApi.insertByUserId(userId, newCart).then(res => {
+      if (res.status == 200) {
+        setAlertObj({ ...alertObj, type: 'success', message: "Add to cart successful", status: true })
+      }
+      else {
+        setAlertObj({ ...alertObj, type: 'error', message: "Add to cart fail", status: true })
+      }
+    }).catch(err => console.log(err))
   }
 
   const handleClose = (event, reason) => {
@@ -238,7 +251,7 @@ const ProductDetail = () => {
                     marginTop: 3,
                   }}>
                   <ThemeProvider theme={btnTheme}>
-                    <Button variant="outlined" sx={{
+                    <Button variant="outlined" onClick={() => handleAddToCart()} sx={{
                       width: 160,
                       color: "#000",
                       borderColor: "#000",
