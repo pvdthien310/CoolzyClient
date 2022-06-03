@@ -17,12 +17,10 @@ import { encode } from 'base-64'
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
 import { styled } from '@mui/material/styles';
-import { IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { grey } from '@mui/material/colors';
-
 
 const Navbar = () => {
     let navigate = useNavigate();
@@ -65,10 +63,18 @@ const Navbar = () => {
 
     useEffect((checkLogged), [])
 
+    const contactClick = () => {
+        navigate('/contact')
+    }
+
+    const aboutClick = () => {
+        navigate('/about')
+    }
+
     return (
         <div className='navbar__container'>
             <img src={logo_png} alt='logo_png' />
-            <TabBar />
+            <TabBar aboutClick={aboutClick} contactClick={contactClick}/>
             {
                 user == '' ?
                     <LoginBar />
@@ -80,14 +86,14 @@ const Navbar = () => {
     )
 }
 
-const TabBar = () => {
+const TabBar = ({contactClick, aboutClick}) => {
 
     return (
         <div className='navbar__tab_bar__container'>
             <p>Home</p>
             <p>Store</p>
-            <p>About</p>
-            <p>Contact</p>
+            <p onClick={aboutClick}>About</p>
+            <p onClick ={contactClick}>Contact</p>
         </div>
     )
 }
@@ -101,13 +107,16 @@ const IconBar = () => {
     const handleClickFavorite = () => {
         navigate('/favorite')
     }
+    const handleClickCart = () => {
+        navigate('/myCart')
+    }
     return (
         <div className='navbar__icon_bar__container'>
-            <IconButton sx={{ marginTop: -1 }}>
-                <LocalGroceryStoreOutlinedIcon sx={{ marginRight: 1, marginLeft: 1, color: '#333333' }} />
+            <IconButton onClick={handleClickCart} sx={{ marginTop: -1 }}>
+                <LocalGroceryStoreOutlinedIcon sx={{ color: '#333333' }} />
             </IconButton>
             <IconButton onClick={handleClickFavorite} sx={{ marginTop: -1 }}>
-                <FavoriteBorderIcon />
+                <FavoriteBorderIcon sx={{ color: '#333333' }} />
             </IconButton>
             {accountToggle ?
 

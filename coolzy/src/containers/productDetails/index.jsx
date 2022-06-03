@@ -177,8 +177,21 @@ const ProductDetail = () => {
     }
   }
 
-  const addCartHandle = () => {
+  const handleAddToCart = () => {
+    let newCart = {
+      clothId: id,
+      quantity: quantityValue,
+      size: sizeValue.size
+    }
 
+    cartApi.insertByUserId(userId, newCart).then(res => {
+      if (res.status == 200) {
+        setAlertObj({ ...alertObj, type: 'success', message: "Add to cart successful", status: true })
+      }
+      else {
+        setAlertObj({ ...alertObj, type: 'error', message: "Add to cart fail", status: true })
+      }
+    }).catch(err => console.log(err))
   }
 
   const handleClose = (event, reason) => {
@@ -280,7 +293,7 @@ const ProductDetail = () => {
       <div className="product-detail__container">
         <Box sx={{ height: 'auto', marginTop: 20, marginBottom: 15 }}>
           <Grid container spacing={2}>
-            <Grid xs={6}>
+            <Grid xs={6} item>
               <Box sx={{ marginLeft: 10, marginRight: 10 }}>
                 <div className="product-details__container__name">{item.name}</div>
                 <div className="product-details__container__price">{item.price} USD</div>
@@ -294,7 +307,7 @@ const ProductDetail = () => {
                   <Select
                     id="demo-simple-select"
                     value={sizeValue}
-                    label="Size"
+                    variant="standard"
                     sx={{
                       height: 40,
                       marginLeft: 2,
@@ -319,7 +332,7 @@ const ProductDetail = () => {
 
                 </Stack>
 
-                { sizeValue.size && 
+                {sizeValue.size &&
                   <div className="product-details__container__remains">
                     Remains: {sizeValue.quantity}
                   </div>
@@ -344,16 +357,24 @@ const ProductDetail = () => {
                       color: "#F54040",
                       borderColor: "#F54040",
                       fontWeight: "bold",
-
+                      '&:hover': {
+                        backgroundColor: '#F54040',
+                        color: '#fff',
+                        borderColor: "#F54040",
+                      },
                     }}>Add to favorite</Button>
-                  </ThemeProvider>
-                  <ThemeProvider theme={btnTheme}>
-                    <Button variant="outlined" sx={{
-                      width: 160,
-                      color: "#000",
-                      borderColor: "#000",
-                      fontWeight: "bold",
+                  </ThemeProvider >
 
+                  <ThemeProvider theme={btnTheme}>
+                    <Button variant="outlined" onClick={() => handleAddToCart()} sx={{
+                      width: 160,
+                      color: "#272727",
+                      borderColor: "#272727",
+                      fontWeight: "bold",
+                      '&:hover': {
+                        backgroundColor: '#272727',
+                        color: '#fff'
+                      },
                     }}>Add to cart</Button>
                   </ThemeProvider>
 
@@ -363,17 +384,18 @@ const ProductDetail = () => {
                       color: "#fff",
                       background: '#000',
                       fontWeight: "bold",
+                      '&:hover': {
+                        backgroundColor: '#505050',
+                      },
                     }}
                       onClick={buyNow}
                     >Buy now</Button>
                   </ThemeProvider>
                 </Stack>
               </Box>
-
-
             </Grid>
 
-            <Grid xs={6}>
+            <Grid xs={6} item>
               <Box xs={{ marginTop: 8 }}>
                 {
                   item == null ? null :
@@ -382,10 +404,10 @@ const ProductDetail = () => {
               </Box>
             </Grid>
 
-          </Grid>
+          </Grid >
 
-        </Box>
-      </div>
+        </Box >
+      </div >
 
 
       <Footer />
@@ -402,7 +424,7 @@ const ProductDetail = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-    </div>
+    </div >
   )
 }
 
