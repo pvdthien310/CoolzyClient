@@ -6,7 +6,7 @@ import ProductDetail from './containers/productDetails'
 import Login from './containers/login';
 import Register from './containers/register/index';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentUser } from './redux/selectors';
+import { currentUser, currentListItem } from './redux/selectors';
 import MainManager from './containers/manager';
 import { useEffect, useState } from 'react';
 import accountApi from './api/accountAPI';
@@ -23,6 +23,7 @@ import Contact from './containers/contact/index'
 
 function App() {
     const _currentUser = useSelector(currentUser)
+    const _currentListItem = useSelector(currentListItem)
     const [logged, setLogged] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -50,9 +51,8 @@ function App() {
                 })
                 .catch(err => console.log(err))
         }
-        else 
-        {
-            localStorage.setItem('logged','false') 
+        else {
+            localStorage.setItem('logged', 'false')
         }
     }
 
@@ -85,9 +85,13 @@ function App() {
                 <Register />
             } />
 
-            <Route path="/checkout" element={
-                <Checkout />
-            }/>
+            {
+                _currentListItem.length > 0 &&
+                <Route path="/checkout" element={
+                    <Checkout />
+                } />
+            }
+
             <Route path="/history" element={
                 <TransactionHistory />
             } />
@@ -100,12 +104,12 @@ function App() {
                 <Cart />
             } />
             <Route path="/about" element={
-                <About/>
-            }/>
+                <About />
+            } />
 
             <Route path="/contact" element={
-                <Contact/>
-            }/>
+                <Contact />
+            } />
         </Routes>
     );
 }

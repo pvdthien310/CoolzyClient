@@ -5,6 +5,7 @@ export const checkoutSlice = createSlice({
     name: 'checkout',
     initialState: {
         listItems: [],
+        isFromCart: false
     },
     reducers: {
         setListItems: (state, action) => {
@@ -13,6 +14,10 @@ export const checkoutSlice = createSlice({
         pushListItems: (state, action) => {
             state.listItems.push(action.payload)
         },
+
+        setIsFromCart: (state, action) => {
+            state.isFromCart = action.payload
+        }
     },
 
 

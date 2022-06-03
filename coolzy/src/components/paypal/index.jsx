@@ -1,18 +1,20 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { currentUser, currentListItem } from "../../redux/selectors";
+import { currentUser, currentListItem, isOrderFromCart } from "../../redux/selectors";
 import { unwrapResult } from "@reduxjs/toolkit";
 import emailApi from "../../api/emailAPI";
 
 import { Dialog, Button } from "@mui/material";
 import { DialogTitle } from "@mui/material";
-// import { deleteCartById } from "../../redux/slices/cartSlice";
+import {accountSlice} from '../../redux/slices/accountSlices'
+import accountApi from "../../api/accountAPI";
 import { useNavigate } from 'react-router-dom';
 import { addOrder } from './../../redux/slices/orderSlice';
-import {updateClothesWithID} from './../../redux/slices/clothSlice'
+import { updateClothesWithID } from './../../redux/slices/clothSlice'
 
 export default function Paypal({ data, purchases }) {
-    /// console.log(data)
+     console.log(purchases)
+    const _isFromCart = useSelector(isOrderFromCart)
     const _currentUser = useSelector(currentUser)
     const _currentListItem = useSelector(currentListItem)
     const dispatch = useDispatch()
@@ -30,8 +32,8 @@ export default function Paypal({ data, purchases }) {
         _currentListItem.forEach((item) => {
             stringOrder += "\n"
             stringOrder += item.product.name + "\n"
-                + "\n- Size: " + item.size 
-                +"- Quantity: " + item.quantity
+                + "\n- Size: " + item.size
+                + "- Quantity: " + item.quantity
                 + "\n- Price: " + item.product.price + " USD"
                 + "\n- Total: " + item.total + "USD"
             stringOrder += "\n"
@@ -48,7 +50,7 @@ export default function Paypal({ data, purchases }) {
                 "-------------------------------------------------------- \n" +
                 stringOrder + "\n" +
                 "-------------------------------------------------------- \n" +
-                `Ship: 2 USD` +"\n"+
+                `Ship: 2 USD` + "\n" +
                 `Total: ${getTotal() + 2} USD` + "\n" +
                 "-------------------------------------------------------- \n" +
                 "Any wondered things. Please contact with our shop with contact below site: coolzy.com"
@@ -56,13 +58,13 @@ export default function Paypal({ data, purchases }) {
         })
             .catch(err => console.log(err))
         setPaidSuccessfully(false)
-        navigate('/')
+        navigate('/history')
     }
 
     const getTotal = () => {
         let temp = 0
         for (let i = 0; i < purchases.length; i++) {
-            temp = temp + Number(purchases[i].amount.value)
+            temp = temp + Number(purchases[i].unit_amount.value)
         }
         return temp
     }
@@ -76,7 +78,7 @@ export default function Paypal({ data, purchases }) {
         }
     }
 
-    const subtractQuantity = async() => {
+    const subtractQuantity = async () => {
         //redux
         let newList = []
         _currentListItem.forEach((item) => {
@@ -88,24 +90,24 @@ export default function Paypal({ data, purchases }) {
                 if (listProductSize[i].size == item.size) {
                     let size = {
                         size: item.size,
-                        quantity:  listProductSize[i].quantity - item.quantity
+                        quantity: listProductSize[i].quantity - item.quantity
                     }
                     _newListProductSize.push(size)
                 }
                 else
-                _newListProductSize.push(listProductSize[i])
+                    _newListProductSize.push(listProductSize[i])
             }
 
-          newList.push({
-              ...product,
-              size: _newListProductSize
-          })
+            newList.push({
+                ...product,
+                size: _newListProductSize
+            })
 
         })
 
         console.log(newList)
 
-        newList.forEach(async(product) => {
+        newList.forEach(async (product) => {
             try {
                 const resultAction = await dispatch(updateClothesWithID(product))
                 const originalPromiseResult = unwrapResult(resultAction)
@@ -117,6 +119,23 @@ export default function Paypal({ data, purchases }) {
 
     }
 
+    const updateCart = async () => {
+        dispatch(accountSlice.actions.update({
+            ..._currentUser,
+            listCarts: []
+        }))
+
+        await accountApi.updateAccount({
+            ..._currentUser,
+            listCarts: []
+        })
+            .then((res) => {
+                navigate('/history')
+            })
+            .catch((error) => {
+
+            })
+    }
 
     useEffect(() => {
         window.paypal
@@ -124,13 +143,34 @@ export default function Paypal({ data, purchases }) {
                 createOrder: (data, actions, err) => {
                     return actions.order.create({
                         intent: "CAPTURE",
-                        purchase_units: purchases,
+                        purchase_units: [
+                            {
+                                amount: {
+                                    currency_code: 'USD',
+                                    value: getTotal() +2, //total+ 2,
+                                    breakdown: { 
+                                        item_total: { 
+                                            currency_code: 'USD',
+                                            value: getTotal()
+                                        },
+
+                                        shipping: { 
+                                            currency_code: 'USD',
+                                            value: 2
+                                        }
+                                    },       
+                                },
+                                items: purchases
+                            }
+                        ]
                     });
                 },
                 onApprove: async (data, actions) => {
                     const order = await actions.order.capture();
                     await makeOrder()
                     await subtractQuantity()
+                    if (_isFromCart)
+                        await updateCart()
                 },
                 onError: (err) => {
                     console.log(err);
@@ -143,7 +183,7 @@ export default function Paypal({ data, purchases }) {
         <div>
             <div ref={paypal}></div>
             <Dialog open={paidSuccessfully}>
-                <DialogTitle color='success'>Paid Successfully. Click OK to back to Main Page</DialogTitle>
+                <DialogTitle >Paid Successfully</DialogTitle>
                 <Button
                     onClick={handleCloseDialog}
                     style={{

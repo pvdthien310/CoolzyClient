@@ -33,6 +33,7 @@ import { currentUser, isOrderFromCart } from './../../redux/selectors';
 import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { orderSlice } from '../../redux/slices/orderSlice';
+import {Error} from '../../components/alert/alert'
 
 
 const ProductDetail = () => {
@@ -43,6 +44,11 @@ const ProductDetail = () => {
   const [quantityValue, setQuantityValue] = useState(1)
   const _currentUser = useSelector(currentUser)
   const dispatch = useDispatch()
+
+  const [errorNotification, setErrorNotification] = useState({
+    visible: false,
+    note: ''
+  })
 
   const navigate = useNavigate()
 
@@ -59,12 +65,24 @@ const ProductDetail = () => {
     }
 
     await getItem()
-
   }, [])
+
+  useEffect(() => {
+    if (item.size !== undefined) {
+    //console.log(item.size)
+
+  console.log(item.size.length > 0)
+     setSizeValue(item.size[0])
+    }
+  }, [item])
 
 
   const handleChangeSize = (event) => {
     setSizeValue(event.target.value);
+    setErrorNotification({
+      ...errorNotification,
+      visible: false
+    })
   };
 
   const handleIncrementQuantity = () => {
@@ -89,8 +107,12 @@ const ProductDetail = () => {
   };
 
   useEffect(() => {
-    if (sizeValue.size)
-      setQuantityValue(1)
+    if (sizeValue.size) {
+      if (sizeValue.quantity == 0)
+        setQuantityValue(0)
+      else
+        setQuantityValue(1)
+    }
   }, [sizeValue])
   const QuantityButton = () => {
     const style = {
@@ -158,7 +180,7 @@ const ProductDetail = () => {
   })
 
   const buyNow = () => {
-
+    console.log(sizeValue)
     let listCart = [
       {
         product: item,
@@ -172,8 +194,16 @@ const ProductDetail = () => {
     if (_currentUser == '')
       navigate('/login')
     else {
-      dispatch(checkoutSlice.actions.setListItems(listCart))
-      navigate(`/checkout/`)
+      if (sizeValue.quantity != 0) {
+        dispatch(checkoutSlice.actions.setListItems(listCart))
+        navigate(`/checkout/`)
+      }
+      else{
+        setErrorNotification({
+          visible: true,
+          note: 'This size is out of stock now'
+        })
+      }
     }
   }
 
@@ -424,6 +454,9 @@ const ProductDetail = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      {errorNotification.visible && <Error message={errorNotification.note} status={errorNotification.visible} />}
+
     </div >
   )
 }
