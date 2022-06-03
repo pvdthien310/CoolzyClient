@@ -11,6 +11,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RevenuePage from '../../containers/revenue';
+import { HomePageAssets } from '../../containers/homepageAssets';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -132,7 +133,7 @@ export default function ManagerTabs(props) {
                     <StaffManager />
                 </TabPanel>
             }
-             {
+            {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={3}>
                     <RevenuePage />
@@ -141,7 +142,7 @@ export default function ManagerTabs(props) {
             {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={4}>
-                    <RevenuePage />
+                    <HomePageAssets />
                 </TabPanel>
             }
 
