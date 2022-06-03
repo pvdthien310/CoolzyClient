@@ -23,10 +23,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import accountApi from '../../api/accountAPI'
 import { currentUser } from './../../redux/selectors';
 import { currentListItem, isOrderFromCart } from './../../redux/selectors'
 import { checkoutSlice } from '../../redux/slices/checkoutSlices';
+import { accountSlice } from '../../redux/slices/accountSlices';
 import { updateClothesWithID } from '../../redux/slices/clothSlice'
 
 import { styled } from '@mui/material/styles';
@@ -75,19 +76,19 @@ const Checkout = () => {
 
     const MakePurchaseUnit = async () => {
         let sample = []
-        let amountObj = {
+        let unitAmountObj = {
             currency_code: "USD",
             value: 0,
         }
         for (let i = 0; i < listCart.length; i++) {
-            amountObj = {
-                ...amountObj,
+            unitAmountObj = {
+                ...unitAmountObj,
                 value: listCart[i].total
             }
             let temp = {
-                description: listCart[i].product.name + " - " + listCart[i].size,
-                reference_id: listCart[i].size,
-                amount: amountObj
+                name: listCart[i].product.name + " - " + listCart[i].size,
+                unit_amount: unitAmountObj,
+                quantity: listCart[i].quantity
             }
             sample.push(temp)
 
@@ -195,7 +196,7 @@ const Checkout = () => {
     function handleClickToCart(event) {
         event.preventDefault();
         ///if (localStorage.getItem('role') === 'customer') {
-        navigate('/myplace/mycart')
+       // navigate('/myplace/mycart')
         ///  } else {
         ///   if     navigate('/guestCart')
         //  }
@@ -237,7 +238,7 @@ const Checkout = () => {
                     address: bigAddress,
                     status: 'preparing',
                     items: listItem,
-                    total: total + 2,
+                    total: total,
                     method: 'Paypal'
                 })
 
@@ -266,7 +267,7 @@ const Checkout = () => {
 
     const handleClosePlacedOrderSuccessfully = () => {
         setPlacedOrderSuccessfully(false)
-        navigate('/')
+        navigate('/history')
     }
 
     const [openBackdrop, setOpenBackdrop] = useState(false);
@@ -359,7 +360,7 @@ const Checkout = () => {
                 const resultAction = await dispatch(addOrder(data))
                 const originalPromiseResult = unwrapResult(resultAction)
                 setOpenBackdrop(false)
-                navigate('/')
+                
 
             } catch (rejectedValueOrSerializedError) {
                 alert(rejectedValueOrSerializedError);
@@ -367,15 +368,28 @@ const Checkout = () => {
         }
 
         const updateCart = async () => {
+            dispatch(accountSlice.actions.update({
+                ..._currentUser,
+                listCarts: []
+            }))
 
+            await accountApi.updateAccount({ 
+                ..._currentUser,
+                listCarts:[]
+            })
+            .then ((res)=>{
+                navigate('/history')
+            })
+            .catch ((error) => {
+
+            })
         }
 
         await subtractQuantity()
         await makeOrder()
         sendEmail()
         if (_isFromCart)
-            updateCart()
-        await updateCart()
+           await updateCart()
 
     }
 
@@ -507,7 +521,7 @@ const Checkout = () => {
                             <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
                                 <Grid item xs={6}>
                                     <a onClick={handleClosePaymentMethodScreen}
-                                        style={{ textDecoration: 'none', color: '#338dbc', transition: 'color 0.2s ease-in-out', display: 'inline-block', cursor: 'pointer', fontSize: '14px', fontFamily: 'sans-serif', lineHeight: '1.5em', marginLeft: '1.2em' }}
+                                        style={{ textDecoration: 'none', color: 'black', transition: 'color 0.2s ease-in-out', display: 'inline-block', cursor: 'pointer', fontSize: '14px', fontFamily: 'sans-serif', lineHeight: '1.5em', marginLeft: '1.2em' }}
                                     >
                                         Back to cart information
                                     </a>
@@ -532,6 +546,7 @@ const Checkout = () => {
                             <Button
                                 sx={{ marginLeft: '-1.2%', color: '#333333', fontSize: '2em', fontWeight: 'normal', lineHeight: '1em', display: 'block', marginBlockStart: '0.67em', marginBlockEnd: '0.67em', background: 'white !important', fontFamily: 'sans-serif' }}
                                 onClick={() => navigate('/')}
+
                             >
                                 Coolzy
                             </Button>
@@ -628,7 +643,7 @@ const Checkout = () => {
 
                                 <Grid spacing={2} container sx={{ width: '100%', position: 'relative', marginTop: '2rem' }}>
                                     <Grid item xs={6}>
-                                        <a onClick={() => navigate('/myplace/mycart')}
+                                        <a onClick={() => navigate('/myCart')}
                                             style={{ textDecoration: 'none', color: 'black', transition: 'color 0.2s ease-in-out', display: 'inline-block', cursor: 'pointer', fontSize: '14px', fontFamily: 'sans-serif', lineHeight: '1.5em', marginLeft: '1.2em' }}>
                                             My Cart
                                         </a>
@@ -674,10 +689,7 @@ const Checkout = () => {
                                     <Grid item xs={8}></Grid>
 
                                     <Grid item xs={4}>
-                                        {listCart.map((item) =>
                                             <Typography sx={{ fontWeight: 600 }}> {item.total} USD</Typography>
-
-                                        )}
                                     </Grid>
                                 </Grid>
                             </Stack>
@@ -739,7 +751,7 @@ const Checkout = () => {
                     <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
                     <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em', fontSize: '20px' }}
                     >
-                        {subTotal + 2} USD
+                        {subTotal+2} USD
                     </Typography>
                 </Stack>
             </Grid>
