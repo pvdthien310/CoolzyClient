@@ -3,8 +3,13 @@ import DatabaseClient from './baseAPI.js'
 const baseURL = 'homePageAsset'
 
 const homePageAssetApi = {
-    getAll: async() => {
+    getAll: async () => {
         const res = DatabaseClient.get('/' + baseURL)
+            .catch(err => { return err.response })
+        return res;
+    },
+    update: async (data) => {
+        const res = DatabaseClient.put('/' + baseURL, data)
             .catch(err => { return err.response })
         return res;
     },

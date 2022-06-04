@@ -193,7 +193,7 @@ const Row = (props) => {
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
-                        sx={{ backgroundColor: '#141E26' }}
+                        // sx={{ backgroundColor: '#141E26' }}
                         size="small"
                         onClick={() => setOpen(!open)}
                     >
@@ -207,8 +207,9 @@ const Row = (props) => {
                     <Button
                         aria-describedby={id}
                         onClick={handleClick}
+                        variant="text"
                     >
-                        {row.email}
+                        <p style={{ color: 'green', fontSize: '13px', fontStyle: 'normal' }}>{row.email}</p>
                     </Button>
                     <Popover
                         id={id}
@@ -223,8 +224,8 @@ const Row = (props) => {
                         <CusInfo email={row.email} />
                     </Popover>
                 </TableCell>
-                <TableCell align="center" style={{ color: '#F2EFE9' }}>{row.date}</TableCell>
-                <TableCell align="center" style={{ color: '#F2EFE9', fontWeight: 'bold' }}>{orderTotal}</TableCell>
+                <TableCell align="center" style={{ color: 'black' }}>{row.date}</TableCell>
+                <TableCell align="center" style={{ color: 'black', fontWeight: 'bold' }}>{orderTotal}</TableCell>
                 <TableCell align="center">
                     <FormGroup>
                         <FormControlLabel
@@ -237,7 +238,7 @@ const Row = (props) => {
                 </TableCell>
                 {status === "shipped" ? (
                     <TableCell align="center">
-                        <Button onClick={() => setOpenModalBill(true)}>Print</Button>
+                        <Button sx={{ color: 'green' }} onClick={() => setOpenModalBill(true)}>Print</Button>
                     </TableCell>
                 ) : (
                     <TableCell align="center">
@@ -245,19 +246,19 @@ const Row = (props) => {
                     </TableCell>
                 )}
             </TableRow>
-            <TableRow sx={{ '& > *': { borderBottom: 'set', backgroundColor: '#384D59' } }}>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: '#384D59', marginLeft: '10%' }} colSpan={6}>
+            <TableRow sx={{ '& > *': { borderBottom: 'set', backgroundColor: 'white' } }}>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: 'white', marginLeft: '10%' }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
-                            <Typography variant="h7" style={{ fontWeight: 'bold', color: '#F2EFE9', textDecoration: 'underline' }} gutterBottom component="div">
+                            <Typography variant="h7" style={{ fontWeight: 'bold', color: 'black', textDecoration: 'underline' }} gutterBottom component="div">
                                 Details:
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#F2EFE9' }}>Product ID</TableCell>
-                                        <TableCell align="center" style={{ color: '#F2EFE9' }}>Amount</TableCell>
-                                        <TableCell align="center" style={{ color: '#F2EFE9' }}>Total price (VND)</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: 'black' }}>Product ID</TableCell>
+                                        <TableCell align="center" style={{ color: 'black' }}>Amount</TableCell>
+                                        <TableCell align="center" style={{ color: 'black' }}>Total price (USD)</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -268,7 +269,7 @@ const Row = (props) => {
                                                     <Button
                                                         aria-describedby={id}
                                                         onClick={handleProductPopoverOpen}
-                                                        style={{ fontWeight: 'bold', color: '#52BF04', fontStyle: 'italic' }}
+                                                        style={{ fontWeight: 'bold', color: 'black', fontStyle: 'italic' }}
                                                     >
                                                         {detailsRow._itemid}
                                                     </Button>

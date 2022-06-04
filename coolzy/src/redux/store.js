@@ -5,6 +5,7 @@ import { staffSlice } from "./slices/staffSlices";
 import { checkoutSlice } from "./slices/checkoutSlices"
 import { favoriteSlice } from "./slices/favoriteSlice";
 import { slidedataSlice } from "./slices/slidedataSlice";
+import { homePageAssetSlice } from './slices/homepageAssetSlice';
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         checkout: checkoutSlice.reducer,
         favorite: favoriteSlice.reducer,
         slidedata: slidedataSlice.reducer,
+        homePageAsset: homePageAssetSlice.reducer,
     },
 })
 

@@ -19,6 +19,9 @@ import clothesApi from './../../api/clothesAPI';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import homePageAssetApi from '../../api/homePageAssetAPI';
+import { updateHomePageAsset } from '../../redux/slices/homepageAssetSlice';
+import { Error, Success } from '../../components/alert/alert';
 
 const filter = createFilterOptions();
 
@@ -167,8 +170,11 @@ export const HomePageAssets = () => {
     }
 
     const [listIDSlide, setListIDSlide] = useState([])
+    const [openSnackbarSuc, setOpenSnackbarSuc] = useState(false)
+    const [openSnackbarErr, setOpenSnackbarErr] = useState(false)
+    const [message, setMessage] = useState('')
 
-    const handleSave = () => {
+    const handleSave = async () => {
         //Update slide
         // let tempID = listSlide[0].poster
         // console.log(tempID)
@@ -176,16 +182,53 @@ export const HomePageAssets = () => {
         //     .then(res => {
         //         console.log(res.data)
         //     }).catch(err => console.log(err))
-
-        setOpen(true)
-        //update product and featured products for home page assets
-
+        setOpenSnackbarErr(false)
+        setOpenSnackbarSuc(false)
+        if (listOutStanding.length > 2 || listOutStanding.length <= 1) {
+            setMessage("Featured Product can be only 2 for display")
+            setOpenSnackbarErr(true)
+        } else {
+            if (listDisplay.length < 3) {
+                setMessage("Please choose more for displaying")
+                setOpenSnackbarErr(true)
+            } else {
+                setOpen(true)
+                let tempListDisplay = []
+                let tempListOutStanding = []
+                listDisplay.map(i => {
+                    tempListDisplay.push(i._id)
+                })
+                listOutStanding.map(i => {
+                    tempListOutStanding.push(i._id)
+                })
+                let data = {
+                    _id: homePageAsset._id,
+                    listProduct: tempListDisplay,
+                    listOutStanding: tempListOutStanding
+                }
+                // homePageAssetApi.update(data)
+                try {
+                    const resultAction = await dispatch(updateHomePageAsset(data))
+                    const originalPromiseResult = unwrapResult(resultAction)
+                    console.log(originalPromiseResult)
+                    setListOutStanding([])
+                    setListDisplay([])
+                    setOpen(false)
+                    setMessage("Update home page asset success")
+                    setOpenSnackbarSuc(true)
+                } catch (rejectedValueOrSerializedError) {
+                    return rejectedValueOrSerializedError
+                }
+            }
+        }
     }
 
     const [listOutStanding, setListOutStanding] = useState([])
     const [listClothes, setListClothes] = useState([])
 
     const [listDisplay, setListDisplay] = useState([])
+
+    const [homePageAsset, setHomePageAsset] = useState([])
 
     useEffect(() => {
         const fetchClothes = async () => {
@@ -196,6 +239,18 @@ export const HomePageAssets = () => {
 
         if (listClothes.length === 0) {
             fetchClothes()
+        }
+    }, [])
+
+    useEffect(() => {
+        const fetchHomePageAsset = async () => {
+            await homePageAssetApi.getAll()
+                .then(res => setHomePageAsset(res.data))
+                .catch(err => console.log(err))
+        }
+
+        if (homePageAsset.length === 0) {
+            fetchHomePageAsset()
         }
     }, [])
 
@@ -386,6 +441,8 @@ export const HomePageAssets = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
+            <Success message={message} status={openSnackbarSuc} />
+            <Error message={message} status={openSnackbarErr} />
         </Grid>
     )
 }
