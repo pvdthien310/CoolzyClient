@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import homePageAssetApi from '../../api/homePageAssetAPI';
 import clothesApi from '../../api/clothesAPI';
+import { useNavigate } from 'react-router';
 
 const FeaturedProduct = () => {
     const [data, setData] = useState(null)
@@ -61,8 +62,9 @@ const CustomButton = styled(Button)(({ theme }) => ({
 }));
 
 const ProductItem = props => {
+    const navigate = useNavigate()
     const item = props.item
-    const {index} = props
+    const { index } = props
     return (
         <div>
             {index % 2 == 0 ?
@@ -73,17 +75,24 @@ const ProductItem = props => {
                         <h2>{item.name}</h2>
                         <p>{item.price} USD</p>
                         <p>{item.description}</p>
-                        <CustomButton > Detail</CustomButton>
+                        <CustomButton
+                            onClick={() =>
+                                navigate(`/productDetail/${item._categoryId}/${item._id}`)
+                            }
+                        > Detail</CustomButton>
                     </div>
                 </div>
                 :
                 <div className='branch__item__container'>
                     <div className='branch__item__content__info'>
-                    <h2>{item.name}</h2>
+                        <h2>{item.name}</h2>
                         <p>{item.price} USD</p>
                         <p>{item.description}</p>
 
-                        <CustomButton > Detail</CustomButton>
+                        <CustomButton onClick={() =>
+                            navigate(`/productDetail/${item._categoryId}/${item._id}`)
+                        }
+                        > Detail</CustomButton>
                     </div>
 
                     <img className='branch__item__content__poster' src={item.images[0]} alt='' />
