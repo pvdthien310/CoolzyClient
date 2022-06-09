@@ -19,7 +19,14 @@ const MainManager = () => {
     }
     return (
         <Stack>
-            <Button onClick={logoutHandle}>Logout</Button>
+            <Button onClick={logoutHandle} sx={{
+                alignSelf:'flex-end',
+                pl:2,
+                pr:2,
+                m:2,
+                backgroundColor:'black',
+                color: 'white'
+                }}>Logout</Button>
             <ManagerTabs role={_currentUser.role} />
         </Stack>
     )
