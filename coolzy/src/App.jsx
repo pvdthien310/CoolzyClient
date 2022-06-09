@@ -20,6 +20,7 @@ import FavoritePage from './containers/favorite/index';
 import Cart from './containers/cart';
 import About from './containers/about/index'
 import Contact from './containers/contact/index'
+import ProductForCustomer from './containers/productForCustomer';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -74,7 +75,12 @@ function App() {
 
             {_currentUser != "" &&
                 <Route path="*" element={
-                    _currentUser != "" && _currentUser.role != 'Customer' ? <MainManager /> : <Home />
+                    _currentUser != "" && (_currentUser.role != 'Customer' || _currentUser.role != 'Staff') ? <MainManager /> : <Home />
+                } />
+            }
+            {(_currentUser == "" || _currentUser.role == 'Customer') &&
+                <Route path="/product/:categoryId" element={
+                    <ProductForCustomer></ProductForCustomer>
                 } />
             }
             <Route path="/login" element={
@@ -92,6 +98,8 @@ function App() {
                 } />
             }
 
+
+
             <Route path="/history" element={
                 <TransactionHistory />
             } />
@@ -99,6 +107,8 @@ function App() {
             <Route path="/favorite" element={
                 <FavoritePage />
             } />
+
+
 
             <Route path="/myCart" element={
                 <Cart />

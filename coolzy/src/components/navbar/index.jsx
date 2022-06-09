@@ -70,11 +70,14 @@ const Navbar = () => {
     const aboutClick = () => {
         navigate('/about')
     }
+    const storeClick = () => {
+        navigate('/product/all')
+    }
 
     return (
         <div className='navbar__container'>
             <img src={logo_png} alt='logo_png' />
-            <TabBar aboutClick={aboutClick} contactClick={contactClick}/>
+            <TabBar aboutClick={aboutClick} contactClick={contactClick} storeClick={storeClick}/>
             {
                 user == '' ?
                     <LoginBar />
@@ -86,12 +89,12 @@ const Navbar = () => {
     )
 }
 
-const TabBar = ({contactClick, aboutClick}) => {
+const TabBar = ({contactClick, aboutClick, storeClick}) => {
 
     return (
         <div className='navbar__tab_bar__container'>
             <p>Home</p>
-            <p>Store</p>
+            <p onClick={storeClick}>Store</p>
             <p onClick={aboutClick}>About</p>
             <p onClick ={contactClick}>Contact</p>
         </div>

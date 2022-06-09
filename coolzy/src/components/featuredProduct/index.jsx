@@ -19,7 +19,6 @@ const FeaturedProduct = () => {
                     await res.data.listFeaturedProduct.map(async (item, i) => {
                         await clothesApi.getById(item)
                             .then(result_1 => {
-                                console.log(result_1)
                                 products.push(result_1.data)
                                 if (products.length == res.data.listFeaturedProduct.length) {
                                     setData(products.filter(ite => ite != null))

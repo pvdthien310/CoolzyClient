@@ -33,7 +33,7 @@ import { currentUser, isOrderFromCart } from './../../redux/selectors';
 import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { orderSlice } from '../../redux/slices/orderSlice';
-import {Error} from '../../components/alert/alert'
+import { Error } from '../../components/alert/alert'
 
 
 const ProductDetail = () => {
@@ -69,10 +69,10 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (item.size !== undefined) {
-    //console.log(item.size)
+      //console.log(item.size)
 
-  console.log(item.size.length > 0)
-     setSizeValue(item.size[0])
+      console.log(item.size.length > 0)
+      setSizeValue(item.size[0])
     }
   }, [item])
 
@@ -198,7 +198,7 @@ const ProductDetail = () => {
         dispatch(checkoutSlice.actions.setListItems(listCart))
         navigate(`/checkout/`)
       }
-      else{
+      else {
         setErrorNotification({
           visible: true,
           note: 'This size is out of stock now'
@@ -213,6 +213,7 @@ const ProductDetail = () => {
       quantity: quantityValue,
       size: sizeValue.size
     }
+    console.log(userId + newCart)
 
     cartApi.insertByUserId(userId, newCart).then(res => {
       if (res.status == 200) {

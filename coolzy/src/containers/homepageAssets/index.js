@@ -184,7 +184,7 @@ export const HomePageAssets = () => {
         //     }).catch(err => console.log(err))
         setOpenSnackbarErr(false)
         setOpenSnackbarSuc(false)
-        if (listOutStanding.length > 2 || listOutStanding.length <= 1) {
+        if (listOutStanding.length > 99 || listOutStanding.length <= 1) {
             setMessage("Featured Product can be only 2 for display")
             setOpenSnackbarErr(true)
         } else {

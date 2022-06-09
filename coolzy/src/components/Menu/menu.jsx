@@ -54,7 +54,7 @@ const CustomMenu = ({ accountToggleHandle }) => {
             }
 
             {
-                (user.role == "Manager" || user.role == "Admin")
+                (user.role == "Staff" || user.role == "Admin")
                 &&
                 <div className='menu__item'>
                     <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Manager</p>
