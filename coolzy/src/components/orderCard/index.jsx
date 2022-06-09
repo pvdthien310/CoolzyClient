@@ -4,11 +4,12 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions, Stack } from '@mui/material';
+import OrderStepper from './../stepperOrderStatus/index';
 
 const OrderCard = (props) => {
     const { order } = props
     return (
-        <Card sx={{ width: '100%', height: 200, p: 2, m: 1 }}>
+        <Card sx={{ width: '100%', height: "auto", minHeight: 210, p: 2, m: 1 }}>
             <CardActionArea onClick={() => props.handleChooseItem(order)}>
                 <CardMedia
                     component="img"
@@ -19,22 +20,19 @@ const OrderCard = (props) => {
                 <CardContent>
                     <Stack sx={{ width: '100%', justifyContent: 'space-between' }} direction={'row'}>
                         <Typography gutterBottom variant="body1" component="div">
-                            {order._id}
+                            #️⃣{order._id}
                         </Typography>
-                        <Typography variant="body2" color="error">
-                            {order.status}
-                        </Typography>
+                        <OrderStepper stepString={order.status} />
                     </Stack>
                     <Typography variant="body2" color="text.secondary">
                         {order.date}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {order.address}
+                        Delivered address: {order.address}
                     </Typography>
                     <Typography variant="body2" color="success" fontWeight={'bold'}>
-                        {order.phone}
+                        Phone: {order.phone}
                     </Typography>
-
                 </CardContent>
             </CardActionArea>
         </Card>

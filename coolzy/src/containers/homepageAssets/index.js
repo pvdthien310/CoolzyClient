@@ -175,10 +175,10 @@ export const HomePageAssets = () => {
     const [message, setMessage] = useState('')
 
     const handleSave = async () => {
-        //Update slide
+        // Update slide
         // let tempID = listSlide[0].poster
-        // console.log(tempID)
-        // cloudinaryApi.upload(JSON.stringify({ data: tempID }))
+        // console.log(tempID[0])
+        // cloudinaryApi.upload(JSON.stringify({ data: tempID[0] }))
         //     .then(res => {
         //         console.log(res.data)
         //     }).catch(err => console.log(err))

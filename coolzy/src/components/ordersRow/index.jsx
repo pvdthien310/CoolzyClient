@@ -5,6 +5,7 @@ import ReactToPrint from 'react-to-print';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
+
 import CusInfo from './../ordersCusInfo/index';
 
 import Header from '../CounterHeader';
@@ -27,11 +28,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Backdrop from '@mui/material/Backdrop';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import { Modal } from '@mui/material';
@@ -39,11 +41,12 @@ import { Stack } from '@mui/material';
 import TableOrderItem from '../ordersTableItem';
 import { currentUser } from '../../redux/selectors';
 import ProdInfo from './../ordersProdInfo/index';
-import IOSSwitch from './../ordersIOSSwitch/index';
 import { updateOrder } from '../../redux/slices/orderSlice';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+const steps = ['Preparing', 'Shipping', 'Delivered'];
 
 const Row = (props) => {
 
@@ -124,44 +127,34 @@ const Row = (props) => {
     }, [updating])
 
     const handleClickPaidInvoice = async () => {
-        if (status === "shipped") {
-            setUpdating(true)
-            try {
-                const temp = {
+        setUpdating(true)
+        let temp = dataForUpdate
+        try {
+            if (status === "preparing") {
+                temp = {
                     ...dataForUpdate,
                     status: "shipping",
                     total: Total()
                 }
-                const resultAction = await dispatch(updateOrder(temp))
-                const originalPromiseResult = unwrapResult(resultAction)
-                console.log(originalPromiseResult)
-                // setDataForUpdate(temp)
                 setStatus("shipping");
-                setUpdating(false)
-                setOpenSnackbar(true)
-                setDisablePaid(false)
-            } catch (rejectedValueOrSerializedError) {
-                // handle error here
-                console.log(rejectedValueOrSerializedError.message);
+            } else {
+                temp = {
+                    ...dataForUpdate,
+                    status: "shipped",
+                    total: Total()
+                }
+                setStatus("shipped");
             }
-        } else {
-            setUpdating(true)
-            const temp = {
-                ...dataForUpdate,
-                status: "shipped",
-            }
-            try {
-                const resultAction = await dispatch(updateOrder(temp))
-                const originalPromiseResult = unwrapResult(resultAction)
-                // handle result here
-            } catch (rejectedValueOrSerializedError) {
-                // handle error here
-                console.log(rejectedValueOrSerializedError.message);
-            }
+            const resultAction = await dispatch(updateOrder(temp))
+            const originalPromiseResult = unwrapResult(resultAction)
+            console.log(originalPromiseResult)
+            setActiveStep(activeStep + 1)
             setUpdating(false)
             setOpenSnackbar(true)
-            setDataForUpdate(temp)
-            setStatus("shipped")
+            setDisablePaid(false)
+        } catch (rejectedValueOrSerializedError) {
+            // handle error here
+            console.log(rejectedValueOrSerializedError.message);
         }
     }
 
@@ -185,6 +178,25 @@ const Row = (props) => {
     const closeModalBill = () => {
         setOpenModalBill(false)
     }
+
+    const [activeStep, setActiveStep] = React.useState(0);
+
+    React.useEffect(() => {
+        let t = false
+        const setActive = () => {
+            if (row.status === "preparing") {
+                setActiveStep(1)
+            } else if (row.status === "shipping") {
+                setActiveStep(2)
+            } else {
+                setActiveStep(3)
+            }
+        }
+        if (t === false) {
+            setActive()
+            t = true
+        }
+    }, [])
 
     return (
 
@@ -227,22 +239,37 @@ const Row = (props) => {
                 <TableCell align="center" style={{ color: 'black' }}>{row.date}</TableCell>
                 <TableCell align="center" style={{ color: 'black', fontWeight: 'bold' }}>{orderTotal}</TableCell>
                 <TableCell align="center">
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked={status === "shipping" ? false : true} />}
-                            label=""
-                            checked={status === "shipping" ? false : true}
-                            onClick={handleClickPaidInvoice}
-                        />
-                    </FormGroup>
+                    <Box sx={{ width: '100%' }}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel sx={{ fontSize: '7px' }}>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                        <div>
+                            <React.Fragment>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                    <Box sx={{ flex: '1 1 auto' }} />
+                                    {activeStep !== steps.length ? (
+                                        <Button onClick={handleClickPaidInvoice} sx={{ fontSize: '9px' }} >
+                                            Done
+                                        </Button>
+                                    ) : (
+                                        null
+                                    )}
+                                </Box>
+                            </React.Fragment>
+                        </div>
+                    </Box>
                 </TableCell>
                 {status === "shipped" ? (
-                    <TableCell align="center">
+                    <TableCell align="center" width="auto">
                         <Button sx={{ color: 'green' }} onClick={() => setOpenModalBill(true)}>Print</Button>
                     </TableCell>
                 ) : (
-                    <TableCell align="center">
-                        <Typography>Shipping & Paying...</Typography>
+                    <TableCell align="center" sx={{ fontStyle: 'italic' }}>
+                        <Typography>Execute</Typography>
                     </TableCell>
                 )}
             </TableRow>
@@ -250,8 +277,14 @@ const Row = (props) => {
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: 'white', marginLeft: '10%' }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
-                            <Typography variant="h7" style={{ fontWeight: 'bold', color: 'black', textDecoration: 'underline' }} gutterBottom component="div">
+                            <Typography variant="h7" style={{ fontWeight: 'bold', color: 'black', textDecoration: 'underline', fontStyle: 'italic' }} gutterBottom component="div">
                                 Details:
+                            </Typography>
+                            <Typography variant="h8" style={{ fontWeight: 'bold', color: 'black' }} gutterBottom component="div">
+                                Ship to: {row.address}
+                            </Typography>
+                            <Typography variant="h8" style={{ fontWeight: 'bold', color: 'black' }} gutterBottom component="div">
+                                Contact to: {row.phone}
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>

@@ -203,23 +203,23 @@ const OrderManager = () => {
                                     <TableHead>
                                         <TableRow>
                                             <StyledTableCell />
-                                            <StyledTableCell>
+                                            <StyledTableCell align='center'>
                                                 <Typography variant="button" sx={styles.title}>Invoice ID</Typography>
                                             </StyledTableCell>
-                                            <StyledTableCell>
+                                            <StyledTableCell align='center'>
                                                 <Typography variant="button" sx={styles.title}>Customer ID</Typography>
                                             </StyledTableCell>
-                                            <StyledTableCell>
+                                            <StyledTableCell align='center'>
                                                 <Typography variant="button" sx={styles.title}>Date</Typography>
                                             </StyledTableCell>
-                                            <StyledTableCell>
-                                                <Typography variant="button" sx={styles.title}>Total(USD)</Typography>
+                                            <StyledTableCell align='center'>
+                                                <Typography variant="button" sx={styles.title}>Total (USD)</Typography>
                                             </StyledTableCell>
-                                            <StyledTableCell>
+                                            <StyledTableCell align='center'>
                                                 <Typography variant="button" sx={styles.title}>Status</Typography>
                                             </StyledTableCell>
-                                            <StyledTableCell>
-                                                <Typography variant="button" sx={styles.title}>Print out</Typography>
+                                            <StyledTableCell align='center'>
+                                                <Typography variant="button" sx={styles.title}>Print</Typography>
                                             </StyledTableCell>
                                         </TableRow>
                                     </TableHead>
@@ -273,3 +273,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 export default OrderManager
+
+
+
