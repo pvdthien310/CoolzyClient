@@ -115,7 +115,7 @@ const Login = () => {
                                 dispatch(accountSlice.actions.update(res2.data))
                                 navigate('/')
                             }).catch(err => console.log(err))
-                           
+
                             return
                         }
                     }).catch(err => console.log(err))
@@ -238,7 +238,7 @@ const Login = () => {
                     {passwordErrVisible && <Message message="Password is incorrect" type="err" />}
 
                     <div className="login__form__remember__container">
-                        <a>Forgot your password?</a>
+                        <a><Link to="/forgot-password">Forgot your password?</Link></a>
 
                         <div className="login__form__remember">
                             <p>Remember me</p>

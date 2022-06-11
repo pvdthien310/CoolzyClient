@@ -21,6 +21,7 @@ import Cart from './containers/cart';
 import About from './containers/about/index'
 import Contact from './containers/contact/index'
 import ProductForCustomer from './containers/productForCustomer';
+import ForgotPassword from './containers/forgotPassword';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -89,6 +90,10 @@ function App() {
 
             <Route path="/register" element={
                 <Register />
+            } />
+
+            <Route path="/forgot-password" element={
+                <ForgotPassword />
             } />
 
             {

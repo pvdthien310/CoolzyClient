@@ -3,14 +3,14 @@ import DatabaseClient from './baseAPI.js'
 const baseURL = 'account'
 
 const accountApi = {
+    checkEmail: async(email) => {
+        const res = await DatabaseClient.post('/account/checkEmail/' + email);
+        return res
+    },
     getAccountByEmail: async(email) => {
         const res = await DatabaseClient.get('/' + baseURL + '/' + email)
             .catch(err => { return err.response })
         return res;
-    },
-    checkEmail: async(email) => {
-        const res = await DatabaseClient.post('/account/checkEmail/' + email);
-        return res
     },
     register: async(dataForReg) => {
         const res = DatabaseClient.post('/' + baseURL, dataForReg)
@@ -51,6 +51,10 @@ const accountApi = {
         const res = DatabaseClient.get("/" + baseURL + "/staff/all")
             .catch(err => { return err.response })
         return res
-    }
+    },
+    updatePassword: async(account) => {
+        const res = await DatabaseClient.put('/account/password', account)
+        return res;
+    },
 }
 export default accountApi
