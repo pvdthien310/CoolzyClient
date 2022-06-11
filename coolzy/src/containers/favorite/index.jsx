@@ -8,7 +8,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import styled from "styled-components";
 import { ShoppingCartCheckoutOutlined } from '@mui/icons-material';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import { Typography, Link, Stack, Breadcrumbs, Button, createFilterOptions, TextField } from '@mui/material';
+import { Typography, Link, Stack, Breadcrumbs, Button, createFilterOptions, TextField, Grid } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -36,14 +36,18 @@ import { getClothesWithID } from '../../redux/slices/clothSlice';
 // import { addCart } from '../../redux/slices/cartSlice';
 import { Autocomplete } from '@mui/material';
 import Footer from './../../components/footer/index';
+import Header from '../cart/header';
 
 const Container = styled.div`
-    background-color: white
+    background-color: white;
+    width: 100%;
+    height: 100%
 `;
 
 const Wrapper = styled.div`
   padding: 20px;
- background-color: #F2EBDF
+ background-color: #F2EBDF;
+
   ${mobile({ padding: "10px" })}
 `;
 
@@ -55,9 +59,6 @@ const Title = styled.h1`
 
 const Top = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px;
 `;
 
 const TopTexts = styled.div`
@@ -293,80 +294,57 @@ const FavoritePage = () => {
     ];
 
     return (
-        <Container>
+        <Stack>
             <Navbar />
-            <Wrapper>
-                <Top>
-                    {console.log(prodList)}
-                    <TopTexts style={{ marginLeft: '12%' }}>
-                        <Autocomplete
-                            onChange={(event, newValue) => {
-                                if (typeof newValue === 'string') {
-                                    return newValue
-                                } else if (newValue && newValue.inputValue) {
-                                    return newValue.inputValue;
-                                } else {
-                                    // setDescription(newValue);
-                                    // setPrice(newValue.price)
-                                    // setCurrentProduct(newValue)
-                                    // setOpenModal(true)
-                                    navigate(`/productDetail/${newValue._categoryId}/${newValue._id}`)
-                                }
-                            }}
-                            filterOptions={(options, params) => {
-                                const filtered = filter(options, params);
+            <Header />
+            <Grid container >
+                <Grid item xs={8}>
+                    <Autocomplete
+                        onChange={(event, newValue) => {
+                            if (typeof newValue === 'string') {
+                                return newValue
+                            } else if (newValue && newValue.inputValue) {
+                                return newValue.inputValue;
+                            } else {
+                                navigate(`/productDetail/${newValue._categoryId}/${newValue._id}`)
+                            }
+                        }}
+                        filterOptions={(options, params) => {
+                            const filtered = filter(options, params);
 
-                                const { inputValue } = params;
-                                // Suggest the creation of a new value
-                                const isExisting = options.some((option) => inputValue === option.name);
-                                if (inputValue !== '' && !isExisting) {
-                                    return filtered;
-                                }
+                            const { inputValue } = params;
+                            // Suggest the creation of a new value
+                            const isExisting = options.some((option) => inputValue === option.name);
+                            if (inputValue !== '' && !isExisting) {
                                 return filtered;
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            id="free-solo-with-text-demo"
-                            options={prodList}
-                            getOptionLabel={(option) => {
-                                // Value selected with enter, right from the input
-                                if (typeof option === 'string') {
-                                    return option;
-                                }
-                                // Add "xxx" option created dynamically
-                                if (option.inputValue) {
-                                    return option.inputValue;
-                                }
-                                // Regular option
-                                return option.name;
-                            }}
-                            renderOption={(props, option) => <li {...props}>{option.name}</li>}
-                            sx={{ width: 500, marginTop: 10, marginLeft: '25%' }}
-                            freeSolo
-                            renderInput={(params) => (
-                                <TextField {...params} label="Search your Favorite" />
-                            )}
-                        />
-                    </TopTexts>
-                    <SpeedDial
-                        ariaLabel="SpeedDial tooltip example"
-                        sx={{ marginTop: 10, right: 30, marginRight: '20%' }}
-                        icon={<SpeedDialIcon />}
-                        direction="left"
-                    >
-                        {actions.map((action) => (
-                            <SpeedDialAction
-                                key={action.name}
-                                icon={action.icon}
-                                tooltipTitle={action.name}
-                                onClick={() => handleSpeedDialClick(action)}
-                            />
-                        ))}
-                    </SpeedDial>
-                </Top>
-                <Bottom>
-                    <Stack sx={{ marginLeft: '20%', p: 2 }}>
+                            }
+                            return filtered;
+                        }}
+                        selectOnFocus
+                        clearOnBlur
+                        handleHomeEndKeys
+                        id="free-solo-with-text-demo"
+                        options={prodList}
+                        getOptionLabel={(option) => {
+                            // Value selected with enter, right from the input
+                            if (typeof option === 'string') {
+                                return option;
+                            }
+                            // Add "xxx" option created dynamically
+                            if (option.inputValue) {
+                                return option.inputValue;
+                            }
+                            // Regular option
+                            return option.name;
+                        }}
+                        renderOption={(props, option) => <li {...props}>{option.name}</li>}
+                        sx={{ width: 400, marginLeft: 41 }}
+                        freeSolo
+                        renderInput={(params) => (
+                            <TextField {...params} label="Search your Favorite" />
+                        )}
+                    />
+                    <Stack sx={{ marginLeft: 40, mt: 2 }}>
                         {
                             favoriteList.map((item, i) => (
                                 <>
@@ -392,9 +370,27 @@ const FavoritePage = () => {
                             ))
                         }
                     </Stack>
-                </Bottom>
+                </Grid>
 
-            </Wrapper>
+                <Grid item xs={4}>
+                    <SpeedDial
+                        ariaLabel="SpeedDial tooltip example"
+                        // sx={{ marginTop: 10, marginLeft: 10 }}
+                        icon={<SpeedDialIcon />}
+                        direction="down"
+                        sx={{ marginLeft: '-30%' }}
+                    >
+                        {actions.map((action) => (
+                            <SpeedDialAction
+                                key={action.name}
+                                icon={action.icon}
+                                tooltipTitle={action.name}
+                                onClick={() => handleSpeedDialClick(action)}
+                            />
+                        ))}
+                    </SpeedDial>
+                </Grid>
+            </Grid>
             <Footer />
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -452,7 +448,7 @@ const FavoritePage = () => {
                 </DialogActions>
             </Dialog>
 
-            {/* <Dialog
+            <Dialog
                 open={openConfirmMove}
                 TransitionComponent={Transition}
                 keepMounted
@@ -461,15 +457,14 @@ const FavoritePage = () => {
                 <DialogTitle>Confirm task</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Are you sure to add all your favorite product to cart ?
+                        This task is being developing
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseConfirmMove}>Cancel</Button>
-                    <Button onClick={handlePlaceAllToCart}>Ok</Button>
+                    <Button onClick={handleCloseConfirmMove}>Ok</Button>
                 </DialogActions>
-            </Dialog> */}
-        </Container >
+            </Dialog>
+        </Stack>
     );
 };
 

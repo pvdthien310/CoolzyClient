@@ -39,7 +39,7 @@ const ProductInFavorite = (props) => {
     }, [])
 
     return (
-        <Card sx={{ p: 2, m: 1, boxShadow: 5 }}>
+        <Card sx={{ p: 2, m: 1, boxShadow: 5, width: 500 }}>
             {product != null ?
                 <Stack direction={'row'} sx={{ height: '100%', alignContent: 'center' }} >
                     <Img alt="complex" sx={{ maxWidth: 180 }}

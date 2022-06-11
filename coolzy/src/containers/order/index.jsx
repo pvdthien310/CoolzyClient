@@ -56,8 +56,8 @@ const OrderManager = () => {
                 try {
                     const resultAction = await dispatch(getAllOrder())
                     const originalPromiseResult = unwrapResult(resultAction)
-                    setOrderList(originalPromiseResult)
-                    setmasterData(originalPromiseResult)
+                    setOrderList(originalPromiseResult.reverse().filter(ite => ite.status != "canceled"))
+                    setmasterData(originalPromiseResult.reverse().filter(ite => ite.status != "canceled"))
                 } catch (rejectedValueOrSerializedError) {
                     console.log(rejectedValueOrSerializedError);
                 }

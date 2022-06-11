@@ -8,6 +8,7 @@ import OrderStepper from './../stepperOrderStatus/index';
 
 const OrderCard = (props) => {
     const { order } = props
+
     return (
         <Card sx={{ width: '100%', height: "auto", minHeight: 210, p: 2, m: 1 }}>
             <CardActionArea onClick={() => props.handleChooseItem(order)}>
@@ -33,8 +34,19 @@ const OrderCard = (props) => {
                     <Typography variant="body2" color="success" fontWeight={'bold'}>
                         Phone: {order.phone}
                     </Typography>
+
                 </CardContent>
             </CardActionArea>
+            {order.status != "shipped" ? (
+                <Stack width="100%" sx={{ mt: 1 }}>
+                    <Button onClick={() => props.handleCancelOrder(order)} sx={{ alignSelf: 'flex-end', fontSize: '10px' }} variant="outlined" color="error">
+                        Cancel order
+                    </Button>
+                </Stack>
+            ) : (
+                null
+            )}
+
         </Card>
     );
 }
