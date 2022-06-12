@@ -16,6 +16,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Navbar from '../../components/navbar';
 import Helmet from 'react-helmet';
+import Footer from '../../components/footer';
 
 const About = () => {
     const navigate = useNavigate()
@@ -92,6 +93,8 @@ const About = () => {
                 <Box textAlign="center" sx={{ marginTop: 10, mb: 5 }}>
                     <CustomFillButton onClick={() => navigate('/contact')}>Contact us now</CustomFillButton>
                 </Box>
+
+                <Footer/>
             </Stack>
         </Stack>
 
