@@ -34,6 +34,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
 import Loading from '../../components/Loading/loading'
+import Navbar from './../../components/navbar/index';
 
 const Login = () => {
     const backgroundLink = 'https://images.unsplash.com/photo-1462392246754-28dfa2df8e6b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
@@ -173,11 +174,19 @@ const Login = () => {
     }
     useEffect(getAccount, [])
 
+    const navigateHome = ()=>{
+        navigate('/')
+    }
+
     return (
         <div className="login__container" style={{ backgroundImage: `url(${backgroundLink})` }}        >
             <Helmet>
                 <title>Login</title>
             </Helmet>
+
+            <div className="navbar__container">
+                <img src={logo_png} alt='logo_png' onClick={navigateHome} style={{cursor: 'pointer'}}/>
+            </div>
 
             <div className='login__form'>
                 <div className="login__form__container">

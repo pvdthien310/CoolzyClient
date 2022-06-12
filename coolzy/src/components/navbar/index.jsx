@@ -79,7 +79,7 @@ const Navbar = () => {
 
     return (
         <div className='navbar__container'>
-            <img src={logo_png} alt='logo_png' />
+            <img src={logo_png} alt='logo_png' style={{cursor: 'pointer'}} onClick={homeClick}/>
             <TabBar aboutClick={aboutClick} contactClick={contactClick} storeClick={storeClick} homeClick={homeClick}/>
             {
                 user == '' ?
@@ -96,10 +96,10 @@ const TabBar = ({contactClick, aboutClick, storeClick, homeClick}) => {
 
     return (
         <div className='navbar__tab_bar__container'>
-            <p onClick={homeClick}>Home</p>
-            <p onClick={storeClick}>Store</p>
-            <p onClick={aboutClick}>About</p>
-            <p onClick ={contactClick}>Contact</p>
+            <p onClick={homeClick} style={{cursor: 'pointer'}}>Home</p>
+            <p onClick={storeClick} style={{cursor: 'pointer'}}>Store</p>
+            <p onClick={aboutClick} style={{cursor: 'pointer'}}>About</p>
+            <p onClick ={contactClick} style={{cursor: 'pointer'}}>Contact</p>
         </div>
     )
 }
