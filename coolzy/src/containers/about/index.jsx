@@ -14,10 +14,11 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import Navbar from '../../components/navbar';
 
 const About = () => {
     const navigate = useNavigate()
-    const story="Sportswear has become a very important part in the fashion industry since more casual and sporty looks are also used in everyday life all around the world.\nNike has always been associated with female empowerment, and the brand wants women around the globe to identify with role models.\nTo do so, Nike relies on female athletes’ endorsements.\nPower and strength have always been the core aspects of Nike's storytelling, but among them, we also find the insecurities and the difficulties some of these women deal with.\nSome examples of the most successful international storytelling campaigns are the ones that involve Bebe Vio, the Italian Paralympic champion and the Boxeur Zeina Nassar who fought to 'rewrote the rules to allow women everywhere to box in hijabs.'\nI don’t know about you, but I fell some goosebumps here…"
+    const story = "Sportswear has become a very important part in the fashion industry since more casual and sporty looks are also used in everyday life all around the world.\nNike has always been associated with female empowerment, and the brand wants women around the globe to identify with role models.\nTo do so, Nike relies on female athletes’ endorsements.\nPower and strength have always been the core aspects of Nike's storytelling, but among them, we also find the insecurities and the difficulties some of these women deal with.\nSome examples of the most successful international storytelling campaigns are the ones that involve Bebe Vio, the Italian Paralympic champion and the Boxeur Zeina Nassar who fought to 'rewrote the rules to allow women everywhere to box in hijabs.'\nI don’t know about you, but I fell some goosebumps here…"
     const aboutList = [
         {
             _id: 0,
@@ -45,18 +46,20 @@ const About = () => {
         },
     ]
     return (
-        <div>
-            <Stack direction="column">
+
+        <Stack direction="column">
+            <Navbar></Navbar>
+            <Stack sx={{mt: 15}}>
                 {
                     aboutList.map((aboutItem) => (
                         <AboutItemOdd item={aboutItem} />
                     ))
                 }
 
-                <Box style={{ marginLeft: 20, marginRight: 20, marginTop: 80 ,padding: 20, boxShadow: '1px 1px 10px rgb(70, 70, 70)', borderRadius: 5}} textAlign="center">
-                    <Typography variant="h3" style={{textDecoration: 'underline', letterSpacing: 4}}>OUR  STORIES</Typography>
-                    <Typography variant="body1" style={{ color: '#000', marginTop: '16px', padding: 5}}>{story}</Typography>
-                    <iframe width="100%" height="500" style={{marginTop: 20}}frameborder="0" allowfullscreen src="https://www.youtube.com/embed/tbnGIh1aad0"></iframe>
+                <Box style={{ marginLeft: 20, marginRight: 20, marginTop: 80, padding: 20, boxShadow: '1px 1px 10px rgb(70, 70, 70)', borderRadius: 5 }} textAlign="center">
+                    <Typography variant="h3" style={{ textDecoration: 'underline', letterSpacing: 4 }}>OUR  STORIES</Typography>
+                    <Typography variant="body1" style={{ color: '#000', marginTop: '16px', padding: 5 }}>{story}</Typography>
+                    <iframe width="100%" height="500" style={{ marginTop: 20 }} frameborder="0" allowfullscreen src="https://www.youtube.com/embed/tbnGIh1aad0"></iframe>
                 </Box>
 
                 <Box style={{ backgroundColor: 'black', marginLeft: 20, marginRight: 20, marginTop: 80, height: 200, justifyContent: 'center', display: 'flex', flexDirection: 'column', boxShadow: '1px 1px 10px rgb(70, 70, 70)' }} textAlign="center" >
@@ -82,11 +85,12 @@ const About = () => {
                     </Grid>
                 </Box>
 
-                <Box textAlign="center" style={{ marginTop: 20 }}>
-                    <CustomFillButton onClick={()=> navigate('/contact')}>Contact us now</CustomFillButton>
+                <Box textAlign="center" sx={{ marginTop: 10, mb: 5 }}>
+                    <CustomFillButton onClick={() => navigate('/contact')}>Contact us now</CustomFillButton>
                 </Box>
             </Stack>
-        </div>
+        </Stack>
+
     )
 }
 

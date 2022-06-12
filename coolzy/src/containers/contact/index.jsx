@@ -17,6 +17,7 @@ import Loading from '../../components/Loading/loading'
 import { Success, Error } from '../../components/alert/alert'
 import Logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/navbar';
 
 const Contact = () => {
     const navigate = useNavigate()
@@ -73,7 +74,7 @@ const Contact = () => {
                     })
                     setIsLoading(false)
                 })
-            
+
         }
 
         else navigate('/login')
@@ -81,76 +82,79 @@ const Contact = () => {
 
 
     return (
-        <div>
-            <Box textAlign="center" style={{ margin: 20, marginTop: 80 }}>
-                <Typography variant="subtitle1">Coolzy Client Service Center is available from Monday to Friday from 9 AM to 6 PM.</Typography>
-                <Typography variant="subtitle1" style={{ marginTop: 20 }}>Our Client Advisors will be delighted to assist you and provide personalized advice.</Typography>
-            </Box>
+        <Stack direction={'column'} >
+            <Navbar />
+            <Stack sx={{ mt: 5 }}>
+                <Box textAlign="center" style={{ margin: 20, marginTop: 80 }}>
+                    <Typography variant="subtitle1">Coolzy Client Service Center is available from Monday to Friday from 9 AM to 6 PM.</Typography>
+                    <Typography variant="subtitle1" style={{ marginTop: 20 }}>Our Client Advisors will be delighted to assist you and provide personalized advice.</Typography>
+                </Box>
 
-            <Box style={{ marginTop: 80, marginLeft: 40, marginRight: 40 }}>
-                <Grid container spacing={10}>
-                    <Grid item xs={6}>
-                        <Box style={{ padding: 20, backgroundColor: 'white' }}>
-                            <Stack direction="row" spacing={1}>
-                                <MailIcon />
-                                <Typography variant="subtitle2" style={{ fontWeight: 'bold' }}>WRITE US</Typography>
-                            </Stack>
+                <Box style={{ marginTop: 80, marginLeft: 40, marginRight: 40 }}>
+                    <Grid container spacing={10}>
+                        <Grid item xs={6}>
+                            <Box style={{ padding: 20, backgroundColor: 'white' }}>
+                                <Stack direction="row" spacing={1}>
+                                    <MailIcon />
+                                    <Typography variant="subtitle2" style={{ fontWeight: 'bold' }}>WRITE US</Typography>
+                                </Stack>
 
-                            <Box style={{ backgroundColor: 'black', height: 1, marginTop: 10, marginBottom: 10 }}></Box>
+                                <Box style={{ backgroundColor: 'black', height: 1, marginTop: 10, marginBottom: 10 }}></Box>
 
-                            <Typography variant="subtitle1" style={{ marginTop: 12 }}>YOUR REQUEST</Typography>
+                                <Typography variant="subtitle1" style={{ marginTop: 12 }}>YOUR REQUEST</Typography>
 
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <Typography variant="body1" style={{ marginTop: 20 }}>Subject: </Typography>
+                                <Grid container>
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" style={{ marginTop: 20 }}>Subject: </Typography>
+                                    </Grid>
+
+                                    <Grid item xs={8}>
+                                        <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('subject')} style={styles.TextField} />
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <Typography variant="body1" style={{ marginTop: 20 }}>Your request: </Typography>
+                                    </Grid>
+
+                                    <Grid item xs={8}>
+                                        <TextField multiline id="standard-basic" variant="standard" onChange={handleChangeValue('content')} style={styles.TextField} />
+                                    </Grid>
                                 </Grid>
 
-                                <Grid item xs={8}>
-                                    <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('subject')} style={styles.TextField} />
-                                </Grid>
+                                <Box textAlign="center">
+                                    {
+                                        values.subject !== '' && values.content !== '' ?
+                                            <CustomFillButton onClick={sendRequest}>Send</CustomFillButton>
+                                            :
+                                            <CustomFillButton disable >Send</CustomFillButton>
+                                    }
+                                </Box>
+                                <br />
 
-                                <Grid item xs={4}>
-                                    <Typography variant="body1" style={{ marginTop: 20 }}>Your request: </Typography>
-                                </Grid>
 
-                                <Grid item xs={8}>
-                                    <TextField multiline id="standard-basic" variant="standard" onChange={handleChangeValue('content')} style={styles.TextField} />
-                                </Grid>
+                                <Box style={{ backgroundColor: 'black', height: 1, marginTop: 16, marginBottom: 10 }}></Box>
+
+                                <Typography variant="caption" style={{ marginTop: 16 }}>By clicking on “Send” you confirm you have read the Privacy Statement and consent to the processing of your personal data by Coolzy for the purposes described in such Privacy Statement to answer to your request.</Typography>
+                            </Box>
+                        </Grid>
+
+                        <Grid item container xs={6}>
+                            <Grid item xs={12}>
+                                <ContactUs />
                             </Grid>
 
-                            <Box textAlign="center">
-                                {
-                                    values.subject !== '' && values.content !== '' ?
-                                        <CustomFillButton onClick={sendRequest}>Send</CustomFillButton>
-                                        :
-                                        <CustomFillButton disable >Send</CustomFillButton>
-                                }
-                            </Box>
-                            <br />
-
-
-                            <Box style={{ backgroundColor: 'black', height: 1, marginTop: 16, marginBottom: 10 }}></Box>
-
-                            <Typography variant="caption" style={{ marginTop: 16 }}>By clicking on “Send” you confirm you have read the Privacy Statement and consent to the processing of your personal data by Coolzy for the purposes described in such Privacy Statement to answer to your request.</Typography>
-                        </Box>
-                    </Grid>
-
-                    <Grid item container xs={6}>
-                        <Grid item xs={12}>
-                            <ContactUs />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Coolzy />
+                            <Grid item xs={12}>
+                                <Coolzy />
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Box>
+                </Box>
 
-            {isLoading && <Loading />}
-            {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
-            {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
-        </div>
+                {isLoading && <Loading />}
+                {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
+                {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
+            </Stack>
+        </Stack>
 
     )
 }
