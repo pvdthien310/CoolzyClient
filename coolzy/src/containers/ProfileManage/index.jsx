@@ -371,6 +371,7 @@ export const ProfileManage = () => {
     }
 
     return (
+        <>
         <div className="profile__container">
             <Navbar />
             <Helmet>
@@ -617,5 +618,7 @@ export const ProfileManage = () => {
             {isLoading && <Loading />}
             <Success message={updateSucceeded.message} status={updateSucceeded.status} />
         </div>
+        <Footer/>
+        </>
     )
 }

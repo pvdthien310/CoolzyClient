@@ -19,6 +19,7 @@ import Logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/navbar';
 import Helmet from 'react-helmet';
+import Footer from '../../components/footer';
 
 const Contact = () => {
     const navigate = useNavigate()
@@ -158,6 +159,7 @@ const Contact = () => {
                 {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
                 {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
             </Stack>
+            <Footer/>
         </Stack>
 
     )

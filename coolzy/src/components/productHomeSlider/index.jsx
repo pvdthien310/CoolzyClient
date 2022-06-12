@@ -68,7 +68,7 @@ const ProductHomeSlider = props => {
                 {viewMoreVisible &&
                     <Box textAlign="right" sx={{ marginRight: 5 }} >
                         <ViewMoreButton
-                        ///typeFilm={props.typeFilm}
+                        productCategory = {productCategory}
                         ></ViewMoreButton>
                     </Box>
                 }
@@ -123,7 +123,7 @@ const SlideItem = props => {
 
 
 
-export const ViewMoreButton = (props) => {
+export const ViewMoreButton = ({productCategory}) => {
     const btnTheme = createTheme({
         shape: {
             borderRadius: 20
@@ -139,7 +139,7 @@ export const ViewMoreButton = (props) => {
     const navigate = useNavigate();
 
     const onClick = () => {
-        navigate(`/productDetails//${props.categoryId}}`);
+        navigate(`/product/${productCategory._id}`);
     }
 
     const btnStyles = {
