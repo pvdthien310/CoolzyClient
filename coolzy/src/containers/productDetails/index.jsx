@@ -34,6 +34,7 @@ import { getAllFav, addFav } from './../../redux/slices/favoriteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { orderSlice } from '../../redux/slices/orderSlice';
 import { Error } from '../../components/alert/alert'
+import { accountSlice } from '../../redux/slices/accountSlices';
 
 
 const ProductDetail = () => {
@@ -213,7 +214,6 @@ const ProductDetail = () => {
       quantity: quantityValue,
       size: sizeValue.size
     }
-    console.log(userId + newCart)
 
     cartApi.insertByUserId(userId, newCart).then(res => {
       if (res.status == 200) {
@@ -242,8 +242,6 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [favoriteList, setFavoriteList] = useState([])
 
-
-  //task function
   const fetchYourFavorite = async (listFavorite) => {
     let temp = []
     try {
@@ -290,7 +288,6 @@ const ProductDetail = () => {
         email: _currentUser.email,
         clotheid: item._id
       }
-      console.log(temp)
       try {
         const resultAction = await dispatch(addFav(temp))
         const originalPromiseResult = unwrapResult(resultAction)
@@ -302,7 +299,6 @@ const ProductDetail = () => {
           type: 'success'
         })
         setFavoriteList([...favoriteList, temp])
-        console.log(originalPromiseResult)
       } catch (rejectedValueOrSerializedError) {
         return rejectedValueOrSerializedError
       }

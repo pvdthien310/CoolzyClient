@@ -36,7 +36,7 @@ const CartItem = ({ item }) => {
                 }
             }).catch(err => console.log(err))
         }
-    }, [])
+    }, [item.cloth])
 
     const [size, setSize] = useState('');
     const handleChangeSize = (event) => {
