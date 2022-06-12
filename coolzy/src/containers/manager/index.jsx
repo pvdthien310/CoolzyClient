@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ManagerTabs from "../../components/managerTabs";
 import { currentUser } from "../../redux/selectors";
 import { accountSlice } from "../../redux/slices/accountSlices";
+import { Helmet } from 'react-helmet';
 
 
 const MainManager = () => {
@@ -18,6 +19,13 @@ const MainManager = () => {
         navigate('/login')
     }
     return (
+        <>
+        <Helmet>
+            <title>
+                Manager
+            </title>
+            
+        </Helmet>
         <Stack>
             <Button onClick={logoutHandle} sx={{
                 alignSelf:'flex-end',
@@ -29,6 +37,7 @@ const MainManager = () => {
                 }}>Logout</Button>
             <ManagerTabs role={_currentUser.role} />
         </Stack>
+        </>
     )
 }
 

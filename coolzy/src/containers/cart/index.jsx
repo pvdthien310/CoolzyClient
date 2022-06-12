@@ -4,10 +4,15 @@ import { Navbar, Footer } from '../../components/index';
 import Header from './header';
 import ListCart from './listCart';
 import Summary from './summary';
+import Helmet from 'react-helmet';
 
 const Cart = () => {
 
     return (
+        <>
+         <Helmet>
+             <title>Cart</title>
+         </Helmet>
         <Stack>
             <Navbar />
             <Header />
@@ -22,6 +27,8 @@ const Cart = () => {
             </Grid>
             <Footer />
         </Stack>
+
+        </>
     )
 }
 

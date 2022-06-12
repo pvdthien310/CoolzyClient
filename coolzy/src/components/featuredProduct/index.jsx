@@ -73,7 +73,7 @@ const ProductItem = props => {
 
                     <div className='branch__item__content__info'>
                         <h2>{item.name}</h2>
-                        <p>{item.price} USD</p>
+                        <p style={{ 'font-weight': 'bold' }}>{item.price} USD</p>
                         <p>{item.description}</p>
                         <CustomButton
                             onClick={() =>
@@ -86,7 +86,7 @@ const ProductItem = props => {
                 <div className='branch__item__container'>
                     <div className='branch__item__content__info'>
                         <h2>{item.name}</h2>
-                        <p>{item.price} USD</p>
+                        <p style={{ 'font-weight': 'bold' }}>{item.price} USD</p>
                         <p>{item.description}</p>
 
                         <CustomButton onClick={() =>

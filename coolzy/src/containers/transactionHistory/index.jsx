@@ -10,6 +10,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Navbar } from "../../components";
 import OrderCard from "../../components/orderCard";
 import OrderItemCard from "../../components/orderItemCard";
 import { currentUser } from "../../redux/selectors";
@@ -111,41 +112,58 @@ const TransactionHistory = () => {
         };
     }, [_currentUser])
     return (
-        <Grid container>
-            <Grid item xs={6} sx={{ p: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
-                <Typography variant="h5" fontWeight={'bold'} sx={{ m: 2 }}>History</Typography>
-                {
-                    _currentUser && myHistory ?
-                        <Stack sx={{ p: 2 }}>
-                            {
-                                myHistory.map((item, i) => (
-                                    <OrderCard key={i} handleCancelOrder={cancelItem} order={item} handleChooseItem={ChooseItem}>
+        <Stack>
+            <Navbar />
+            <Grid container sx={{ mt: 15 }}>
+                <Grid item xs={6} sx={{ p: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
+                    <Typography variant="h5" fontWeight={'bold'} sx={{ m: 2 }}>History</Typography>
+                    {
+                        _currentUser && myHistory ?
+                            <Stack sx={{ p: 2 }}>
+                                {
+                                    myHistory.map((item, i) => (
+                                        <OrderCard key={i} handleCancelOrder={cancelItem} order={item} handleChooseItem={ChooseItem}>
 
-                                    </OrderCard>
-                                ))
-                            }
-                        </Stack>
-                        :
-                        <Stack>
-                            <CircularProgress></CircularProgress>
-                        </Stack>
-                }
+                                        </OrderCard>
+                                    ))
+                                }
+                            </Stack>
+                            :
+                            <Stack>
+                                <CircularProgress></CircularProgress>
+                            </Stack>
+                    }
+                </Grid>
+                <Grid item xs={5} sx={{ p: 2 }}>
+                    <Typography variant="h5" fontWeight={'bold'} sx={{ m: 2 }}>Order Item List</Typography>
+                    {
+                        selectedOrder ?
+                            <Stack sx={{ justifyContent: 'center' }}>
+                                {
+                                    selectedOrder.items.map((item, i) => (
+                                        <OrderItemCard key={i} item={item}>
+                                        </OrderItemCard>
+                                    ))
+                                }
+                            </Stack> :
+                            <Stack sx={{ p: 3 }}>Choose Order To Show ! </Stack>
+                    }
+                </Grid>
+                <Snackbar open={warn.status} autoHideDuration={5000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={warn.severity} sx={{ width: '100%' }}>
+                        {warn.message}
+                    </Alert>
+                </Snackbar>
+
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={openBackdrop}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+
             </Grid>
-            <Grid item xs={5} sx={{ p: 2 }}>
-                <Typography variant="h5" fontWeight={'bold'} sx={{ m: 2 }}>Order Item List</Typography>
-                {
-                    selectedOrder ?
-                        <Stack sx={{ justifyContent: 'center' }}>
-                            {
-                                selectedOrder.items.map((item, i) => (
-                                    <OrderItemCard key={i} item={item}>
-                                    </OrderItemCard>
-                                ))
-                            }
-                        </Stack> :
-                        <Stack sx={{ p: 3 }}>Choose Order To Show ! </Stack>
-                }
-            </Grid>
+
             <Snackbar open={warn.status} autoHideDuration={5000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity={warn.severity} sx={{ width: '100%' }}>
                     {warn.message}
@@ -206,7 +224,8 @@ const TransactionHistory = () => {
                 <CircularProgress color="inherit" />
             </Backdrop>
 
-        </Grid>
+
+        </Stack >
     )
 }
 

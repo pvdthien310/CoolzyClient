@@ -39,8 +39,14 @@ const Summary = () => {
                     total: e.quantity * e.cloth.price
                 }
 
-                dispatch(checkoutSlice.actions.pushListItems(item))
-                dispatch(checkoutSlice.actions.setIsFromCart(true))
+                item.product.size.map(s => {
+                    if (s.size == item.size) {
+                        if (s.quantity != 0) {
+                            dispatch(checkoutSlice.actions.pushListItems(item))
+                            dispatch(checkoutSlice.actions.setIsFromCart(true))
+                        }
+                    }
+                })
             })
             navigate('/checkout')
 

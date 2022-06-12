@@ -20,7 +20,16 @@ export default function Paypal({ data, purchases }) {
     const dispatch = useDispatch()
     const paypal = useRef();
     const navigate = useNavigate()
-    const currentOrder = data
+    const [currentOrder, setCurrentOrder]= useState({
+        email: data.email,
+        name: data.name,
+        phone: data.phone,
+        address: data.address,
+        items: data.items,
+        total: data.total, 
+        status: data.status,
+        method: "Paypal"
+    })
 
     const [paidSuccessfully, setPaidSuccessfully] = useState(false)
 
@@ -137,6 +146,7 @@ export default function Paypal({ data, purchases }) {
             })
     }
 
+   
     useEffect(() => {
         window.paypal
             .Buttons({

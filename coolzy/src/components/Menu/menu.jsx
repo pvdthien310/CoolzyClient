@@ -35,14 +35,14 @@ const CustomMenu = ({ accountToggleHandle }) => {
                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
             </div>
 
-            {
+            {/* {
                 user.role == "Customer"
                 &&
                 <div className='menu__item'>
                     <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Movies review</p>
                     <BiCommentDetail className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
-            }
+            } */}
 
             {
                 user.role == "Customer"
