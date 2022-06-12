@@ -15,6 +15,7 @@ import OrderCard from "../../components/orderCard";
 import OrderItemCard from "../../components/orderItemCard";
 import { currentUser } from "../../redux/selectors";
 import { getAllOrder, updateOrder } from "../../redux/slices/orderSlice";
+import Footer from '../../components/footer';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -113,7 +114,7 @@ const TransactionHistory = () => {
     return (
         <Stack>
             <Navbar />
-            <Grid container sx={{mt: 15}}>
+            <Grid container sx={{mt: 15, mb: 10}}>
                 <Grid item xs={6} sx={{ p: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
                     <Typography variant="h5" fontWeight={'bold'} sx={{ m: 2 }}>History</Typography>
                     {
@@ -181,6 +182,8 @@ const TransactionHistory = () => {
                 </Backdrop>
 
             </Grid>
+
+            <Footer/>
         </Stack>
     )
 }

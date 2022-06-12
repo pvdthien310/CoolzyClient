@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import  NavBar  from '../../components/navbar/index';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/footer';
 
 const ProductForCustomer = () => {
     const { categoryId } = useParams();
@@ -20,7 +21,7 @@ const ProductForCustomer = () => {
         </Helmet>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <NavBar />
-            <Grid container sx={{mt:10}}>
+            <Grid container sx={{mt:10, mb: 10}}>
                 <Grid item xs={2}>
                     <div >
                         <ListBrand />
@@ -32,6 +33,7 @@ const ProductForCustomer = () => {
                 </Grid>
 
             </Grid>
+            <Footer/>
         </div >
         </>
     )
