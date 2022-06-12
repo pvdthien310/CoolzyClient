@@ -221,7 +221,7 @@ const Row = (props) => {
                         onClick={handleClick}
                         variant="text"
                     >
-                        <p style={{ color: 'green', fontSize: '13px', fontStyle: 'normal' }}>{row.email}</p>
+                        <p style={{ color: 'green', fontStyle: 'normal', textTransform: 'lowercase' }}>{row.email}</p>
                     </Button>
                     <Popover
                         id={id}
