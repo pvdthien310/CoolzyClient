@@ -64,9 +64,9 @@ function App() {
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
             {/* <Route path="/ordersManagement" element={<OrdersManagement />} /> */}
-            <Route path="/" element={
+            {/* <Route path="/" element={
                 <Home />
-            } />
+            } /> */}
 
             <Route path="/productDetail/:categoryId/:id" element={
                 <div>
@@ -75,10 +75,11 @@ function App() {
             } />
 
             {_currentUser != "" &&
-                <Route path="*" element={
-                    _currentUser != "" && (_currentUser.role != 'Customer' || _currentUser.role != 'Staff') ? <MainManager /> : <Home />
+                <Route path="/" element={
+                    _currentUser != "" && _currentUser.role != 'Customer'? <MainManager /> : <Home />
                 } />
             }
+
             {(_currentUser == "" || _currentUser.role == 'Customer') &&
                 <Route path="/product/:categoryId" element={
                     <ProductForCustomer></ProductForCustomer>

@@ -53,7 +53,7 @@ export default function ManagerTabs(props) {
             navigate('/manager/order')
         }
         else if (newValue == 1) {
-            navigate('/manager/product/all')
+            navigate('/manager/productManager/all')
         }
         else if (newValue == 2) {
             navigate('/manager/staff')
@@ -77,7 +77,7 @@ export default function ManagerTabs(props) {
     useEffect(() => {
         let path = window.location.pathname
 
-        if (path.includes('manager/product')) {
+        if (path.includes('manager/productManager')) {
             setValue(1)
         }
         else if (path.includes('manager/staff')) {
