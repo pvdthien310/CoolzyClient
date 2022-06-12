@@ -209,7 +209,7 @@ const Row = (props) => {
                         size="small"
                         onClick={() => setOpen(!open)}
                     >
-                        {open ? <KeyboardArrowUpIcon color='error' /> : <KeyboardArrowDownIcon style={{ color: '#6FA61C' }} />}
+                        {open ? <KeyboardArrowUpIcon sx={{ color: 'black' }} /> : <KeyboardArrowDownIcon sx={{ color: 'black' }} />}
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row" style={{ fontWeight: 'bold' }}>

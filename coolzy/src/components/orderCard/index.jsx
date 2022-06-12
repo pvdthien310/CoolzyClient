@@ -37,7 +37,7 @@ const OrderCard = (props) => {
 
                 </CardContent>
             </CardActionArea>
-            {order.status != "shipped" ? (
+            {order.status != "shipped" && order.status != "shipping" ? (
                 <Stack width="100%" sx={{ mt: 1 }}>
                     <Button onClick={() => props.handleCancelOrder(order)} sx={{ alignSelf: 'flex-end', fontSize: '10px' }} variant="outlined" color="error">
                         Cancel order

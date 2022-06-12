@@ -14,6 +14,7 @@ import OrderCard from "../../components/orderCard";
 import OrderItemCard from "../../components/orderItemCard";
 import { currentUser } from "../../redux/selectors";
 import { getAllOrder, updateOrder } from "../../redux/slices/orderSlice";
+import logo from '../../assets/logo.png'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -158,16 +159,44 @@ const TransactionHistory = () => {
                 onClose={handleNo}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Cancelation order confirm"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Are you sure want to cancel this order ?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleNo}>No</Button>
-                    <Button onClick={handleYes}>Yes</Button>
-                </DialogActions>
+
+                <DialogTitle>{"Are you sure want to cancel this order ?"}</DialogTitle>
+                <Button
+                    onClick={handleNo}
+                    style={{
+                        alignSelf: 'center',
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '5px',
+                        border: '1px solid black',
+                        /// backgroundColor: 'red',
+                        color: 'black',
+                        fontSize: '13px',
+                        marginBottom: '10px',
+                        fontWeight: 'bold',
+                        padding: '12px 45px',
+                    }}
+                >
+                    No
+                </Button>
+                <Button
+                    onClick={handleYes}
+                    style={{
+                        alignSelf: 'center',
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '5px',
+                        border: '1px solid black',
+                        backgroundColor: 'black',
+                        color: 'white',
+                        fontSize: '13px',
+                        marginBottom: '10px',
+                        fontWeight: 'bold',
+                        padding: '12px 45px',
+                    }}
+                >
+                    Yes
+                </Button>
             </Dialog>
 
             <Backdrop
