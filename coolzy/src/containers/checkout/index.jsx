@@ -704,39 +704,7 @@ const Checkout = () => {
                         ))}
                     </Stack>
 
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                    <Grid container width="100%" spacing={1}>
-                        <Grid item xs={8.5}>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                label="Discount code"
-                                variant="outlined"
-                                onChange={handleChangeAddress}
-                                sx={{ color: '#333333', fontFamily: 'sans-serif', }}
-                            />
-                        </Grid>
-                        <Grid item xs={3.5} sx={{ height: '100%' }}>
-                            <Button variant="contained" sx={{ fontSize: '14px', backgroundColor: 'gray', marginTop: '0.5em', width: '100%', height: '100%' }}>
-                                Use
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                    <Stack direction="column" width="100%">
-                        <Typography sx={{
-                            color: '#333333',
-                            fontFamily: 'sans-serif', fontWeight: 300
-                        }}
-                        >MEMBER
-                        </Typography>
-                        <Stack direction="row" width="100%">
-                            <DiamondIcon sx={{ width: '17px', height: '17px' }} />
-                            <Typography sx={{ color: '#333333', fontFamily: 'sans-serif', fontSize: '13px', marginLeft: '0.5em' }}>
-                                MEMBER - {_currentUser.score} point(s)
-                            </Typography>
-                        </Stack>
-                    </Stack>
+              
                     <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
                     <Stack direction="row" width='100%' justifyContent="space-between">
                         <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
