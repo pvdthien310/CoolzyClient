@@ -10,7 +10,7 @@ const categoryApi = {
     },
 
     create: async(data) => {
-        const res = DatabaseClient.get('/' + baseURL, data)
+        const res = DatabaseClient.post('/' + baseURL, data)
             .catch(err => { return err.response })
         return res;
     },
@@ -30,6 +30,13 @@ const categoryApi = {
 
     getAllId: async() => {
         const res = DatabaseClient.get('/' + baseURL + '/getAll/Id')
+            .catch(err => { return err.response })
+
+        return res;
+    },
+
+    deleteById: async(id) => {
+        const res = DatabaseClient.delete('/' + baseURL + '/delete/' + id)
             .catch(err => { return err.response })
 
         return res;

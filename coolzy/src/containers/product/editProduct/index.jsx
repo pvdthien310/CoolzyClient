@@ -55,12 +55,14 @@ const EditProduct = () => {
 
     const [imgDisplays, setImgDisplays] = useState([])
     const sizeChange = (id, val) => {
+
         let sizesTemp = data.size.map(item => {
             if (item.id == id) {
                 return { ...item, quantity: val }
             }
             return item
         })
+
         setData({ ...data, size: sizesTemp })
     }
 
@@ -78,8 +80,61 @@ const EditProduct = () => {
             clothesApi.getById(productId).then(res => {
                 if (res.status == 200) {
                     setData(res.data)
+
                     setImgDisplays(res.data.images)
                     setPublished(res.data.published)
+
+                    let sizes = [
+                        {
+                            id: 0,
+                            size: 'XS',
+                            quantity: 0
+                        },
+                        {
+                            id: 1,
+                            size: 'S',
+                            quantity: 0
+                        },
+                        {
+                            id: 2,
+                            size: 'M',
+                            quantity: 0
+                        },
+                        {
+                            id: 3,
+                            size: 'L',
+                            quantity: 0
+                        },
+                        {
+                            id: 4,
+                            size: 'XL',
+                            quantity: 0
+                        },
+                        {
+                            id: 5,
+                            size: 'L',
+                            quantity: 0
+                        },
+                        {
+                            id: 6,
+                            size: 'XXL',
+                            quantity: 0
+                        },
+                    ]
+
+
+                    let sizesTemp = sizes.map(item => {
+
+                        let ins = res.data.size.find(e => e.size == item.size)
+                        if (ins) {
+                            return ins
+                        }
+                        else {
+                            return item
+                        }
+
+                    })
+                    setData({ ...data, size: sizesTemp })
                 }
             }).catch(err => console.log(err))
         }
@@ -323,7 +378,6 @@ const ProductImages = ({ imgList }) => {
                     <SwiperSlide key={i}>
                         <Stack >
                             <ImageItem item={item} />
-
                         </Stack>
                     </SwiperSlide>
                 ))

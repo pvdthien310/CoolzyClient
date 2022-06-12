@@ -465,7 +465,7 @@ const ForgotPassword = () => {
                     <CircularProgress />
                 </div>
             }
-            
+
         </div>
     )
 }

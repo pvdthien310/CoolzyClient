@@ -97,7 +97,6 @@ const AddProduct = () => {
         let sizesTemp = data.sizes.map(item => {
             if (item.id == id) {
                 return { ...item, quantity: val }
-
             }
             return item
         })
@@ -158,8 +157,6 @@ const AddProduct = () => {
 
         let imgList = imgDisplays.filter(item => item.name !== name)
         setImgDisplays(imgList)
-
-
     }
 
     const saveHandle = () => {
@@ -170,7 +167,7 @@ const AddProduct = () => {
             });
 
             if (count == 0) {
-                openAlert('Please fill out sizes of product')
+                openAlert('Please fill out sizes of product', 'error')
                 return false
             }
             else {
@@ -186,7 +183,6 @@ const AddProduct = () => {
                         images: res.data,
                         sizes: data.sizes
                     }
-                    console.log(clothObj)
                     clothesApi.create(clothObj).then(res => {
                         if (res.status = 200) {
                             openAlert('Update new product successful', 'success')
@@ -226,7 +222,7 @@ const AddProduct = () => {
             return false
         }
         else if (isNaN(data.price) || data.price < 0) {
-            openAlert('Price invalid')
+            openAlert('Price invalid', 'error')
             return false
         }
         else {
