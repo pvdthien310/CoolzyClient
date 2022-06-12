@@ -17,6 +17,7 @@ import { currentUser } from "../../redux/selectors";
 import { getAllOrder, updateOrder } from "../../redux/slices/orderSlice";
 import logo from '../../assets/logo.png'
 import Footer from '../../components/footer';
+import { Helmet } from "react-helmet";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -114,6 +115,9 @@ const TransactionHistory = () => {
     }, [_currentUser])
     return (
         <Stack>
+             <Helmet>
+                <title>Transaction History</title>
+            </Helmet>
             <Navbar />
             <Grid container sx={{ mt: 15, mb: 10 }}>
                 <Grid item xs={6} sx={{ p: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>

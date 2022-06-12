@@ -75,7 +75,7 @@ function App() {
             } />
 
             {_currentUser != "" &&
-                <Route path="/" element={
+                <Route path="*" element={
                     _currentUser != "" && _currentUser.role != 'Customer'? <MainManager /> : <Home />
                 } />
             }
