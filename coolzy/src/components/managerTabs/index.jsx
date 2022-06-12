@@ -12,6 +12,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RevenuePage from '../../containers/revenue';
 import { HomePageAssets } from '../../containers/homepageAssets';
+import CategoryManager from '../../containers/category';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -64,6 +65,9 @@ export default function ManagerTabs(props) {
         else if (newValue == 4) {
             navigate('/manager/homePageAssets')
         }
+        else if (newValue == 5) {
+            navigate('/manager/category')
+        }
     };
 
     const tabTheme = createTheme({
@@ -89,6 +93,9 @@ export default function ManagerTabs(props) {
         else if (path.includes('/manager/homePageAssets')) {
             setValue(4)
         }
+        else if (path.includes('/manager/category')) {
+            setValue(5)
+        }
     }, [])
 
     return (
@@ -112,6 +119,10 @@ export default function ManagerTabs(props) {
                         {
                             props.role == 'Admin' &&
                             <Tab label="Home Page Assets" {...a11yProps(4)} />
+                        }
+                         {
+                            props.role == 'Admin' &&
+                            <Tab label="Category" {...a11yProps(5)} />
                         }
 
                     </Tabs>
@@ -143,6 +154,12 @@ export default function ManagerTabs(props) {
                 props.role == 'Admin' &&
                 <TabPanel value={value} index={4}>
                     <HomePageAssets />
+                </TabPanel>
+            }
+             {
+                props.role == 'Admin' &&
+                <TabPanel value={value} index={5}>
+                    <CategoryManager />
                 </TabPanel>
             }
 
