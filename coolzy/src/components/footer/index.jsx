@@ -19,16 +19,17 @@ const Footer = () => {
                 <div className="footer-container__introduce__name">Coolzy</div>
                 <div className="clear"></div>
                 <div className="footer-container__introduce__content">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto incidunt, accusantium, cumque obcaecati similique et ducimus inventore fugiat velit exercitationem dolorem iusto porro repellat accusamus quia eum, quos eveniet expedita!
+                When you’re with us, you’re part of something bigger: a global community dedicated to bringing out the best in one another, with access to the most effective tools for the job, including Member-exclusive products, Coolzy customisation, and special offers. And it is all free.
                 </div>
-                <p className="footer-container__introduce__more"><Link to=''>More about us</Link></p>
+                <p className="footer-container__introduce__more"><Link to='/about'>More about us</Link></p>
             </div>
 
             <div className="footer-container__categories">
                 <div className="footer-title">CATEGORIES</div>
                 <p className="footer-container__categories__item"><Link to='/'>Home Page</Link></p>
-                <p className="footer-container__categories__item"><Link to=''>Services</Link></p>
-                <div className="footer-container__categories__item"><Link to=''>Privacy</Link></div>
+                <p className="footer-container__categories__item"><Link to='/product/all'>Products</Link></p>
+                <div className="footer-container__categories__item"><Link to='/about'>About</Link></div>
+                <div className="footer-container__categories__item"><Link to='/contact'>Contact</Link></div>
             </div>
 
             <div className="footer-container__contact">

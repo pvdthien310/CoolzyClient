@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box';
+import { Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -371,14 +372,14 @@ export const ProfileManage = () => {
     }
 
     return (
-        <div className="profile__container">
+        <Stack direction="column" spacing={2} sx={{ backgroundColor: '#F0F8FF' }}>
             <Navbar />
             <Helmet>
                 <title>Profile</title>
             </Helmet>
-            <div className="profile__background">
+            {/* <div className="profile__background">
                 <div className="color__gradient"></div>
-            </div>
+            </div> */}
 
             <div className="profile"  >
                 <div className="profile-container">
@@ -394,9 +395,9 @@ export const ProfileManage = () => {
                                     variant="standard"
                                     sx={{
                                         borderRadius: '0.5',
-                                        input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                                        icons: { color: 'white' },
-                                        color: 'white'
+                                        input: { color: 'black', marginLeft: 10, marginX: 0.4 },
+                                        icons: { color: 'black' },
+                                        color: 'black'
                                     }}
                                     // value={values.name}
                                     defaultValue={name}
@@ -417,7 +418,7 @@ export const ProfileManage = () => {
                                     variant="standard"
                                     sx={{
                                         borderRadius: '0.5',
-                                        input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                        input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                         //backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
@@ -441,12 +442,12 @@ export const ProfileManage = () => {
                                     variant="standard"
                                     sx={{
                                         borderRadius: '0.5',
-                                        input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                        input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                         //backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
                                     defaultValue={address}
-                                    onChange={handleChangeInformation('address')}
+                                    onChange={handleChangeInformation('address')} F
                                 />
                             </ThemeProvider>
                             {addressNote.visible &&
@@ -465,7 +466,7 @@ export const ProfileManage = () => {
                                     format="yyyy-MM-dd"
                                     sx={{
                                         borderRadius: '0.5',
-                                        input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                        input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                         // backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
@@ -497,7 +498,7 @@ export const ProfileManage = () => {
                                     variant="standard"
                                     sx={{
                                         borderRadius: '0.5',
-                                        input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                        input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                         // backgroundColor: 'rgb(9, 24, 48)',
                                         // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                     }}
@@ -539,7 +540,7 @@ export const ProfileManage = () => {
                                 autoComplete="current-password"
                                 sx={{
                                     borderRadius: '0.5',
-                                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                    input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                     // backgroundColor: 'rgb(9, 24, 48)',
                                     // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                 }}
@@ -562,7 +563,7 @@ export const ProfileManage = () => {
                                 autoComplete="current-password"
                                 sx={{
                                     borderRadius: '0.5',
-                                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                    input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                     // backgroundColor: 'rgb(9, 24, 48)',
                                     // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                 }}
@@ -585,7 +586,7 @@ export const ProfileManage = () => {
                                 autoComplete="current-password"
                                 sx={{
                                     borderRadius: '0.5',
-                                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                    input: { color: 'black', marginLeft: 10, marginX: 0.4 },
                                     //backgroundColor: 'rgb(9, 24, 48)',
                                     // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                                 }}
@@ -613,9 +614,10 @@ export const ProfileManage = () => {
                     </Box>
                 </div>
             </div >
+            <Footer />
 
             {isLoading && <Loading />}
             <Success message={updateSucceeded.message} status={updateSucceeded.status} />
-        </div>
+        </Stack>
     )
 }

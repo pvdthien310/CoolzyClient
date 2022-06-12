@@ -21,12 +21,15 @@ const OrderCard = (props) => {
                 <CardContent>
                     <Stack sx={{ width: '100%', justifyContent: 'space-between' }} direction={'row'}>
                         <Typography gutterBottom variant="body1" component="div">
-                            #️⃣{order._id}
+                            #️{order._id}
                         </Typography>
                         <OrderStepper stepString={order.status} />
                     </Stack>
                     <Typography variant="body2" color="text.secondary">
                         {order.date}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Payment: {order.method}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         Delivered address: {order.address}
@@ -37,7 +40,7 @@ const OrderCard = (props) => {
 
                 </CardContent>
             </CardActionArea>
-            {order.status != "shipped" && order.status != "shipping" ? (
+            {order.status != "shipped" && order.status != "shipping" && order.method != "Paypal" ? (
                 <Stack width="100%" sx={{ mt: 1 }}>
                     <Button onClick={() => props.handleCancelOrder(order)} sx={{ alignSelf: 'flex-end', fontSize: '10px' }} variant="outlined" color="error">
                         Cancel order
