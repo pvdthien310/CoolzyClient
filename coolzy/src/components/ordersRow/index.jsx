@@ -281,6 +281,9 @@ const Row = (props) => {
                                 Details:
                             </Typography>
                             <Typography variant="h8" style={{ fontWeight: 'bold', color: 'black' }} gutterBottom component="div">
+                                Paid by: {row.method}
+                            </Typography>
+                            <Typography variant="h8" style={{ fontWeight: 'bold', color: 'black' }} gutterBottom component="div">
                                 Ship to: {row.address}
                             </Typography>
                             <Typography variant="h8" style={{ fontWeight: 'bold', color: 'black' }} gutterBottom component="div">
