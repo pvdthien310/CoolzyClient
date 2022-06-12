@@ -89,7 +89,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const ProductItem = ({ item }) => {
     const navigate = useNavigate()
     const clickHandle = () => {
-        navigate('/productDetail/'+ item.categoryId + '/' + item._id)
+        navigate('/productDetail/'+ item._categoryId + '/' + item._id)
     }
 
     let sizeLength = item.size.filter(e => e.quantity != 0)

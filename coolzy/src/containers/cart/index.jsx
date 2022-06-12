@@ -9,14 +9,17 @@ import Helmet from 'react-helmet';
 const Cart = () => {
 
     return (
-        <>
-         <Helmet>
-             <title>Cart</title>
-         </Helmet>
-        <Stack>
+        <Stack direction="column" sx={{ height: '100%', position: 'absolute', backgroundColor: '#F0F8FF' }}>
+
             <Navbar />
             <Header />
-            <Grid container >
+            {/* <Helmet>
+                <title>Cart</title>
+            </Helmet> */}
+            {/* <Stack> */}
+
+
+            <Grid container sx={{ height: "100%" }} >
                 <Grid item xs={8}>
                     <ListCart />
                 </Grid>
@@ -26,9 +29,9 @@ const Cart = () => {
                 </Grid>
             </Grid>
             <Footer />
-        </Stack>
+            {/* </Stack> */}
 
-        </>
+        </Stack>
     )
 }
 

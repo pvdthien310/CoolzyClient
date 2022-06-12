@@ -295,14 +295,11 @@ const FavoritePage = () => {
     ];
 
     return (
-        <>
-        <Helmet>
-            <title>Favorite</title>
-        </Helmet>
-        <Stack>
+        <Stack direction="column" sx={{ height: '100%', position: 'absolute', backgroundColor: '#F0F8FF' }}>
             <Navbar />
             <Header />
-            <Grid container >
+            {/* <Stack sx={{ position: 'relative', height: '100%' }}> */}
+            <Grid container sx={{ height: '100%' }} >
                 <Grid item xs={8}>
                     <Autocomplete
                         onChange={(event, newValue) => {
@@ -396,6 +393,8 @@ const FavoritePage = () => {
                     </SpeedDial>
                 </Grid>
             </Grid>
+            {/* </Stack> */}
+
             <Footer />
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -470,7 +469,6 @@ const FavoritePage = () => {
                 </DialogActions>
             </Dialog>
         </Stack>
-        </>
     );
 };
 
