@@ -7,11 +7,16 @@ import { ListBrand, ProductList } from "./child";
 
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import { Helmet } from 'react-helmet';
 
 const ProductForCustomer = () => {
     const { categoryId } = useParams();
     const navigate = useNavigate()
     return (
+        <>
+        <Helmet>
+            <title>Product</title>
+        </Helmet>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <div style={{ display: 'flex', alignSelf: 'flex-end' }}>
                 {/* <CustomFillButton onClick={() => navigate('/manager/product/add')}>New</CustomFillButton> */}
@@ -30,6 +35,7 @@ const ProductForCustomer = () => {
 
             </Grid>
         </div >
+        </>
     )
 }
 

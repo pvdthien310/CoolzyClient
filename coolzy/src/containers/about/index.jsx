@@ -14,6 +14,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import Helmet from 'react-helmet';
 
 const About = () => {
     const navigate = useNavigate()
@@ -46,6 +47,9 @@ const About = () => {
     ]
     return (
         <div>
+            <Helmet>
+                <title>About</title>
+            </Helmet>
             <Stack direction="column">
                 {
                     aboutList.map((aboutItem) => (

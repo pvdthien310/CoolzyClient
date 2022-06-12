@@ -17,6 +17,7 @@ import Loading from '../../components/Loading/loading'
 import { Success, Error } from '../../components/alert/alert'
 import Logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom';
+import Helmet from 'react-helmet';
 
 const Contact = () => {
     const navigate = useNavigate()
@@ -82,6 +83,9 @@ const Contact = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>Contact</title>
+            </Helmet>
             <Box textAlign="center" style={{ margin: 20, marginTop: 80 }}>
                 <Typography variant="subtitle1">Coolzy Client Service Center is available from Monday to Friday from 9 AM to 6 PM.</Typography>
                 <Typography variant="subtitle1" style={{ marginTop: 20 }}>Our Client Advisors will be delighted to assist you and provide personalized advice.</Typography>
