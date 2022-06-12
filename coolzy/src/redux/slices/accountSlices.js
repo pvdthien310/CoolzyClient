@@ -142,6 +142,9 @@ export const accountSlice = createSlice({
         deleteCart: (state, action) => {
             state.user.listCarts = state.user.listCarts.filter(e => e.id != action.payload)
         },
+        updateCart: (state, action) => {
+            state.user.listCarts = action.payload
+        },
     },
     extraReducers: {
         [register.pending]: (state, action) => {
