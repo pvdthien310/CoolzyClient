@@ -390,7 +390,7 @@ const ForgotPassword = () => {
 
                 {confirmPasswordErrVisible && <Message message="Confirm password is not correct" type="err" />}
 
-                <CustomButton onClick={forgotHandle}>Register</CustomButton>
+                <CustomButton onClick={forgotHandle}>Confirm</CustomButton>
 
                 <div className="register__form__register">
                     <p>Had you have account already? </p>
