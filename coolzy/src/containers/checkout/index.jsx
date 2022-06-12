@@ -366,7 +366,7 @@ const Checkout = () => {
                 alert(rejectedValueOrSerializedError);
             }
 
-            
+
         }
 
         const updateCart = async () => {
@@ -672,96 +672,76 @@ const Checkout = () => {
                 <Grid sx={{ backgroundColor: '#fafafa', left: 0, backgroundPosition: 'left top', boxShadow: '1px 0 0 #e1e1e1 inset' }}
                     height="auto"
                     item xs={5}>
-                    <Stack direction="column" spacing={2} p="2rem" paddingRight="6em">
-                        {listCart.map((item) => (
-                            <Stack
-                                sx={styles.listCart_item}
-                                direction="row"
-                                width="100%">
+                    {listCart.map((item) => (
+                        <Stack direction="column" spacing={2} p="2rem" paddingRight="6em" >
+                            <Stack direction="column" sx={styles.listCart_item}>
+                                <Stack
+                                    direction="row"
+                                    width="100%">
 
-                                <img style={{
-                                    width: '7em', height: '7em', borderRadius: '8px', background: '#fff', position: 'relative'
-                                }}
-                                    alt={item.product.name}
-                                    src={item.product.images[0]}
-                                />
+                                    <img style={{
+                                        width: '7em', height: '7em', borderRadius: '8px', background: '#fff', position: 'relative'
+                                    }}
+                                        alt={item.product.name}
+                                        src={item.product.images[0]}
+                                    />
 
-                                <Stack direction="column">
-                                    <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{item.product.name}</Typography>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <Typography sx={{ marginLeft: '1em', marginTop: '0.5em' }}> x{item.quantity}</Typography>
-                                            <Typography sx={{ marginLeft: '1em', marginTop: '0.5em', fontStyle: 'italic', fontSize: '12px' }}> Size: {item.size}</Typography>
-                                        </Grid>
-                                        <Grid item xs={8}></Grid>
+                                    <Stack direction="column">
+                                        <Typography sx={{ marginLeft: '1em', marginTop: '1em' }}>{item.product.name}</Typography>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography sx={{ marginLeft: '1em', marginTop: '0.5em' }}> x{item.quantity}</Typography>
+                                                <Typography sx={{ marginLeft: '1em', marginTop: '0.5em', fontStyle: 'italic', fontSize: '12px' }}> Size: {item.size}</Typography>
+                                            </Grid>
 
-                                        <Grid item xs={4}>
+                                            {/* <Grid item xs={8} ></Grid>
+
+                                        <Grid item xs={4} >
                                             <Typography sx={{ fontWeight: 600 }}> {item.total} USD</Typography>
+                                        </Grid> */}
                                         </Grid>
-                                    </Grid>
+                                    </Stack>
+
+
                                 </Stack>
-                            </Stack>
-                        ))}
-                    </Stack>
 
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                    <Grid container width="100%" spacing={1}>
-                        <Grid item xs={8.5}>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                label="Discount code"
-                                variant="outlined"
-                                onChange={handleChangeAddress}
-                                sx={{ color: '#333333', fontFamily: 'sans-serif', }}
-                            />
-                        </Grid>
-                        <Grid item xs={3.5} sx={{ height: '100%' }}>
-                            <Button variant="contained" sx={{ fontSize: '14px', backgroundColor: 'gray', marginTop: '0.5em', width: '100%', height: '100%' }}>
-                                Use
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                    <Stack direction="column" width="100%">
-                        <Typography sx={{
-                            color: '#333333',
-                            fontFamily: 'sans-serif', fontWeight: 300
-                        }}
-                        >MEMBER
-                        </Typography>
-                        <Stack direction="row" width="100%">
-                            <DiamondIcon sx={{ width: '17px', height: '17px' }} />
-                            <Typography sx={{ color: '#333333', fontFamily: 'sans-serif', fontSize: '13px', marginLeft: '0.5em' }}>
-                                MEMBER - {_currentUser.score} point(s)
-                            </Typography>
+                                <Grid container>
+                                    <Grid item xs={8} ></Grid>
+
+                                    <Grid item xs={4} >
+                                        <Typography sx={{ fontWeight: 600 }}> {item.total} USD</Typography>
+                                    </Grid>
+                                </Grid>    
+                            </Stack>                       
                         </Stack>
-                    </Stack>
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
-                    <Stack direction="row" width='100%' justifyContent="space-between">
-                        <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
-                        <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em' }}
-                        >
-                            {subTotal} USD
-                        </Typography>
-                    </Stack>
-                    <Stack direction="row" width='100%' justifyContent="space-between">
-                        <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
-                        <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '-0.5em' }}
-                        >
-                            2 USD
-                        </Typography>
-                    </Stack>
-                    <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                    ))}
 
-                    <Stack direction="row" width='100%' justifyContent="space-between">
-                        <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
-                        <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em', fontSize: '20px' }}
-                        >
-                            {subTotal + 2} USD
-                        </Typography>
-                    </Stack>
-                </Grid>
+
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ marginTop: '1.2em', color: 'gray' }}>Temporary cost</Typography>
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em' }}
+                    >
+                        {subTotal} USD
+                    </Typography>
+                </Stack>
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ color: 'gray', marginTop: '-0.5em' }}>Delivery cost</Typography>
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '-0.5em' }}
+                    >
+                        2 USD
+                    </Typography>
+                </Stack>
+                <div style={{ height: '1px', width: '100%', backgroundColor: '#BFBFBF' }}></div>
+
+                <Stack direction="row" width='100%' justifyContent="space-between">
+                    <Typography sx={{ color: 'gray', marginTop: '1.2em' }}>Total cost</Typography>
+                    <Typography sx={{ color: '#333333', fontWeight: 800, marginTop: '1.2em', fontSize: '20px' }}
+                    >
+                        {subTotal + 2} USD
+                    </Typography>
+                </Stack>
+            </Grid>
 
                 {/* snackbar */}
                 <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>

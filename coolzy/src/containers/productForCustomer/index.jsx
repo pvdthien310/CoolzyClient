@@ -21,7 +21,7 @@ const ProductForCustomer = () => {
         </Helmet>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <NavBar />
-            <Grid container sx={{mt:10, mb: 10}}>
+            <Grid container sx={{mt:15, mb: 10}}>
                 <Grid item xs={2}>
                     <div >
                         <ListBrand />
