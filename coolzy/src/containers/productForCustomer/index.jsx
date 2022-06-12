@@ -8,11 +8,16 @@ import { ListBrand, ProductList } from "./child";
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import  NavBar  from '../../components/navbar/index';
+import { Helmet } from 'react-helmet';
 
 const ProductForCustomer = () => {
     const { categoryId } = useParams();
     const navigate = useNavigate()
     return (
+        <>
+        <Helmet>
+            <title>Product</title>
+        </Helmet>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <NavBar />
             <Grid container sx={{mt:10}}>
@@ -28,6 +33,7 @@ const ProductForCustomer = () => {
 
             </Grid>
         </div >
+        </>
     )
 }
 

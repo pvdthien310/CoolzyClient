@@ -37,6 +37,7 @@ import { getClothesWithID } from '../../redux/slices/clothSlice';
 import { Autocomplete } from '@mui/material';
 import Footer from './../../components/footer/index';
 import Header from '../cart/header';
+import Helmet from 'react-helmet';
 
 const Container = styled.div`
     background-color: white;
@@ -294,6 +295,10 @@ const FavoritePage = () => {
     ];
 
     return (
+        <>
+        <Helmet>
+            <title>Favorite</title>
+        </Helmet>
         <Stack>
             <Navbar />
             <Header />
@@ -465,6 +470,7 @@ const FavoritePage = () => {
                 </DialogActions>
             </Dialog>
         </Stack>
+        </>
     );
 };
 

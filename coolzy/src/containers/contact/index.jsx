@@ -18,6 +18,7 @@ import { Success, Error } from '../../components/alert/alert'
 import Logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/navbar';
+import Helmet from 'react-helmet';
 
 const Contact = () => {
     const navigate = useNavigate()
@@ -83,6 +84,9 @@ const Contact = () => {
 
     return (
         <Stack direction={'column'} >
+            <Helmet>
+                <title>Contact</title>
+            </Helmet>
             <Navbar />
             <Stack sx={{ mt: 5 }}>
                 <Box textAlign="center" style={{ margin: 20, marginTop: 80 }}>

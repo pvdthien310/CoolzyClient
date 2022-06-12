@@ -15,6 +15,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Navbar from '../../components/navbar';
+import Helmet from 'react-helmet';
 
 const About = () => {
     const navigate = useNavigate()
@@ -48,6 +49,9 @@ const About = () => {
     return (
 
         <Stack direction="column">
+            <Helmet>
+                <title>About</title>
+            </Helmet>
             <Navbar></Navbar>
             <Stack sx={{mt: 15}}>
                 {
