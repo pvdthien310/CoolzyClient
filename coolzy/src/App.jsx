@@ -22,6 +22,7 @@ import About from './containers/about/index'
 import Contact from './containers/contact/index'
 import ProductForCustomer from './containers/productForCustomer';
 import ForgotPassword from './containers/forgotPassword';
+import { Stack } from '@mui/material';
 
 function App() {
     const _currentUser = useSelector(currentUser)
@@ -61,12 +62,16 @@ function App() {
     useEffect((checkLogged), [])
 
     return (
+
         <Routes>
             <Route path="/manageProfile" element={<ProfileManage />} />
             {/* <Route path="/ordersManagement" element={<OrdersManagement />} /> */}
-            {/* <Route path="/" element={
-                <Home />
-            } /> */}
+            {
+                localStorage.getItem('logged') == 'false' &&
+                <Route path="/" element={
+                    <Home />
+                } />
+            }
 
             <Route path="/productDetail/:categoryId/:id" element={
                 <div>
@@ -76,7 +81,7 @@ function App() {
 
             {_currentUser != "" &&
                 <Route path="*" element={
-                    _currentUser != "" && _currentUser.role != 'Customer'? <MainManager /> : <Home />
+                    _currentUser != "" && _currentUser.role != 'Customer' ? <MainManager /> : <Home />
                 } />
             }
 
@@ -127,6 +132,7 @@ function App() {
                 <Contact />
             } />
         </Routes>
+
     );
 }
 
