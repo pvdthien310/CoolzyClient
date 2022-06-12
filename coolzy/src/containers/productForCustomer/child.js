@@ -46,7 +46,7 @@ const ProductList = ({ categoryId }) => {
         if (categoryId == 'all') {
             clothesApi.getAll().then(res => {
                 if (res.status == 200) {
-                    let result = res.data.filter(e => e.isAvailable == true)
+                    let result = res.data.filter(e => e.isAvailable == true && e.published == true)
                     setData(result)
                 }
             })
@@ -54,7 +54,7 @@ const ProductList = ({ categoryId }) => {
         else {
             clothesApi.getByCategoryId(categoryId).then(res => {
                 if (res.status == 200) {
-                    setData(res.data)
+                    setData(res.data.filter(e => e.isAvailable == true && e.published == true))
                 }
             })
         }
@@ -67,7 +67,7 @@ const ProductList = ({ categoryId }) => {
                     data.map((item, i) => (
                         <Grid item xs={5} key={i}>
                             <Item>
-                                <ProductItem item={item} categoryId={categoryId}/>
+                                <ProductItem item={item} categoryId={categoryId} />
                             </Item>
                         </Grid>
                     ))
@@ -84,12 +84,19 @@ const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'start',
+    '&:hover': {
+        backgroundColor: '#F2DDD0',
+        ...theme.typography.body2,
+        padding: theme.spacing(1),
+        opacity: '80%',
+        textAlign: 'end',
+    }
 }));
 
 const ProductItem = ({ item }) => {
     const navigate = useNavigate()
     const clickHandle = () => {
-        navigate('/productDetail/'+ item._categoryId + '/' + item._id)
+        navigate('/productDetail/' + item._categoryId + '/' + item._id)
     }
 
     let sizeLength = item.size.filter(e => e.quantity != 0)
@@ -97,10 +104,10 @@ const ProductItem = ({ item }) => {
     return (
         <Stack sx={{ cursor: 'pointer' }} onClick={() => clickHandle()}>
             <img src={item.images[0]} alt='' />
-            <Typography sx={{ color: '#272727' }}>{item.name}</Typography>
+            <Typography sx={{ color: '#272727' }} fontWeight={'bold'}>{item.name}</Typography>
             <Typography sx={{ color: '#a6a6a6' }}>{item.brand}</Typography>
             <Typography sx={{ color: '#a6a6a6' }}>{sizeLength.length} SIZE</Typography>
-            <Typography sx={{ color: '#272727' }}>{item.price} VNĐ</Typography>
+            <Typography sx={{ color: '#272727' }}>{item.price} USD</Typography>
         </Stack>
     )
 }
