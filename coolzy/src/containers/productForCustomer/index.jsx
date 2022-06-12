@@ -7,17 +7,15 @@ import { ListBrand, ProductList } from "./child";
 
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import  NavBar  from '../../components/navbar/index';
 
 const ProductForCustomer = () => {
     const { categoryId } = useParams();
     const navigate = useNavigate()
     return (
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <div style={{ display: 'flex', alignSelf: 'flex-end' }}>
-                {/* <CustomFillButton onClick={() => navigate('/manager/product/add')}>New</CustomFillButton> */}
-                {/* <CustomOutlineButton onClick={() => navigate('manager/product/edit')}>Edit</CustomOutlineButton> */}
-            </div>
-            <Grid container >
+            <NavBar />
+            <Grid container sx={{mt:10}}>
                 <Grid item xs={2}>
                     <div >
                         <ListBrand />
