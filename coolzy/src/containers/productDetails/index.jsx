@@ -209,20 +209,24 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    let newCart = {
-      clothId: id,
-      quantity: quantityValue,
-      size: sizeValue.size
-    }
+    if (_currentUser == '')
+      navigate('/login')
+    else {
+      let newCart = {
+        clothId: id,
+        quantity: quantityValue,
+        size: sizeValue.size
+      }
 
-    cartApi.insertByUserId(userId, newCart).then(res => {
-      if (res.status == 200) {
-        setAlertObj({ ...alertObj, type: 'success', message: "Add to cart successful", status: true })
-      }
-      else {
-        setAlertObj({ ...alertObj, type: 'error', message: "Add to cart fail", status: true })
-      }
-    }).catch(err => console.log(err))
+      cartApi.insertByUserId(userId, newCart).then(res => {
+        if (res.status == 200) {
+          setAlertObj({ ...alertObj, type: 'success', message: "Add to cart successful", status: true })
+        }
+        else {
+          setAlertObj({ ...alertObj, type: 'error', message: "Add to cart fail", status: true })
+        }
+      }).catch(err => console.log(err))
+    }
   }
 
   const handleClose = (event, reason) => {
@@ -268,39 +272,43 @@ const ProductDetail = () => {
   }, [])
 
   const handleAddToFavorite = async () => {
-    setOpenBackdrop(true)
-    let isExisted = false;
-    favoriteList.map(i => {
-      if (i.clotheid === item._id) {
-        isExisted = true;
-      }
-    })
-    if (isExisted === true) {
-      setOpenBackdrop(false)
-      setAlertObj({
-        ...alertObj,
-        message: 'This product was in your favorite',
-        status: true,
-        type: 'warning'
+    if (_currentUser == '')
+      navigate('/login')
+    else {
+      setOpenBackdrop(true)
+      let isExisted = false;
+      favoriteList.map(i => {
+        if (i.clotheid === item._id) {
+          isExisted = true;
+        }
       })
-    } else {
-      let temp = {
-        email: _currentUser.email,
-        clotheid: item._id
-      }
-      try {
-        const resultAction = await dispatch(addFav(temp))
-        const originalPromiseResult = unwrapResult(resultAction)
+      if (isExisted === true) {
         setOpenBackdrop(false)
         setAlertObj({
           ...alertObj,
-          message: 'Added to favorite successfully',
+          message: 'This product was in your favorite',
           status: true,
-          type: 'success'
+          type: 'warning'
         })
-        setFavoriteList([...favoriteList, temp])
-      } catch (rejectedValueOrSerializedError) {
-        return rejectedValueOrSerializedError
+      } else {
+        let temp = {
+          email: _currentUser.email,
+          clotheid: item._id
+        }
+        try {
+          const resultAction = await dispatch(addFav(temp))
+          const originalPromiseResult = unwrapResult(resultAction)
+          setOpenBackdrop(false)
+          setAlertObj({
+            ...alertObj,
+            message: 'Added to favorite successfully',
+            status: true,
+            type: 'success'
+          })
+          setFavoriteList([...favoriteList, temp])
+        } catch (rejectedValueOrSerializedError) {
+          return rejectedValueOrSerializedError
+        }
       }
     }
   }
