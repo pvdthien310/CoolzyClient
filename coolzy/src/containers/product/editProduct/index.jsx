@@ -126,7 +126,6 @@ const EditProduct = () => {
                     let sizesTemp = sizes.map(item => {
 
                         let ins = res.data.size.find(e => e.size == item.size)
-                        console.log(ins)
                         if (ins) {
                             return ins
                         }
@@ -135,7 +134,7 @@ const EditProduct = () => {
                         }
 
                     })
-                    console.log(sizesTemp)
+                    setData({ ...data, size: sizesTemp })
                 }
             }).catch(err => console.log(err))
         }
