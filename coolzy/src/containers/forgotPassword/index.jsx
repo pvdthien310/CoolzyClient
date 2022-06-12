@@ -288,7 +288,7 @@ const ForgotPassword = () => {
 
     }));
 
-    const [alertStatus, setAlertStatus] = useState(true)
+    const [alertStatus, setAlertStatus] = useState(false)
     const handleCloseAlert = () => {
         setAlertStatus(false)
     }
