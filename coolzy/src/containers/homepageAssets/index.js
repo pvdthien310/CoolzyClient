@@ -29,30 +29,31 @@ export const HomePageAssets = () => {
 
     const data = [
         {
+
             id: '0',
-            title: 'Lorem Ipsum',
-            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            title: 'To Details',
+            description: 'From statement sleeves and low-down necklines to anything-but-basic bow accents, our newest styles are detail-oriented. Moreover, easy knit dressing echoes the effortlessness of beach days past while long, layered silhouettes transition effortlessly into fall',
             background: 'https://images.unsplash.com/photo-1503342331296-c8ca3b8dd0a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
             poster: 'https://images.unsplash.com/photo-1503342394128-c104d54dba01?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'
         },
         {
             id: '1',
-            title: 'Lorem Ipsum',
-            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            title: 'Stomping Ground',
+            description: 'Our best-selling lug sole bootie returns and feel fresher than ever. we are kicking things off with spring top trends from vibrant hues and free-flowing',
             background: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80',
             poster: 'https://images.unsplash.com/photo-1531287333398-6d7bd77ef790?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'
         },
         {
             id: '2',
-            title: 'Lorem Ipsum',
-            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            title: 'Experience custom clothing like never before',
+            description: 'With Coolzy, choose the best of fabrics sourced from international heritage milis. Personalize your style just the way you want and we will have it in your hands',
             background: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
             poster: 'https://images.unsplash.com/photo-1542596594-649edbc13630?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'
         },
         {
             id: '3',
-            title: 'Lorem Ipsum',
-            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+            title: 'To the tone down',
+            description: 'Whether you are pairing high-hitting hemlines with oversized tops or sultry tanks with boyish bottoms, this is a toned-down approach to hot summer dressing',
             background: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
             poster: 'https://images.unsplash.com/photo-1496124134604-7493ec63de68?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'
         },
@@ -279,9 +280,9 @@ export const HomePageAssets = () => {
             <Grid item xs={5}>
                 <Stack direction="column" spacing={2}>
                     <Stack direction="column" spacing={1.5}>
-                        <Typography className={style.boxTitle}>🖊️ Edit Slider</Typography>
-                        <Stack direction="row" spacing={2}>
-                            <TextField
+                        {/* <Typography className={style.boxTitle}>🖊️ Edit Slider</Typography> */}
+                        {/* <Stack direction="row" spacing={2}> */}
+                        {/* <TextField
                                 variant="standard"
                                 placeholder="Number of slide"
                                 value={slideNumber}
@@ -322,7 +323,7 @@ export const HomePageAssets = () => {
                         <Stack direction="row" sx={{ justifyContent: 'center' }} spacing={2}>
                             <CustomFillButton onClick={handleTry} sx={{ alignSelf: 'center' }} >Try to apply</CustomFillButton>
                             <CustomFillButton onClick={handleRefreshSlider} sx={{ alignSelf: 'center' }} >Refresh</CustomFillButton>
-                        </Stack>
+                        </Stack> */}
                         <br style={{ width: '100%', height: '1px', backgroundColor: 'black' }}></br>
 
                         <Typography className={style.boxTitle}>🖊️ Set outstanding products</Typography>

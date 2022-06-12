@@ -92,7 +92,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const actions = [
-    { icon: <ShoppingCartCheckoutOutlined />, name: 'Get all to cart' },
     { icon: <DeleteForeverOutlinedIcon />, name: 'Delete all favorite' }
 ];
 

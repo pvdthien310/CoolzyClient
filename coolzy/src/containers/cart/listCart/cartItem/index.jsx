@@ -9,7 +9,7 @@ import { Typography, Button, Stack } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, handleMoveToFav }) => {
     const dispatch = useDispatch()
     let userId = useSelector(state => state.account.user._id)
     const listCarts = useSelector(state => state.account.user.listCarts)
@@ -184,7 +184,7 @@ const CartItem = ({ item }) => {
                         </Stack>
 
                         <Stack direction='row' sx={{ marginTop: 5 }}>
-                            <Button variant="text" sx={{ color: 'rgb(103, 103, 103)', textDecoration: 'underline', }} >Move to favorite</Button>
+                            <Button variant="text" onClick={() => handleMoveToFav(item)} sx={{ color: 'rgb(103, 103, 103)', textDecoration: 'underline', }} >Move to favorite</Button>
                             <Button variant="text" sx={{ color: 'rgb(103, 103, 103)', textDecoration: 'underline', marginLeft: 2 }} onClick={() => removeHandle()}> Remove</Button>
                         </Stack>
                     </Stack>

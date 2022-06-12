@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red, grey } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 import { encode } from 'base-64'
 import { Helmet } from 'react-helmet';
@@ -37,7 +37,7 @@ export const ProfileManage = () => {
             borderRadius: 20
         },
         palette: {
-            primary: red
+            primary: grey
         },
     })
 
@@ -384,7 +384,7 @@ export const ProfileManage = () => {
             <div className="profile"  >
                 <div className="profile-container">
                     <div className="profile-information">
-                        <div className="profile-information__title">ACCOUNT INFORMATION</div>
+                        <Typography variant='h5' sx={{ fontWeight: 600 }} >ACCOUNT INFORMATION</Typography>
 
                         <div className="line"></div>
 
@@ -512,16 +512,18 @@ export const ProfileManage = () => {
                         </div>
 
                         <Box textAlign='center' >
-                            <ThemeProvider theme={ButtonTheme}>
-                                <Button variant="contained"
-                                    className='profile-information__btnSave'
-                                    sx={{
-                                        padding: 1,
-                                        marginTop: 3
-                                    }}
-                                    onClick={editProfile}
-                                >SAVE CHANGES</Button>
-                            </ThemeProvider>
+                            {/* <ThemeProvider theme={ButtonTheme}> */}
+                            <Button variant="contained"
+                                sx={{
+                                    borderRadius: '15px',
+                                    backgroundColor: 'black',
+                                    width: '150px',
+                                    padding: 1,
+                                    marginTop: 3
+                                }}
+                                onClick={editProfile}
+                            >SAVE CHANGES</Button>
+                            {/* </ThemeProvider> */}
                         </Box>
                     </div>
 
@@ -529,7 +531,7 @@ export const ProfileManage = () => {
                 </div>
 
                 <div className="password-information">
-                    <div className="password-information__title">CHANGE YOUR PASSWORD</div>
+                    <Typography variant='h5' sx={{ fontWeight: 600 }}>CHANGE YOUR PASSWORD</Typography>
                     <div className="line"></div>
                     <div className="password-information__item">
                         <div className="password-information__item__title">Old password</div>
@@ -601,16 +603,19 @@ export const ProfileManage = () => {
                     </div>
 
                     <Box textAlign='center'>
-                        <ThemeProvider theme={ButtonTheme}>
-                            <Button variant="contained"
-                                className='password-information__btnChange'
-                                sx={{
-                                    padding: 1,
-                                    marginTop: 3
-                                }}
-                                onClick={changePassword}
-                            >CHANGE PASSWORD</Button>
-                        </ThemeProvider>
+                        {/* <ThemeProvider theme={ButtonTheme}> */}
+                        <Button variant="contained"
+                            className='password-information__btnChange'
+                            sx={{
+                                borderRadius: '15px',
+                                backgroundColor: 'black',
+                                width: '150px',
+                                padding: 1,
+                                marginTop: 3
+                            }}
+                            onClick={changePassword}
+                        >CHANGE PASSWORD</Button>
+                        {/* </ThemeProvider> */}
                     </Box>
                 </div>
             </div >
@@ -618,6 +623,6 @@ export const ProfileManage = () => {
 
             {isLoading && <Loading />}
             <Success message={updateSucceeded.message} status={updateSucceeded.status} />
-        </Stack>
+        </Stack >
     )
 }
