@@ -89,7 +89,7 @@ const CartItem = ({ item, handleMoveToFav }) => {
                 if (element.size == item.size) {
 
                     let quantityList = []
-                    for (let i = 0; i <= element.quantity; i++) {
+                    for (let i = 1; i <= element.quantity; i++) {
                         quantityList.push(i)
                     }
                     setListQuantity(quantityList)
@@ -107,7 +107,7 @@ const CartItem = ({ item, handleMoveToFav }) => {
                 if (element.size == size) {
 
                     let quantityList = []
-                    for (let i = 0; i <= element.quantity; i++) {
+                    for (let i = 1; i <= element.quantity; i++) {
                         quantityList.push(i)
                     }
                     setListQuantity(quantityList)
