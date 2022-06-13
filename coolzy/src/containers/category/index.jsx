@@ -11,6 +11,9 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 import categoryApi from '../../api/categoryAPI';
 import { categorySlice } from '../../redux/slices/categorySlice';
 
@@ -34,6 +37,7 @@ const CategoryManager = () => {
             {data && data.map((item, index) => (
                 <CategoryItem item={item} key={index} />
             ))}
+            
         </Stack>
 
     )
@@ -43,7 +47,8 @@ const CategoryItem = ({ item }) => {
     const dispatch = useDispatch()
     const deleteHandle = () => {
         categoryApi.deleteById(item._id).then(res => {
-            if (res.status == 200) {
+            console.log(res)
+            if (res.data != 'Error') {
                 dispatch(categorySlice.actions.deleteCategory(item._id))
             }
         }).catch(err => console.log(err))
